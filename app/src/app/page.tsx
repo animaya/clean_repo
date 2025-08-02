@@ -2,16 +2,13 @@
 
 import { SignInButton, SignUpButton, useUser } from '@clerk/nextjs';
 import Link from 'next/link';
+import MysticalLoader from './components/MysticalLoader';
 
 export default function Home() {
   const { isSignedIn, user, isLoaded } = useUser();
 
   if (!isLoaded) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading...</div>
-      </div>
-    );
+    return <MysticalLoader message="Awakening the mystical realm..." />;
   }
 
   if (isSignedIn) {
@@ -36,7 +33,7 @@ export default function Home() {
             </p>
             
             <Link href="/tarot">
-              <button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-xl text-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
+              <button className="mystical-button bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-4 px-8 rounded-xl text-xl shadow-lg border-2 border-purple-400/50 hover:border-purple-300/70">
                 🎴 Enter the Tarot Realm
               </button>
             </Link>
@@ -84,13 +81,13 @@ export default function Home() {
             
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <SignInButton mode="modal">
-                <button className="bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <button className="mystical-button bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg border-2 border-purple-400/50 hover:border-purple-300/70">
                   🔑 Sign In to Your Destiny
                 </button>
               </SignInButton>
               
               <SignUpButton mode="modal">
-                <button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-3 px-6 rounded-xl transition-all duration-300 transform hover:scale-105 shadow-lg">
+                <button className="mystical-button bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg border-2 border-blue-400/50 hover:border-blue-300/70">
                   ✨ Create Your Mystical Account
                 </button>
               </SignUpButton>

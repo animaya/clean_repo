@@ -1,7 +1,12 @@
 "use client";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser, SignOutButton } from '@clerk/nextjs';
+import CosmicBackground from '../components/CosmicBackground';
+import PersonalizedEnvironment from '../components/PersonalizedEnvironment';
+import VisualStorytellingFramework from '../components/VisualStorytellingFramework';
+import MysticalLoader from '../components/MysticalLoader';
 
 interface TarotCard {
   id: number;
@@ -43,38 +48,94 @@ export default function TarotGame() {
   const [pulledCard, setPulledCard] = useState<TarotCard | null>(null);
   const [isFlipped, setIsFlipped] = useState(false);
   const [isAnimating, setIsAnimating] = useState(false);
+  const [isDeckHovered, setIsDeckHovered] = useState(false);
+  const [flipStage, setFlipStage] = useState<'idle' | 'preparation' | 'transformation' | 'revelation'>('idle');
+  const [userReadingCount, setUserReadingCount] = useState(0);
+  const [isFirstVisit, setIsFirstVisit] = useState(true);
+
+  // Load user reading history on mount
+  useEffect(() => {
+    if (user) {
+      const savedHistory = localStorage.getItem(`tarot_history_${user.id}`);
+      if (savedHistory) {
+        const history = JSON.parse(savedHistory);
+        setUserReadingCount(history.length);
+        setIsFirstVisit(false);
+      }
+    }
+  }, [user]);
 
   if (!isLoaded) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 flex items-center justify-center">
-        <div className="text-white text-xl">Loading your destiny...</div>
-      </div>
-    );
+    return <MysticalLoader message="Loading your destiny..." />;
   }
 
   const pullCard = () => {
     if (deck.length === 0 || pulledCard || isAnimating) return;
     
     setIsAnimating(true);
-    const randomIndex = Math.floor(Math.random() * deck.length);
-    const selectedCard = deck[randomIndex];
-    const newDeck = deck.filter((_, index) => index !== randomIndex);
     
+    // Stage 1: Deck glows and prepares
     setTimeout(() => {
-      setDeck(newDeck);
-      setPulledCard(selectedCard);
-      setIsFlipped(false);
-      setIsAnimating(false);
-    }, 300);
+      const randomIndex = Math.floor(Math.random() * deck.length);
+      const selectedCard = deck[randomIndex];
+      const newDeck = deck.filter((_, index) => index !== randomIndex);
+      
+      // Stage 2: Card is drawn with energy effects
+      setTimeout(() => {
+        setDeck(newDeck);
+        setPulledCard(selectedCard);
+        setIsFlipped(false);
+        
+        // Record reading for personalized environment
+        if ((window as any).recordTarotReading) {
+          (window as any).recordTarotReading(selectedCard.id, selectedCard.type);
+        }
+        
+        // Trigger storytelling events
+        if ((window as any).triggerStoryEvent) {
+          if (userReadingCount === 0) {
+            (window as any).triggerStoryEvent('first_reading');
+          } else {
+            (window as any).triggerStoryEvent('card_draw');
+          }
+        }
+        
+        setUserReadingCount(prev => prev + 1);
+        
+        // Stage 3: Animation completes
+        setTimeout(() => {
+          setIsAnimating(false);
+        }, 200);
+      }, 300);
+    }, 500);
   };
 
   const flipCard = () => {
     if (!pulledCard || isAnimating) return;
     setIsAnimating(true);
+    
+    // Stage 1: Preparation - Card glows, environment dims (300ms)
+    setFlipStage('preparation');
     setTimeout(() => {
-      setIsFlipped(!isFlipped);
-      setIsAnimating(false);
-    }, 150);
+      // Stage 2: Transformation - 3D flip with particle trail (400ms)
+      setFlipStage('transformation');
+      setTimeout(() => {
+        setIsFlipped(!isFlipped);
+        
+        // Stage 3: Revelation - Dramatic light burst, meaning appears gradually (300ms)
+        setFlipStage('revelation');
+        
+        // Trigger card flip storytelling
+        if ((window as any).triggerStoryEvent) {
+          (window as any).triggerStoryEvent('card_flip');
+        }
+        
+        setTimeout(() => {
+          setFlipStage('idle');
+          setIsAnimating(false);
+        }, 300);
+      }, 400);
+    }, 300);
   };
 
   const pushCardBack = () => {
@@ -90,32 +151,17 @@ export default function TarotGame() {
   };
 
   return (
-    <div className="min-h-screen relative overflow-hidden p-6">
-      {/* Mystical Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-950 via-purple-950 to-black">
-        {/* Animated mystical patterns */}
-        <div className="absolute inset-0 opacity-20">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 border border-purple-400/30 rounded-full animate-spin" style={{animationDuration: '20s'}}></div>
-          <div className="absolute top-3/4 right-1/4 w-64 h-64 border border-blue-400/20 rounded-full animate-spin" style={{animationDuration: '15s', animationDirection: 'reverse'}}></div>
-          <div className="absolute top-1/2 left-1/2 w-32 h-32 border border-purple-300/40 rounded-full animate-pulse transform -translate-x-1/2 -translate-y-1/2"></div>
-          
-          {/* Floating mystical symbols */}
-          <div className="absolute top-20 left-20 text-purple-400/30 text-4xl animate-bounce" style={{animationDelay: '0s', animationDuration: '3s'}}>✦</div>
-          <div className="absolute top-40 right-40 text-blue-400/20 text-3xl animate-bounce" style={{animationDelay: '1s', animationDuration: '4s'}}>☾</div>
-          <div className="absolute bottom-32 left-32 text-purple-300/25 text-5xl animate-bounce" style={{animationDelay: '2s', animationDuration: '5s'}}>✧</div>
-          <div className="absolute bottom-20 right-20 text-indigo-400/30 text-3xl animate-bounce" style={{animationDelay: '1.5s', animationDuration: '3.5s'}}>◊</div>
-          <div className="absolute top-60 left-1/2 text-purple-400/20 text-4xl animate-bounce" style={{animationDelay: '0.5s', animationDuration: '4.5s'}}>⚶</div>
-        </div>
-        
-        {/* Mystical particle effects */}
-        <div className="absolute inset-0">
-          <div className="absolute w-2 h-2 bg-purple-400/40 rounded-full animate-ping" style={{top: '10%', left: '15%', animationDelay: '0s'}}></div>
-          <div className="absolute w-1 h-1 bg-blue-300/60 rounded-full animate-ping" style={{top: '70%', left: '80%', animationDelay: '2s'}}></div>
-          <div className="absolute w-3 h-3 bg-indigo-400/30 rounded-full animate-ping" style={{top: '30%', left: '70%', animationDelay: '4s'}}></div>
-          <div className="absolute w-1 h-1 bg-purple-300/50 rounded-full animate-ping" style={{top: '80%', left: '20%', animationDelay: '1s'}}></div>
-          <div className="absolute w-2 h-2 bg-blue-400/40 rounded-full animate-ping" style={{top: '50%', left: '90%', animationDelay: '3s'}}></div>
-        </div>
-      </div>
+    <div className="min-h-screen relative overflow-hidden p-6" id="main-content">
+      {/* Personalized Environment with Cosmic Overlay */}
+      <PersonalizedEnvironment />
+      <CosmicBackground />
+      
+      {/* Visual Storytelling Framework */}
+      <VisualStorytellingFramework 
+        userReadingCount={userReadingCount}
+        lastCardType={pulledCard?.type}
+        isFirstVisit={isFirstVisit}
+      />
       {/* User Header */}
       <div className="relative max-w-7xl mx-auto mb-6 z-10">
         <div className="flex justify-between items-center">
@@ -131,14 +177,14 @@ export default function TarotGame() {
         </div>
       </div>
 
-      <div className="relative max-w-7xl mx-auto h-screen flex gap-6 z-10">
-        {/* Left Sidebar - Controls (1/3) */}
-        <div className="w-1/3 flex flex-col justify-center gap-8 p-6">
-          <div className="text-center mb-8">
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-yellow-300 via-purple-300 to-pink-300 bg-clip-text text-transparent drop-shadow-2xl mb-4">
+      <div className="relative max-w-7xl mx-auto min-h-screen flex flex-col lg:flex-row gap-6 z-10">
+        {/* Controls Section - Full width on mobile, 1/3 on desktop */}
+        <div className="w-full lg:w-1/3 flex flex-col justify-center gap-4 lg:gap-8 p-3 lg:p-6">
+          <div className="text-center mb-4 lg:mb-8">
+            <h1 className="text-3xl lg:text-5xl font-bold bg-gradient-to-r from-yellow-300 via-purple-300 to-pink-300 bg-clip-text text-transparent drop-shadow-2xl mb-2 lg:mb-4">
               ✨ Mystic Tarot ✨
             </h1>
-            <div className="text-purple-300 text-lg font-semibold">
+            <div className="text-purple-300 text-base lg:text-lg font-semibold">
               ☆ Divine Revelations Await ☆
             </div>
           </div>
@@ -146,7 +192,12 @@ export default function TarotGame() {
           <button
             onClick={pullCard}
             disabled={pulledCard !== null || deck.length === 0 || isAnimating}
-            className="relative bg-gradient-to-r from-purple-700 via-indigo-700 to-purple-800 hover:from-purple-600 hover:via-indigo-600 hover:to-purple-700 disabled:from-gray-700 disabled:to-gray-800 disabled:cursor-not-allowed text-white font-bold py-6 px-8 rounded-2xl text-xl transition-all duration-500 transform hover:scale-110 disabled:hover:scale-100 shadow-2xl border-2 border-purple-400/50 hover:border-purple-300/70 hover:shadow-purple-500/50 disabled:border-gray-600/30 overflow-hidden group"
+            onMouseEnter={() => setIsDeckHovered(true)}
+            onMouseLeave={() => setIsDeckHovered(false)}
+            className="mystical-button relative bg-gradient-to-r from-purple-700 via-indigo-700 to-purple-800 hover:from-purple-600 hover:via-indigo-600 hover:to-purple-700 disabled:from-gray-700 disabled:to-gray-800 disabled:cursor-not-allowed text-white font-bold py-4 lg:py-6 px-6 lg:px-8 rounded-2xl text-lg lg:text-xl shadow-2xl border-2 border-purple-400/50 hover:border-purple-300/70 disabled:border-gray-600/30 group"
+            aria-label="Draw a mystical tarot card from the sacred deck"
+            data-action="draw-card"
+            data-focus-id="draw-button"
           >
             {/* Mystical glow effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
@@ -160,7 +211,10 @@ export default function TarotGame() {
           <button
             onClick={flipCard}
             disabled={!pulledCard || isAnimating}
-            className="relative bg-gradient-to-r from-blue-700 via-cyan-700 to-blue-800 hover:from-blue-600 hover:via-cyan-600 hover:to-blue-700 disabled:from-gray-700 disabled:to-gray-800 disabled:cursor-not-allowed text-white font-bold py-6 px-8 rounded-2xl text-xl transition-all duration-500 transform hover:scale-110 disabled:hover:scale-100 shadow-2xl border-2 border-cyan-400/50 hover:border-cyan-300/70 hover:shadow-cyan-500/50 disabled:border-gray-600/30 overflow-hidden group"
+            className="mystical-button relative bg-gradient-to-r from-blue-700 via-cyan-700 to-blue-800 hover:from-blue-600 hover:via-cyan-600 hover:to-blue-700 disabled:from-gray-700 disabled:to-gray-800 disabled:cursor-not-allowed text-white font-bold py-4 lg:py-6 px-6 lg:px-8 rounded-2xl text-lg lg:text-xl shadow-2xl border-2 border-cyan-400/50 hover:border-cyan-300/70 disabled:border-gray-600/30 group"
+            aria-label="Flip the drawn card to reveal its cosmic wisdom"
+            data-action="flip-card"
+            data-focus-id="flip-button"
           >
             {/* Mystical glow effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
@@ -174,7 +228,10 @@ export default function TarotGame() {
           <button
             onClick={pushCardBack}
             disabled={!pulledCard || isAnimating}
-            className="relative bg-gradient-to-r from-emerald-700 via-green-700 to-emerald-800 hover:from-emerald-600 hover:via-green-600 hover:to-emerald-700 disabled:from-gray-700 disabled:to-gray-800 disabled:cursor-not-allowed text-white font-bold py-6 px-8 rounded-2xl text-xl transition-all duration-500 transform hover:scale-110 disabled:hover:scale-100 shadow-2xl border-2 border-emerald-400/50 hover:border-emerald-300/70 hover:shadow-emerald-500/50 disabled:border-gray-600/30 overflow-hidden group"
+            className="mystical-button relative bg-gradient-to-r from-emerald-700 via-green-700 to-emerald-800 hover:from-emerald-600 hover:via-green-600 hover:to-emerald-700 disabled:from-gray-700 disabled:to-gray-800 disabled:cursor-not-allowed text-white font-bold py-4 lg:py-6 px-6 lg:px-8 rounded-2xl text-lg lg:text-xl shadow-2xl border-2 border-emerald-400/50 hover:border-emerald-300/70 disabled:border-gray-600/30 group"
+            aria-label="Return the card to the mystical deck"
+            data-action="return-card"
+            data-focus-id="return-button"
           >
             {/* Mystical glow effect */}
             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transform -skew-x-12 -translate-x-full group-hover:translate-x-full transition-transform duration-1000 ease-in-out"></div>
@@ -185,7 +242,7 @@ export default function TarotGame() {
             </div>
           </button>
           
-          <div className="text-center mt-8 bg-black/30 backdrop-blur-sm rounded-xl p-4 border border-purple-400/30">
+          <div className="text-center mt-4 lg:mt-8 bg-black/30 backdrop-blur-sm rounded-xl p-3 lg:p-4 border border-purple-400/30">
             <div className="text-purple-300 text-lg font-semibold mb-2">
               ★ Ancient Deck Status ★
             </div>
@@ -198,15 +255,29 @@ export default function TarotGame() {
           </div>
         </div>
 
-        {/* Right Section - Card Display (2/3) */}
-        <div className="w-2/3 flex flex-col gap-8 p-6">
+        {/* Card Display Section - Full width on mobile, 2/3 on desktop */}
+        <div className="w-full lg:w-2/3 flex flex-col gap-4 lg:gap-8 p-3 lg:p-6">
           {/* Deck Area */}
           <div className="flex-1 flex items-center justify-center">
             <div className="relative">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent text-center mb-8 drop-shadow-lg">
+              <h2 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent text-center mb-4 lg:mb-8 drop-shadow-lg">
                 ★ The Arcane Deck ★
               </h2>
-              <div className="relative w-48 h-72">
+              <div className="relative w-40 h-60 lg:w-48 lg:h-72 card-stack mx-auto">
+                {/* Energy effects during animation or hover */}
+                {(isAnimating || isDeckHovered) && (
+                  <>
+                    <div className="absolute -inset-8 pointer-events-none">
+                      <div className="absolute w-2 h-2 bg-purple-400/80 rounded-full energy-particle" style={{top: '20%', left: '20%', animationDelay: '0s'}}></div>
+                      <div className="absolute w-1 h-1 bg-blue-300/90 rounded-full energy-particle" style={{top: '80%', left: '80%', animationDelay: '0.5s'}}></div>
+                      <div className="absolute w-3 h-3 bg-indigo-400/70 rounded-full energy-particle" style={{top: '30%', right: '20%', animationDelay: '1s'}}></div>
+                      <div className="absolute w-1 h-1 bg-purple-300/80 rounded-full energy-particle" style={{bottom: '30%', left: '30%', animationDelay: '0.3s'}}></div>
+                      <div className="absolute w-2 h-2 bg-cyan-400/60 rounded-full energy-particle" style={{top: '60%', right: '40%', animationDelay: '0.8s'}}></div>
+                      <div className="absolute w-1 h-1 bg-yellow-400/70 rounded-full energy-particle" style={{bottom: '60%', left: '60%', animationDelay: '0.2s'}}></div>
+                    </div>
+                  </>
+                )}
+                
                 {/* Enhanced deck stack effect */}
                 {deck.length > 0 && (
                   <>
@@ -216,7 +287,7 @@ export default function TarotGame() {
                     <div className="absolute w-full h-full bg-gradient-to-br from-purple-700 to-indigo-700 rounded-2xl shadow-2xl transform rotate-1 translate-x-1 translate-y-1 border-2 border-purple-400/70"></div>
                     
                     {/* Top card with mystical design */}
-                    <div className="absolute w-full h-full bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 rounded-2xl shadow-2xl flex flex-col items-center justify-center border-4 border-yellow-400/60 relative overflow-hidden">
+                    <div className={`absolute w-full h-full bg-gradient-to-br from-purple-600 via-indigo-600 to-purple-800 rounded-2xl shadow-2xl flex flex-col items-center justify-center border-4 ${isAnimating ? 'border-yellow-300 animate-ping' : isDeckHovered ? 'border-yellow-300/80' : 'border-yellow-400/60'} relative overflow-hidden ${isAnimating ? 'animate-pulse' : isDeckHovered ? 'animate-pulse' : 'animate-mystical-pulse'} transition-all duration-300`}>
                       {/* Ornate border pattern */}
                       <div className="absolute inset-2 border-2 border-yellow-300/40 rounded-xl"></div>
                       <div className="absolute inset-4 border border-purple-300/30 rounded-lg"></div>
@@ -254,19 +325,49 @@ export default function TarotGame() {
           {/* Pulled Card Area */}
           <div className="flex-1 flex items-center justify-center">
             <div className="text-center">
-              <h2 className="text-3xl font-bold bg-gradient-to-r from-yellow-300 to-purple-300 bg-clip-text text-transparent mb-8 drop-shadow-lg">
+              <h2 className="text-2xl lg:text-3xl font-bold bg-gradient-to-r from-yellow-300 to-purple-300 bg-clip-text text-transparent mb-4 lg:mb-8 drop-shadow-lg">
                 ✨ Card of Destiny ✨
               </h2>
               {pulledCard ? (
+                <div className="relative">
+                  {/* Flip transformation particles */}
+                  {flipStage === 'transformation' && (
+                    <div className="absolute -inset-12 pointer-events-none z-10">
+                      <div className="absolute w-3 h-3 bg-yellow-400/80 rounded-full energy-particle" style={{top: '10%', left: '10%', animationDelay: '0s'}}></div>
+                      <div className="absolute w-2 h-2 bg-purple-400/90 rounded-full energy-particle" style={{top: '20%', right: '15%', animationDelay: '0.1s'}}></div>
+                      <div className="absolute w-4 h-4 bg-blue-300/70 rounded-full energy-particle" style={{bottom: '20%', left: '20%', animationDelay: '0.2s'}}></div>
+                      <div className="absolute w-2 h-2 bg-cyan-400/80 rounded-full energy-particle" style={{bottom: '10%', right: '10%', animationDelay: '0.15s'}}></div>
+                      <div className="absolute w-3 h-3 bg-indigo-400/60 rounded-full energy-particle" style={{top: '50%', left: '5%', animationDelay: '0.3s'}}></div>
+                      <div className="absolute w-2 h-2 bg-pink-400/70 rounded-full energy-particle" style={{top: '60%', right: '5%', animationDelay: '0.25s'}}></div>
+                    </div>
+                  )}
+                  
                 <div 
-                  className={`w-56 h-84 transition-all duration-700 transform-gpu ${
-                    isAnimating ? 'scale-110 rotate-1' : 'scale-100'
-                  } hover:scale-105 cursor-pointer`}
+                  className={`w-48 h-72 lg:w-56 lg:h-84 transform-gpu cursor-pointer mx-auto ${
+                    flipStage === 'preparation' ? 'card-flip-preparation' :
+                    flipStage === 'transformation' ? 'card-flip-transformation' :
+                    flipStage === 'revelation' ? 'card-flip-revelation' :
+                    'transition-all duration-300 hover:scale-105'
+                  }`}
                   style={{ 
                     transformStyle: 'preserve-3d',
                     perspective: '1200px'
                   }}
                   onClick={flipCard}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={
+                    pulledCard && (window as any).generateMysticalAltText 
+                      ? (window as any).generateMysticalAltText(pulledCard.name, pulledCard.meaning, isFlipped)
+                      : `Tarot card ${isFlipped ? 'showing meaning' : 'face down, click to reveal'}`
+                  }
+                  data-focus-id="tarot-card"
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      flipCard();
+                      e.preventDefault();
+                    }
+                  }}
                 >
                   {/* Card Front - Ornate Design */}
                   <div 
@@ -346,7 +447,9 @@ export default function TarotGame() {
                       <div className="flex flex-col items-center justify-center h-full p-8 relative z-10">
                         <div className="text-6xl mb-4 animate-pulse filter drop-shadow-2xl">✨</div>
                         <h3 className="text-2xl font-bold text-white text-center mb-4 drop-shadow-lg">{pulledCard.name}</h3>
-                        <div className="bg-black/30 backdrop-blur-sm rounded-2xl p-4 border border-purple-400/30 max-w-full">
+                        <div className={`bg-black/30 backdrop-blur-sm rounded-2xl p-4 border border-purple-400/30 max-w-full ${
+                          flipStage === 'revelation' ? 'revelation-burst' : ''
+                        }`}>
                           <p className="text-purple-200 font-semibold mb-3 text-center">★ Divine Meaning ★</p>
                           <p className="text-white text-sm leading-relaxed text-center">{pulledCard.meaning}</p>
                         </div>
@@ -357,8 +460,9 @@ export default function TarotGame() {
                     </div>
                   </div>
                 </div>
+                </div>
               ) : (
-                <div className="w-56 h-84 border-4 border-dashed border-purple-500/50 rounded-3xl flex items-center justify-center bg-black/30 backdrop-blur-sm">
+                <div className="w-48 h-72 lg:w-56 lg:h-84 border-4 border-dashed border-purple-500/50 rounded-3xl flex items-center justify-center bg-black/30 backdrop-blur-sm mx-auto">
                   <div className="text-center">
                     <div className="text-purple-400 text-6xl mb-4 animate-pulse">⚰</div>
                     <span className="text-purple-300 text-xl font-semibold">Awaiting Revelation</span>
