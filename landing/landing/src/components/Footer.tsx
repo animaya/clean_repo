@@ -3,37 +3,107 @@
 import { ReactElement } from 'react';
 
 const Footer = (): ReactElement => {
-  const scrollToTop = (): void => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
   return (
-    <footer style={{ backgroundColor: 'var(--dark-navy)', color: 'white', padding: 'var(--space-2xl) 0' }}>
-      <div className="container">
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
+    <footer className="bg-gray-800 text-white py-24">
+      <div className="container mx-auto px-12">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-16">
+          {/* Logo and Contact Info */}
+          <div className="col-span-1">
+            {/* Diesel Dudes Logo */}
+            <div className="mb-12">
+              <div className="flex items-center">
+                <div className="text-white text-4xl font-bold mb-4">
+                  <span style={{ fontFamily: 'serif', fontStyle: 'italic' }}>Diesel Dudes</span>
+                </div>
+              </div>
+              <div className="text-lg text-gray-300 mb-2">MECHANIC SERVICES</div>
+            </div>
+            
+            {/* 24/7 Emergency Service */}
+            <div className="mb-8">
+              <div className="text-lg text-gray-300 mb-4">24/7 Emergency Service</div>
+              <a 
+                href="tel:8032306390" 
+                className="text-4xl font-bold text-orange-500 hover:text-orange-400 transition-colors"
+              >
+                (803) 230-6390
+              </a>
+            </div>
+            
+            <div className="text-lg text-gray-300">
+              Available Day & Night
+            </div>
+          </div>
+
           {/* Services Column */}
           <div>
-            <h3 className="small-heading mb-4 text-white">Services</h3>
-            <ul className="space-y-2">
+            <h3 className="text-orange-500 font-bold text-2xl mb-8 uppercase">Services</h3>
+            <ul className="space-y-4 text-base">
               <li>
-                <a href="/services/mobile-tire-services" className="body-regular text-gray-300 hover:text-[--primary-blue] transition-colors">
-                  Tire Services
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                  Emergency Roadside
                 </a>
               </li>
               <li>
-                <a href="/services/mobile-brake-repairs" className="body-regular text-gray-300 hover:text-[--primary-blue] transition-colors">
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                  Engine Repair
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
                   Brake Repairs
                 </a>
               </li>
               <li>
-                <a href="/services/fuel-system-services" className="body-regular text-gray-300 hover:text-[--primary-blue] transition-colors">
-                  Fuel Systems
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                  Tire Services
                 </a>
               </li>
               <li>
-                <a href="/services/mobile-electrical-repairs" className="body-regular text-gray-300 hover:text-[--primary-blue] transition-colors">
-                  Electrical
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                  Battery Services
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                  All Services <span className="ml-1">→</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Service Areas Column */}
+          <div>
+            <h3 className="text-orange-500 font-bold text-2xl mb-8 uppercase">Service Areas</h3>
+            <ul className="space-y-4 text-base">
+              <li>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                  Charlotte, NC
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                  Columbia, SC
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                  Rock Hill, SC
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                  Gastonia, NC
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                  I-77 Corridor
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors flex items-center">
+                  All Locations <span className="ml-1">→</span>
                 </a>
               </li>
             </ul>
@@ -41,131 +111,61 @@ const Footer = (): ReactElement => {
 
           {/* Company Column */}
           <div>
-            <h3 className="small-heading mb-4 text-white">Company</h3>
-            <ul className="space-y-2">
+            <h3 className="text-orange-500 font-bold text-2xl mb-8 uppercase">Company</h3>
+            <ul className="space-y-4 text-base">
               <li>
-                <a href="/about" className="body-regular text-gray-300 hover:text-[--primary-blue] transition-colors">
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
                   About Us
                 </a>
               </li>
               <li>
-                <a href="/blog" className="body-regular text-gray-300 hover:text-[--primary-blue] transition-colors">
-                  Blog &amp; Tips
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                  Diesel Mechanic
                 </a>
               </li>
               <li>
-                <a href="/contact" className="body-regular text-gray-300 hover:text-[--primary-blue] transition-colors">
-                  Contact
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                  Blog & Tips
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                  Contact Us
+                </a>
+              </li>
+              <li>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
+                  Emergency Service
                 </a>
               </li>
             </ul>
           </div>
 
           {/* Resources Column */}
-          <div id="resources">
-            <h3 className="small-heading mb-4 text-white">Resources</h3>
-            <ul className="space-y-2">
+          <div>
+            <h3 className="text-orange-500 font-bold text-2xl mb-8 uppercase">Resources</h3>
+            <ul className="space-y-4 text-base">
               <li>
-                <a href="/services/emergency-roadside-assistance" className="body-regular text-gray-300 hover:text-[--primary-blue] transition-colors">
-                  Emergency Service
-                </a>
-              </li>
-              <li>
-                <a href="/i77-breakdown-guide" className="body-regular text-gray-300 hover:text-[--primary-blue] transition-colors">
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
                   I-77 Breakdown Guide
                 </a>
               </li>
               <li>
-                <a href="/common-problems" className="body-regular text-gray-300 hover:text-[--primary-blue] transition-colors">
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
                   Common Problems
                 </a>
               </li>
-            </ul>
-          </div>
-
-          {/* Contact Column */}
-          <div>
-            <h3 className="small-heading mb-4 text-white">Contact</h3>
-            <div className="space-y-3">
-              <div>
-                <a 
-                  href="tel:8032306390" 
-                  className="text-xl font-bold transition-colors flex items-center gap-2"
-                  style={{ color: 'var(--primary-blue)' }}
-                  onMouseEnter={(e) => e.currentTarget.style.color = 'white'}
-                  onMouseLeave={(e) => e.currentTarget.style.color = 'var(--primary-blue)'}
-                >
-                  <span>📞</span>
-                  (803) 230-6390
-                </a>
-              </div>
-              <div className="body-small text-gray-300">
-                <div className="flex items-center gap-2 mb-1">
-                  <span>⏰</span>
-                  <strong>24/7 Emergency Service</strong>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span>📍</span>
-                  Charlotte, NC &amp; Columbia, SC
-                </div>
-              </div>
-              
-              {/* Quick CTA */}
-              <div className="mt-4">
-                <a
-                  href="tel:8032306390"
-                  className="button-primary"
-                >
-                  Call Now
-                </a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Divider */}
-        <div className="border-t pt-8" style={{ borderColor: 'var(--medium-gray)' }}>
-          {/* Bottom Row */}
-          <div className="flex flex-col lg:flex-row justify-between items-center gap-4">
-            {/* Logo and Back to Top */}
-            <div className="flex items-center gap-4">
-              <button
-                onClick={scrollToTop}
-                className="text-2xl font-bold text-white transition-colors cursor-pointer"
-                style={{ color: 'white' }}
-                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary-blue)'}
-                onMouseLeave={(e) => e.currentTarget.style.color = 'white'}
-              >
-                Diesel Dudes
-              </button>
-              <button
-                onClick={scrollToTop}
-                className="body-small text-gray-400 transition-colors flex items-center gap-1"
-                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary-blue)'}
-                onMouseLeave={(e) => e.currentTarget.style.color = '#a0aec0'}
-              >
-                <span>↑</span> Back to Top
-              </button>
-            </div>
-
-            {/* Copyright and Links */}
-            <div className="text-center lg:text-right">
-              <div className="body-small text-gray-400 mb-2">
-                © 2025 Diesel Dudes. All rights reserved. Emergency Roadside Assistance &amp; On-Site Diesel Repairs.
-              </div>
-              <div className="body-small text-gray-400 mb-2">
-                Serving All Makes and Models | Call Now for Fast, Reliable Service.
-              </div>
-              <div className="flex flex-wrap justify-center lg:justify-end gap-4 caption">
-                <a href="/terms-of-service" className="text-gray-400 transition-colors" onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary-blue)'} onMouseLeave={(e) => e.currentTarget.style.color = '#a0aec0'}>
+              <li>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
                   Terms of Service
                 </a>
-                <span className="text-gray-600">|</span>
-                <a href="/privacy-policy" className="text-gray-400 transition-colors" onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary-blue)'} onMouseLeave={(e) => e.currentTarget.style.color = '#a0aec0'}>
+              </li>
+              <li>
+                <a href="#" className="text-gray-300 hover:text-white transition-colors">
                   Privacy Policy
                 </a>
-              </div>
-            </div>
+              </li>
+            </ul>
           </div>
         </div>
       </div>

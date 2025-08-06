@@ -3,109 +3,89 @@
 import { ReactElement } from 'react';
 
 const CTASection = (): ReactElement => {
-  const scrollToContact = (): void => {
-    const element = document.getElementById('contact');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
-    <section id="contact" className="section-padding" style={{ backgroundColor: 'var(--background-white)' }}>
-      <div className="container">
-        <div className="max-w-4xl mx-auto">
-          <div 
-            className="rounded-3xl p-12 text-center text-white shadow-2xl relative overflow-hidden"
+    <section className="py-20" style={{ backgroundColor: '#f8f8f8' }}>
+      <div className="container mx-auto px-6">
+        <div className="text-center max-w-4xl mx-auto">
+          {/* Tool Icon */}
+          <div className="mb-8 flex justify-center">
+            <svg 
+              width="80" 
+              height="80" 
+              viewBox="0 0 100 100" 
+              fill="none"
+              className="text-teal-600"
+            >
+              <rect x="20" y="35" width="60" height="25" rx="3" fill="currentColor"/>
+              <rect x="25" y="40" width="50" height="15" rx="2" fill="#f8f8f8"/>
+              <rect x="30" y="30" width="8" height="40" rx="2" fill="currentColor"/>
+              <rect x="62" y="30" width="8" height="40" rx="2" fill="currentColor"/>
+              <circle cx="45" cy="20" r="8" fill="currentColor"/>
+              <rect x="40" y="15" width="10" height="10" rx="2" fill="#f8f8f8"/>
+            </svg>
+          </div>
+          
+          {/* Heading */}
+          <h2 
+            className="text-4xl md:text-5xl font-bold mb-6"
             style={{ 
-              background: `linear-gradient(135deg, var(--dark-navy) 0%, var(--primary-blue) 100%)`
+              color: '#2d3748',
+              fontFamily: 'system-ui, -apple-system, sans-serif',
+              letterSpacing: '-0.02em'
             }}
           >
-            {/* Background Pattern */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute inset-0" style={{
-                backgroundImage: `url("data:image/svg+xml,%3csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3e%3cg fill='none' fill-rule='evenodd'%3e%3cg fill='%23ffffff' fill-opacity='0.1'%3e%3ccircle cx='30' cy='30' r='2'/%3e%3c/g%3e%3c/g%3e%3c/svg%3e")`,
-                backgroundRepeat: 'repeat'
-              }}></div>
-            </div>
-            
-            <div className="relative z-10">
-              <h2 className="section-headline mb-4 text-white">
-                Ready For Fast, Reliable Diesel Repair?
-              </h2>
-              
-              <p className="body-large mb-8 text-gray-100">
-                Contact Diesel Dudes Today!
-              </p>
-              
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-5 max-w-lg mx-auto mb-8">
-                <a
-                  href="tel:8032306390"
-                  className="button-primary w-full sm:w-auto text-center"
-                >
-                  Call Now For Service
-                </a>
-                <button
-                  onClick={scrollToContact}
-                  className="button-secondary w-full sm:w-auto text-white bg-transparent border-2 border-white"
-                  style={{
-                    borderColor: 'white',
-                    color: 'white'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = 'white';
-                    e.currentTarget.style.color = 'var(--dark-navy)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.color = 'white';
-                  }}
-                >
-                  Request On-Site Services
-                </button>
-              </div>
-              
-              {/* Contact Info */}
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 max-w-2xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
-                  <div>
-                    <div className="text-2xl mb-2">📞</div>
-                    <div className="font-bold text-lg mb-1">Call Us</div>
-                    <a href="tel:8032306390" className="font-semibold hover:underline" style={{ color: 'var(--warning-orange)' }}>
-                      (803) 230-6390
-                    </a>
-                  </div>
-                  <div>
-                    <div className="text-2xl mb-2">⚡</div>
-                    <div className="font-bold text-lg mb-1">Response Time</div>
-                    <div className="text-gray-100">
-                      Emergency: Under 1 Hour
-                    </div>
-                  </div>
-                  <div>
-                    <div className="text-2xl mb-2">🚛</div>
-                    <div className="font-bold text-lg mb-1">Service Area</div>
-                    <div className="text-gray-100">
-                      Charlotte &amp; Columbia
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Urgency Indicator */}
-              <div 
-                className="mt-8 inline-flex items-center gap-3 rounded-full px-6 py-3 border"
-                style={{
-                  backgroundColor: 'rgba(237, 137, 54, 0.2)',
-                  borderColor: 'rgba(237, 137, 54, 0.3)'
-                }}
+            READY FOR FAST, RELIABLE DIESEL REPAIR?
+          </h2>
+          
+          {/* Subtitle */}
+          <p 
+            className="text-xl mb-12"
+            style={{ color: '#4a5568' }}
+          >
+            Contact Diesel Dudes Today!
+          </p>
+          
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 max-w-2xl mx-auto">
+            <a
+              href="tel:8032306390"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white rounded-full transition-all duration-200 hover:shadow-lg transform hover:scale-105 w-full sm:w-auto min-w-64"
+              style={{ 
+                backgroundColor: '#ed8936',
+                boxShadow: '0 4px 15px rgba(237, 137, 54, 0.3)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#dd7724';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#ed8936';
+              }}
+            >
+              <svg 
+                className="w-5 h-5 mr-2" 
+                fill="currentColor" 
+                viewBox="0 0 20 20"
               >
-                <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'var(--warning-orange)' }}></div>
-                <span className="font-bold text-sm" style={{ color: 'var(--warning-orange)' }}>
-                  EMERGENCY SERVICE AVAILABLE NOW
-                </span>
-              </div>
-            </div>
+                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+              </svg>
+              CALL NOW FOR SERVICE
+            </a>
+            
+            <button
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-semibold text-white rounded-full transition-all duration-200 hover:shadow-lg transform hover:scale-105 w-full sm:w-auto min-w-64"
+              style={{ 
+                backgroundColor: '#ed8936',
+                boxShadow: '0 4px 15px rgba(237, 137, 54, 0.3)'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#dd7724';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#ed8936';
+              }}
+            >
+              REQUEST ON-SITE SERVICES
+            </button>
           </div>
         </div>
       </div>
