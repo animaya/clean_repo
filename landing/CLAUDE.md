@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This file provides comprehensive guidance to Claude Code when working with Next.js 15 applications with React 19 and TypeScript.
+This file provides comprehensive guidance to Claude Code when working with this Next.js 15 landing page application built with React 19, TypeScript, and Tailwind CSS v4.
 
 ## Core Development Philosophy
 
@@ -112,44 +112,95 @@ function MyComponent(): JSX.Element {  // Cannot find namespace 'JSX'
 }
 ```
 
-## 🏗️ Project Structure (Vertical Slice Architecture)
+## 🏗️ Current Project Structure
 
 ```
+landing/                     # Project root
+├── CLAUDE.md               # This file - project guidelines
+├── README.md               # Project documentation
+├── next.config.ts          # Next.js configuration
+├── tsconfig.json           # TypeScript configuration
+├── eslint.config.mjs       # ESLint configuration
+├── postcss.config.mjs      # PostCSS configuration
+├── package.json            # Dependencies and scripts
+├── package-lock.json       # Lockfile
+├── next-env.d.ts          # Next.js environment types
+├── public/                 # Static assets
+│   ├── file.svg
+│   ├── globe.svg
+│   ├── next.svg
+│   ├── vercel.svg
+│   └── window.svg
+└── src/                    # Source code
+    ├── app/                # Next.js App Router
+    │   ├── favicon.ico     # Favicon
+    │   ├── globals.css     # Global Tailwind CSS styles
+    │   ├── layout.tsx      # Root layout component
+    │   └── page.tsx        # Home page component
+    └── components/         # Landing page components
+        ├── AboutSection.tsx     # About section
+        ├── CTASection.tsx       # Call-to-action section
+        ├── Footer.tsx           # Footer component
+        ├── Header.tsx           # Header/navigation
+        ├── Hero.tsx             # Hero section
+        ├── ServiceAreaMap.tsx   # Service area map
+        ├── ServicesSection.tsx  # Services showcase
+        └── USPSection.tsx       # Unique selling points
+```
+
+### Recommended Extensions (When Adding Features)
+```
 src/
-├── app/                   # Next.js App Router
-│   ├── (routes)/          # Route groups
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Home page
-├── components/            # Shared UI components
-│   ├── ui/                # Base components (shadcn/ui)
-│   └── common/            # Application-specific shared components
-├── features/              # Feature-based modules (RECOMMENDED)
-│   └── [feature]/
-│       ├── __tests__/     # Co-located tests
-│       ├── components/    # Feature components
-│       ├── hooks/         # Feature-specific hooks
-│       ├── api/           # API integration
-│       ├── schemas/       # Zod validation schemas
-│       ├── types/         # TypeScript types
-│       └── index.ts       # Public API
 ├── lib/                   # Core utilities and configurations
-│   ├── utils.ts           # Utility functions
+│   ├── utils.ts           # Utility functions (cn, etc.)
 │   ├── env.ts             # Environment validation
 │   └── constants.ts       # Application constants
 ├── hooks/                 # Shared custom hooks
-├── styles/                # Styling files
-└── types/                 # Shared TypeScript types
+├── types/                 # Shared TypeScript types
+└── features/              # Feature-based modules (for complex features)
+    └── [feature]/
+        ├── __tests__/     # Co-located tests
+        ├── components/    # Feature components
+        ├── hooks/         # Feature-specific hooks
+        ├── api/           # API integration
+        ├── schemas/       # Zod validation schemas
+        ├── types/         # TypeScript types
+        └── index.ts       # Public API
 ```
 
 ## 🎯 TypeScript Configuration (STRICT REQUIREMENTS)
 
-### MUST Follow These Compiler Options
+### Current TypeScript Configuration
+```json
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "plugins": [{ "name": "next" }],
+    "paths": { "@/*": ["./src/*"] }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
+}
+```
+
+### Recommended Strict Configuration (UPGRADE WHEN READY)
 ```json
 {
   "compilerOptions": {
     "target": "ES2022",
-    "lib": ["dom", "dom.iterable", "es6"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -186,25 +237,27 @@ src/
 
 ## 📦 Package Management & Dependencies
 
-### Essential Next.js 15 Dependencies
+### Current Project Dependencies
 ```json
 {
+  "name": "landing",
+  "version": "0.1.0",
+  "private": true,
   "dependencies": {
-    "next": "^15.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "typescript": "^5.0.0"
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "next": "15.4.5"
   },
   "devDependencies": {
+    "typescript": "^5",
     "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^8",
-    "eslint-config-next": "15.0.0",
-    "prettier": "^3.0.0",
-    "tailwindcss": "^3.4.0",
-    "postcss": "^8.4.0",
-    "autoprefixer": "^10.4.0"
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@tailwindcss/postcss": "^4",
+    "tailwindcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "15.4.5",
+    "@eslint/eslintrc": "^3"
   }
 }
 ```
@@ -576,20 +629,35 @@ export const env = envSchema.parse(process.env);
 - **Image optimization** with next/image
 - **Font optimization** with next/font
 
-### Bundle Optimization
+### Current Next.js Configuration
 ```typescript
-// next.config.js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+// next.config.ts
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+};
+
+export default nextConfig;
+```
+
+### Recommended Production Configuration (ADD WHEN READY)
+```typescript
+// next.config.ts
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
   experimental: {
     turbo: {
-      // Turbopack configuration
+      // Turbopack configuration for faster builds
     },
   },
   images: {
     formats: ['image/webp', 'image/avif'],
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   },
-  // Bundle analyzer
+  // Bundle optimization
   webpack: (config, { dev, isServer }) => {
     if (!dev && !isServer) {
       config.optimization.splitChunks.chunks = 'all';
@@ -598,14 +666,14 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
 ```
 
 ## 💅 Code Style & Quality
 
-### ESLint Configuration (MANDATORY)
+### Current ESLint Configuration
 ```javascript
-// eslint.config.js
+// eslint.config.mjs
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
@@ -619,6 +687,15 @@ const compat = new FlatCompat({
 
 const eslintConfig = [
   ...compat.extends("next/core-web-vitals", "next/typescript"),
+];
+
+export default eslintConfig;
+```
+
+### Recommended Strict Rules (ADD WHEN READY FOR STRICTER LINTING)
+```javascript
+const eslintConfig = [
+  ...compat.extends("next/core-web-vitals", "next/typescript"),
   {
     rules: {
       "@typescript-eslint/no-explicit-any": "error",
@@ -630,25 +707,36 @@ const eslintConfig = [
     },
   },
 ];
-
-export default eslintConfig;
 ```
 
 ## 📋 Development Commands
 
+### Current Scripts
 ```json
 {
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  }
+}
+```
+
+### Recommended Additional Scripts (ADD WHEN NEEDED)
+```json
+{
+  "scripts": {
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint --max-warnings 0",
     "lint:fix": "next lint --fix",
+    "type-check": "tsc --noEmit",
     "test": "vitest",
     "test:watch": "vitest --watch",
     "test:coverage": "vitest --coverage",
     "test:ui": "vitest --ui",
-    "type-check": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "validate": "npm run type-check && npm run lint && npm run test:coverage"
@@ -670,22 +758,32 @@ export default eslintConfig;
 10. **NEVER use `any` type** - Use proper typing or `unknown`
 11. **MUST pass ALL automated checks** - Before ANY merge
 
-## 📋 Pre-commit Checklist (MUST COMPLETE ALL)
+## 📋 Pre-commit Checklist
 
-- [ ] TypeScript compiles with ZERO errors (`npm run type-check`)
-- [ ] Tests written and passing with 80%+ coverage (`npm run test:coverage`)
-- [ ] ESLint passes with ZERO warnings (`npm run lint`)
-- [ ] Prettier formatting applied (`npm run format`)
-- [ ] All components have complete JSDoc documentation
-- [ ] Zod schemas validate ALL external data
-- [ ] ALL states handled (loading, error, empty, success)
-- [ ] Error boundaries implemented for features
+### Current Available Checks
+- [ ] TypeScript compiles with ZERO errors (`npm run build` or `tsc --noEmit`)
+- [ ] ESLint passes (`npm run lint`)
+- [ ] Build succeeds (`npm run build`)
+- [ ] Application runs correctly (`npm run dev`)
+- [ ] All components have proper TypeScript types
+- [ ] Component files under 200 lines
+- [ ] Server/Client components used appropriately
 - [ ] Accessibility requirements met (ARIA labels, keyboard nav)
 - [ ] No console.log statements in production code
+
+### When Testing is Added
+- [ ] Tests written and passing with 80%+ coverage (`npm run test:coverage`)
+- [ ] All components have complete JSDoc documentation
+- [ ] Error boundaries implemented for features
+
+### When Data Validation is Added
+- [ ] Zod schemas validate ALL external data
 - [ ] Environment variables validated with Zod
-- [ ] Component files under 200 lines
+- [ ] ALL states handled (loading, error, empty, success)
+
+### When Prettier is Added
+- [ ] Prettier formatting applied (`npm run format`)
 - [ ] No prop drilling beyond 2 levels
-- [ ] Server/Client components used appropriately
 
 ### FORBIDDEN Practices
 - **NEVER use `any` type** (except library declaration merging with comments)
@@ -701,6 +799,47 @@ export default eslintConfig;
 
 ---
 
-*This guide is optimized for Next.js 15 with React 19. Keep it updated as frameworks evolve.*
+*This guide is optimized for this specific Next.js 15 landing page with React 19 and Tailwind CSS v4.*
 *Focus on type safety, performance, and maintainability in all development decisions.*
+*Update this file as the project structure and dependencies evolve.*
 *Last updated: January 2025*
+
+## 🎨 Tailwind CSS v4 Integration
+
+### Current Configuration
+```javascript
+// postcss.config.mjs
+const config = {
+  plugins: ["@tailwindcss/postcss"],
+};
+
+export default config;
+```
+
+### Key Tailwind v4 Features
+- **Zero Configuration**: No `tailwind.config.js` needed by default
+- **CSS-first Configuration**: Configure via CSS custom properties
+- **Improved Performance**: Faster compilation and smaller bundles
+- **Modern CSS**: Uses CSS custom properties and modern CSS features
+- **Automatic Content Detection**: Scans source files automatically
+
+## 📱 Landing Page Components Structure
+
+### Current Components Overview
+- **Header.tsx**: Navigation and branding
+- **Hero.tsx**: Main hero section with CTA
+- **AboutSection.tsx**: Company/service information
+- **ServicesSection.tsx**: Service offerings showcase
+- **USPSection.tsx**: Unique selling propositions
+- **ServiceAreaMap.tsx**: Geographic service coverage
+- **CTASection.tsx**: Call-to-action section
+- **Footer.tsx**: Footer with contact info and links
+
+### Component Best Practices for Landing Pages
+- **Keep components focused**: Each component handles one section
+- **Use semantic HTML**: Proper heading hierarchy (h1 > h2 > h3)
+- **Optimize for SEO**: Include proper meta tags and structured data
+- **Mobile-first design**: Ensure responsive design across all components
+- **Performance first**: Optimize images, use Next.js Image component
+- **Accessibility**: Proper ARIA labels, keyboard navigation
+- **Convert to TypeScript**: Add proper types for all props and state

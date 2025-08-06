@@ -44,13 +44,13 @@ const USPSection = (): ReactElement => {
   ];
 
   return (
-    <section className="bg-[#EAF2F8] section-padding">
-      <div className="container mx-auto px-6 lg:px-12">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#163763] mb-4 font-heading">
+    <section className="section-padding" style={{ backgroundColor: 'var(--primary-blue-light)' }}>
+      <div className="container">
+        <div className="text-center" style={{ marginBottom: 'var(--space-2xl)' }}>
+          <h2 className="section-headline mb-4" style={{ color: 'var(--dark-navy)' }}>
             Why Choose Diesel Dudes?
           </h2>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">
+          <p className="body-large max-w-3xl mx-auto">
             We&apos;re not just mechanics – we&apos;re your trusted partners in keeping your fleet operational
           </p>
         </div>
@@ -59,15 +59,15 @@ const USPSection = (): ReactElement => {
           {usps.map((usp, index) => (
             <div
               key={index}
-              className="card-hover bg-white rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300"
+              className="feature-card"
             >
-              <div className="text-4xl mb-4 text-[#FF9F1C]">
+              <div className="text-4xl mb-4" style={{ color: 'var(--primary-blue)' }}>
                 {usp.icon}
               </div>
-              <h3 className="text-xl font-bold text-[#163763] mb-3 font-heading">
+              <h3 className="small-heading mb-3" style={{ color: 'var(--dark-navy)' }}>
                 {usp.title}
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="body-regular">
                 {usp.description}
               </p>
             </div>
@@ -75,23 +75,29 @@ const USPSection = (): ReactElement => {
         </div>
         
         {/* Additional Trust Indicators */}
-        <div className="mt-16 bg-white rounded-2xl p-8 shadow-sm">
+        <div 
+          className="rounded-2xl p-8 feature-card"
+          style={{ 
+            marginTop: 'var(--space-3xl)',
+            backgroundColor: 'var(--background-white)'
+          }}
+        >
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div className="flex flex-col items-center">
-              <div className="text-3xl font-bold text-[#FF9F1C] mb-2">15+</div>
-              <div className="text-sm text-gray-600 font-medium">Years Experience</div>
+              <div className="text-3xl font-bold mb-2" style={{ color: 'var(--primary-blue)' }}>15+</div>
+              <div className="body-small font-medium">Years Experience</div>
             </div>
             <div className="flex flex-col items-center">
-              <div className="text-3xl font-bold text-[#FF9F1C] mb-2">24/7</div>
-              <div className="text-sm text-gray-600 font-medium">Emergency Service</div>
+              <div className="text-3xl font-bold mb-2" style={{ color: 'var(--primary-blue)' }}>24/7</div>
+              <div className="body-small font-medium">Emergency Service</div>
             </div>
             <div className="flex flex-col items-center">
-              <div className="text-3xl font-bold text-[#FF9F1C] mb-2">100%</div>
-              <div className="text-sm text-gray-600 font-medium">Satisfaction Rate</div>
+              <div className="text-3xl font-bold mb-2" style={{ color: 'var(--primary-blue)' }}>100%</div>
+              <div className="body-small font-medium">Satisfaction Rate</div>
             </div>
             <div className="flex flex-col items-center">
-              <div className="text-3xl font-bold text-[#FF9F1C] mb-2">50+</div>
-              <div className="text-sm text-gray-600 font-medium">Mile Coverage</div>
+              <div className="text-3xl font-bold mb-2" style={{ color: 'var(--primary-blue)' }}>50+</div>
+              <div className="body-small font-medium">Mile Coverage</div>
             </div>
           </div>
         </div>

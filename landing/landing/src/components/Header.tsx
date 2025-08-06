@@ -14,39 +14,39 @@ const Header = (): ReactElement => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-sm border-b border-gray-100">
-      <div className="container mx-auto px-6 lg:px-12">
+    <header className="header fixed top-0 left-0 right-0 z-50">
+      <div className="container">
         <div className="flex items-center justify-between h-20">
           {/* Logo */}
           <div className="flex-shrink-0">
-            <div className="text-2xl font-bold text-[#163763] font-heading">
+            <div className="text-2xl font-bold text-[--dark-navy] h-8" style={{ color: 'var(--dark-navy)' }}>
               Diesel Dudes
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center space-x-8">
+          <nav className="hidden lg:flex items-center gap-8">
             <button
               onClick={() => scrollToSection('services')}
-              className="text-[#163763] hover:text-[#2D5E8A] font-semibold text-lg transition-colors"
+              className="header-nav-link"
             >
               Services
             </button>
             <button
               onClick={() => scrollToSection('areas')}
-              className="text-[#163763] hover:text-[#2D5E8A] font-semibold text-lg transition-colors"
+              className="header-nav-link"
             >
               Service Areas
             </button>
             <button
               onClick={() => scrollToSection('about')}
-              className="text-[#163763] hover:text-[#2D5E8A] font-semibold text-lg transition-colors"
+              className="header-nav-link"
             >
               Company
             </button>
             <button
               onClick={() => scrollToSection('resources')}
-              className="text-[#163763] hover:text-[#2D5E8A] font-semibold text-lg transition-colors"
+              className="header-nav-link"
             >
               Resources
             </button>
@@ -56,7 +56,7 @@ const Header = (): ReactElement => {
           <div className="hidden lg:block">
             <a
               href="tel:8032306390"
-              className="button-primary px-8 py-3 text-lg font-bold rounded-full shadow-lg hover:shadow-xl"
+              className="button-primary"
             >
               Call Now
             </a>
@@ -65,26 +65,37 @@ const Header = (): ReactElement => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg bg-[#F9FBFC] hover:bg-[#EAF2F8] transition-colors"
+            className="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg transition-colors"
+            style={{ 
+              backgroundColor: 'var(--off-white)',
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--light-gray)'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--off-white)'}
           >
             <div className="space-y-1">
-              <div className={`w-5 h-0.5 bg-[#163763] transition-transform ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></div>
-              <div className={`w-5 h-0.5 bg-[#163763] transition-opacity ${isMobileMenuOpen ? 'opacity-0' : ''}`}></div>
-              <div className={`w-5 h-0.5 bg-[#163763] transition-transform ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></div>
+              <div className={`w-5 h-0.5 transition-transform ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`} style={{ backgroundColor: 'var(--dark-navy)' }}></div>
+              <div className={`w-5 h-0.5 transition-opacity ${isMobileMenuOpen ? 'opacity-0' : ''}`} style={{ backgroundColor: 'var(--dark-navy)' }}></div>
+              <div className={`w-5 h-0.5 transition-transform ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`} style={{ backgroundColor: 'var(--dark-navy)' }}></div>
             </div>
           </button>
         </div>
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="lg:hidden py-4 border-t border-gray-100">
+          <div className="lg:hidden py-4 border-t" style={{ borderColor: 'var(--light-gray)' }}>
             <nav className="space-y-4">
               <button
                 onClick={() => {
                   scrollToSection('services');
                   setIsMobileMenuOpen(false);
                 }}
-                className="block w-full text-left text-[#163763] hover:text-[#2D5E8A] font-semibold py-2 transition-colors"
+                className="block w-full text-left py-2 transition-colors"
+                style={{ 
+                  color: 'var(--dark-navy)',
+                  fontWeight: '500'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary-blue)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'var(--dark-navy)'}
               >
                 Services
               </button>
@@ -93,7 +104,13 @@ const Header = (): ReactElement => {
                   scrollToSection('areas');
                   setIsMobileMenuOpen(false);
                 }}
-                className="block w-full text-left text-[#163763] hover:text-[#2D5E8A] font-semibold py-2 transition-colors"
+                className="block w-full text-left py-2 transition-colors"
+                style={{ 
+                  color: 'var(--dark-navy)',
+                  fontWeight: '500'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary-blue)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'var(--dark-navy)'}
               >
                 Service Areas
               </button>
@@ -102,7 +119,13 @@ const Header = (): ReactElement => {
                   scrollToSection('about');
                   setIsMobileMenuOpen(false);
                 }}
-                className="block w-full text-left text-[#163763] hover:text-[#2D5E8A] font-semibold py-2 transition-colors"
+                className="block w-full text-left py-2 transition-colors"
+                style={{ 
+                  color: 'var(--dark-navy)',
+                  fontWeight: '500'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary-blue)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'var(--dark-navy)'}
               >
                 Company
               </button>
@@ -111,13 +134,19 @@ const Header = (): ReactElement => {
                   scrollToSection('resources');
                   setIsMobileMenuOpen(false);
                 }}
-                className="block w-full text-left text-[#163763] hover:text-[#2D5E8A] font-semibold py-2 transition-colors"
+                className="block w-full text-left py-2 transition-colors"
+                style={{ 
+                  color: 'var(--dark-navy)',
+                  fontWeight: '500'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.color = 'var(--primary-blue)'}
+                onMouseLeave={(e) => e.currentTarget.style.color = 'var(--dark-navy)'}
               >
                 Resources
               </button>
               <a
                 href="tel:8032306390"
-                className="button-primary block text-center px-6 py-3 mt-4 rounded-full font-bold"
+                className="button-primary block text-center mt-4"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
                 Call Now

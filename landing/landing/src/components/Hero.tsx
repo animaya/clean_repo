@@ -12,7 +12,9 @@ const Hero = (): ReactElement => {
   };
 
   return (
-    <section className="relative min-h-[460px] bg-gradient-to-r from-[#163763] to-[#2D5E8A] text-white overflow-hidden">
+    <section className="hero-section relative overflow-hidden text-white" style={{
+      background: `linear-gradient(135deg, var(--dark-navy) 0%, var(--primary-blue) 100%)`
+    }}>
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -21,30 +23,42 @@ const Hero = (): ReactElement => {
         }}></div>
       </div>
       
-      <div className="relative z-10 container mx-auto px-6 lg:px-12 py-28 text-center">
-        <div className="max-w-4xl mx-auto">
+      <div className="relative z-10 container text-center flex items-center justify-center min-h-[600px]">
+        <div className="max-w-4xl">
           {/* Main Title */}
-          <h1 className="text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-6 font-heading">
+          <h1 className="hero-headline mb-6 text-white">
             <span className="block">MOBILE DIESEL MECHANIC</span>
-            <span className="block text-[#FF9F1C]">CHARLOTTE &amp; COLUMBIA</span>
+            <span className="block" style={{ color: 'var(--warning-orange)' }}>CHARLOTTE &amp; COLUMBIA</span>
           </h1>
           
           {/* Subtitle */}
-          <p className="text-xl lg:text-2xl font-medium mb-8 text-gray-100 max-w-3xl mx-auto">
+          <p className="body-large mb-8 text-gray-100 max-w-3xl mx-auto">
             24/7 Emergency Service | On-Site Repairs | Fast Response
           </p>
           
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 max-w-lg mx-auto">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 max-w-lg mx-auto" style={{ marginTop: 'var(--space-xl)' }}>
             <a
               href="tel:8032306390"
-              className="button-primary w-full sm:w-auto px-8 py-4 text-lg font-bold rounded-full shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-1"
+              className="button-primary w-full sm:w-auto text-center"
             >
               Call Now for Service
             </a>
             <button
               onClick={scrollToContact}
-              className="button-secondary w-full sm:w-auto px-8 py-4 text-lg font-bold rounded-full border-2 border-white text-white bg-transparent hover:bg-white hover:text-[#163763] transition-all duration-300 hover:-translate-y-1"
+              className="button-secondary w-full sm:w-auto text-white bg-transparent border-2 border-white hover:bg-white"
+              style={{
+                borderColor: 'white',
+                color: 'white'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'white';
+                e.currentTarget.style.color = 'var(--dark-navy)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.color = 'white';
+              }}
             >
               Get a Quote
             </button>
@@ -53,15 +67,15 @@ const Hero = (): ReactElement => {
           {/* Trust Indicators */}
           <div className="mt-12 flex flex-wrap justify-center items-center gap-8 text-sm font-semibold text-gray-200">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-[#5FA85B] rounded-full"></div>
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--success-green)' }}></div>
               <span>Licensed &amp; Insured</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-[#5FA85B] rounded-full"></div>
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--success-green)' }}></div>
               <span>15+ Years Experience</span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-[#5FA85B] rounded-full"></div>
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--success-green)' }}></div>
               <span>All Makes &amp; Models</span>
             </div>
           </div>
@@ -69,8 +83,9 @@ const Hero = (): ReactElement => {
       </div>
       
       {/* Bottom Curve */}
-      <div className="absolute bottom-0 left-0 right-0 h-9 bg-white" 
+      <div className="absolute bottom-0 left-0 right-0 h-9" 
            style={{
+             backgroundColor: 'var(--background-white)',
              clipPath: 'ellipse(100% 100% at 50% 100%)'
            }}>
       </div>

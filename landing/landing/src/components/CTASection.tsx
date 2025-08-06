@@ -11,10 +11,15 @@ const CTASection = (): ReactElement => {
   };
 
   return (
-    <section id="contact" className="section-padding bg-white">
-      <div className="container mx-auto px-6 lg:px-12">
+    <section id="contact" className="section-padding" style={{ backgroundColor: 'var(--background-white)' }}>
+      <div className="container">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-[#163763] rounded-3xl p-12 text-center text-white shadow-2xl relative overflow-hidden">
+          <div 
+            className="rounded-3xl p-12 text-center text-white shadow-2xl relative overflow-hidden"
+            style={{ 
+              background: `linear-gradient(135deg, var(--dark-navy) 0%, var(--primary-blue) 100%)`
+            }}
+          >
             {/* Background Pattern */}
             <div className="absolute inset-0 opacity-10">
               <div className="absolute inset-0" style={{
@@ -24,11 +29,11 @@ const CTASection = (): ReactElement => {
             </div>
             
             <div className="relative z-10">
-              <h2 className="text-3xl lg:text-4xl font-extrabold mb-4 font-heading">
+              <h2 className="section-headline mb-4 text-white">
                 Ready For Fast, Reliable Diesel Repair?
               </h2>
               
-              <p className="text-xl lg:text-2xl font-medium mb-8 text-gray-100">
+              <p className="body-large mb-8 text-gray-100">
                 Contact Diesel Dudes Today!
               </p>
               
@@ -36,13 +41,25 @@ const CTASection = (): ReactElement => {
               <div className="flex flex-col sm:flex-row items-center justify-center gap-5 max-w-lg mx-auto mb-8">
                 <a
                   href="tel:8032306390"
-                  className="button-primary w-full sm:w-auto px-8 py-4 text-lg font-bold rounded-full shadow-xl hover:shadow-2xl transform transition-all duration-300 hover:-translate-y-1"
+                  className="button-primary w-full sm:w-auto text-center"
                 >
                   Call Now For Service
                 </a>
                 <button
                   onClick={scrollToContact}
-                  className="button-secondary w-full sm:w-auto px-8 py-4 text-lg font-bold rounded-full border-2 border-white text-white bg-transparent hover:bg-white hover:text-[#163763] transition-all duration-300 hover:-translate-y-1"
+                  className="button-secondary w-full sm:w-auto text-white bg-transparent border-2 border-white"
+                  style={{
+                    borderColor: 'white',
+                    color: 'white'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'white';
+                    e.currentTarget.style.color = 'var(--dark-navy)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.color = 'white';
+                  }}
                 >
                   Request On-Site Services
                 </button>
@@ -54,7 +71,7 @@ const CTASection = (): ReactElement => {
                   <div>
                     <div className="text-2xl mb-2">📞</div>
                     <div className="font-bold text-lg mb-1">Call Us</div>
-                    <a href="tel:8032306390" className="text-[#FF9F1C] hover:underline font-semibold">
+                    <a href="tel:8032306390" className="font-semibold hover:underline" style={{ color: 'var(--warning-orange)' }}>
                       (803) 230-6390
                     </a>
                   </div>
@@ -76,9 +93,15 @@ const CTASection = (): ReactElement => {
               </div>
               
               {/* Urgency Indicator */}
-              <div className="mt-8 inline-flex items-center gap-3 bg-[#FF9F1C]/20 border border-[#FF9F1C]/30 rounded-full px-6 py-3">
-                <div className="w-3 h-3 bg-[#FF9F1C] rounded-full animate-pulse"></div>
-                <span className="text-[#FF9F1C] font-bold text-sm">
+              <div 
+                className="mt-8 inline-flex items-center gap-3 rounded-full px-6 py-3 border"
+                style={{
+                  backgroundColor: 'rgba(237, 137, 54, 0.2)',
+                  borderColor: 'rgba(237, 137, 54, 0.3)'
+                }}
+              >
+                <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'var(--warning-orange)' }}></div>
+                <span className="font-bold text-sm" style={{ color: 'var(--warning-orange)' }}>
                   EMERGENCY SERVICE AVAILABLE NOW
                 </span>
               </div>

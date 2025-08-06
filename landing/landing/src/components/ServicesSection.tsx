@@ -61,30 +61,30 @@ const ServicesSection = (): ReactElement => {
   };
 
   return (
-    <section id="services" className="bg-[#F9FBFC] section-padding">
-      <div className="container mx-auto px-6 lg:px-12">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl lg:text-4xl font-bold text-[#163763] mb-4 font-heading">
+    <section id="services" className="section-padding" style={{ backgroundColor: 'var(--off-white)' }}>
+      <div className="container">
+        <div className="text-center" style={{ marginBottom: 'var(--space-2xl)' }}>
+          <h2 className="section-headline mb-4" style={{ color: 'var(--dark-navy)' }}>
             Our Services
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="body-large max-w-2xl mx-auto">
             Comprehensive diesel repair services delivered directly to your location
           </p>
         </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" style={{ marginBottom: 'var(--space-2xl)' }}>
           {services.map((service, index) => (
             <div
               key={index}
-              className="card-hover bg-white rounded-3xl p-8 shadow-lg hover:shadow-xl transition-all duration-300"
+              className="feature-card"
             >
-              <div className="text-4xl mb-4 text-[#FF9F1C]">
+              <div className="text-4xl mb-4" style={{ color: 'var(--warning-orange)' }}>
                 {service.icon}
               </div>
-              <h3 className="text-xl font-bold text-[#163763] mb-3 font-heading">
+              <h3 className="small-heading mb-3" style={{ color: 'var(--dark-navy)' }}>
                 {service.title}
               </h3>
-              <p className="text-gray-600 leading-relaxed">
+              <p className="body-regular">
                 {service.description}
               </p>
             </div>
@@ -94,7 +94,7 @@ const ServicesSection = (): ReactElement => {
         <div className="text-center">
           <button
             onClick={scrollToServices}
-            className="button-primary px-8 py-4 text-lg font-bold rounded-full shadow-lg hover:shadow-xl"
+            className="button-primary"
           >
             Explore All Services
           </button>
