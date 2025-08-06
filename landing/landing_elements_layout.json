@@ -1,0 +1,486 @@
+{
+  "layout": {
+    "header": {
+      "type": "fixed",
+      "zIndex": 100,
+      "position": "top",
+      "width": "100vw",
+      "height": "88px",
+      "background": "#FFFFFF",
+      "boxShadow": "0 2px 8px rgba(22,55,99,0.06)",
+      "padding": "0 48px",
+      "display": "flex",
+      "alignItems": "center",
+      "justifyContent": "space-between",
+      "children": [
+        {
+          "type": "logo",
+          "width": "168px",
+          "height": "56px",
+          "alignSelf": "center",
+          "marginRight": "32px"
+        },
+        {
+          "type": "nav",
+          "display": "flex",
+          "gap": "32px",
+          "fontSize": "18px",
+          "fontWeight": 600,
+          "color": "#163763",
+          "links": [
+            {"text": "Services", "href": "#services"},
+            {"text": "Service Areas", "href": "#areas"},
+            {"text": "Company", "href": "#about"},
+            {"text": "Resources", "href": "#resources"}
+          ]
+        },
+        {
+          "type": "cta_button",
+          "text": "Call Now",
+          "fontSize": "18px",
+          "fontWeight": 700,
+          "width": "164px",
+          "height": "48px",
+          "background": "#FF9F1C",
+          "color": "#FFF",
+          "borderRadius": "32px",
+          "boxShadow": "0 2px 8px rgba(255,159,28,0.08)"
+        }
+      ]
+    },
+    "hero": {
+      "width": "100vw",
+      "minHeight": "460px",
+      "background": "linear-gradient(90deg, #163763 0%, #2D5E8A 100%)",
+      "color": "#FFFFFF",
+      "display": "flex",
+      "flexDirection": "column",
+      "alignItems": "center",
+      "justifyContent": "center",
+      "padding": "112px 0 72px 0",
+      "borderBottomLeftRadius": "36px",
+      "borderBottomRightRadius": "36px",
+      "children": [
+        {
+          "type": "title",
+          "text": "MOBILE DIESEL MECHANIC\nCHARLOTTE & COLUMBIA",
+          "fontSize": "46px",
+          "fontWeight": 800,
+          "textAlign": "center",
+          "lineHeight": "56px",
+          "marginBottom": "18px"
+        },
+        {
+          "type": "subtitle",
+          "text": "24/7 Emergency Service | On-Site Repairs | Fast Response",
+          "fontSize": "24px",
+          "fontWeight": 500,
+          "marginBottom": "28px",
+          "textAlign": "center"
+        },
+        {
+          "type": "cta_group",
+          "display": "flex",
+          "gap": "20px",
+          "children": [
+            {
+              "type": "button",
+              "text": "Call Now for Service",
+              "width": "210px",
+              "height": "56px",
+              "fontSize": "20px",
+              "background": "#FF9F1C",
+              "borderRadius": "32px",
+              "color": "#FFF",
+              "fontWeight": 700
+            },
+            {
+              "type": "button",
+              "text": "Get a Quote",
+              "width": "170px",
+              "height": "56px",
+              "fontSize": "20px",
+              "background": "#F9FBFC",
+              "borderRadius": "32px",
+              "color": "#163763",
+              "border": "2px solid #163763",
+              "fontWeight": 700
+            }
+          ]
+        }
+      ]
+    },
+    "services_section": {
+      "id": "services",
+      "width": "100vw",
+      "padding": "64px 0",
+      "background": "#F9FBFC",
+      "display": "flex",
+      "flexDirection": "column",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "title",
+          "text": "Our Services",
+          "fontSize": "36px",
+          "fontWeight": 700,
+          "color": "#163763",
+          "marginBottom": "36px"
+        },
+        {
+          "type": "services_grid",
+          "display": "grid",
+          "gridTemplateColumns": "repeat(4, 1fr)",
+          "gap": "32px",
+          "maxWidth": "1240px",
+          "width": "92vw",
+          "children": [
+            {
+              "type": "service_card",
+              "icon": "tires",
+              "title": "Tires",
+              "desc": "Mobile tire repairs, replacements, and balancing.",
+              "cardStyle": {
+                "minHeight": "188px",
+                "padding": "32px 28px",
+                "background": "#FFF",
+                "borderRadius": "24px",
+                "boxShadow": "0 4px 16px rgba(22, 55, 99, 0.05)",
+                "display": "flex",
+                "flexDirection": "column",
+                "alignItems": "flex-start",
+                "gap": "14px"
+              }
+            },
+            {
+              "type": "service_card",
+              "icon": "brakes",
+              "title": "Brakes",
+              "desc": "Full brake inspections, replacements, and adjustments.",
+              "cardStyle": { /* same as above */ }
+            },
+            {
+              "type": "service_card",
+              "icon": "fuel",
+              "title": "Fuel Systems",
+              "desc": "Fuel line, pump repairs, and emergency fuel delivery.",
+              "cardStyle": { /* same as above */ }
+            },
+            {
+              "type": "service_card",
+              "icon": "electrical",
+              "title": "Electrical",
+              "desc": "Diagnostics and electrical system repairs.",
+              "cardStyle": { /* same as above */ }
+            },
+            {
+              "type": "service_card",
+              "icon": "batteries",
+              "title": "Batteries",
+              "desc": "Mobile battery replacements and charging solutions.",
+              "cardStyle": { /* same as above */ }
+            },
+            {
+              "type": "service_card",
+              "icon": "airbags",
+              "title": "Airbags",
+              "desc": "Diagnose and repair air suspension issues.",
+              "cardStyle": { /* same as above */ }
+            },
+            {
+              "type": "service_card",
+              "icon": "wheel_seals",
+              "title": "Wheel Seals",
+              "desc": "Prevent leaks and ensure smooth operation.",
+              "cardStyle": { /* same as above */ }
+            },
+            {
+              "type": "service_card",
+              "icon": "alternators",
+              "title": "Alternators & Starters",
+              "desc": "On-site replacements to keep your truck moving.",
+              "cardStyle": { /* same as above */ }
+            }
+          ]
+        },
+        {
+          "type": "button",
+          "text": "Explore All Services",
+          "marginTop": "36px",
+          "width": "210px",
+          "height": "56px",
+          "fontSize": "20px",
+          "background": "#FF9F1C",
+          "borderRadius": "32px",
+          "color": "#FFF",
+          "fontWeight": 700
+        }
+      ]
+    },
+    "service_area_map": {
+      "id": "areas",
+      "background": "#FFFFFF",
+      "padding": "64px 0",
+      "display": "flex",
+      "flexDirection": "column",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "title",
+          "text": "Service Area Map",
+          "fontSize": "32px",
+          "fontWeight": 700,
+          "marginBottom": "30px"
+        },
+        {
+          "type": "image",
+          "src": "map-illustration.png",
+          "width": "620px",
+          "height": "340px",
+          "borderRadius": "20px",
+          "marginBottom": "28px"
+        },
+        {
+          "type": "flex_row",
+          "gap": "40px",
+          "children": [
+            {
+              "type": "city_list",
+              "title": "North Carolina",
+              "fontWeight": 600,
+              "fontSize": "22px",
+              "marginBottom": "12px",
+              "cities": [
+                "Charlotte", "Huntersville", "Concord", "Monroe", "Gastonia",
+                "Indian Land", "Matthews", "Cornelius", "Mooresville",
+                "Kannapolis", "Harrisburg"
+              ],
+              "fontSizeCity": "18px"
+            },
+            {
+              "type": "city_list",
+              "title": "South Carolina",
+              "fontWeight": 600,
+              "fontSize": "22px",
+              "marginBottom": "12px",
+              "cities": [
+                "Columbia", "Rock Hill", "Fort Mill", "Lexington",
+                "West Columbia", "Irmo", "Blythewood", "York", "Chester",
+                "Winnsboro", "Gaffney"
+              ],
+              "fontSizeCity": "18px"
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "text": "Plus surrounding areas within 50 miles of Charlotte & Columbia",
+          "fontSize": "16px",
+          "color": "#345E8D",
+          "marginTop": "18px",
+          "fontStyle": "italic"
+        }
+      ]
+    },
+    "usp_section": {
+      "background": "#EAF2F8",
+      "padding": "64px 0",
+      "display": "flex",
+      "flexDirection": "column",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "title",
+          "text": "Why Choose Diesel Dudes?",
+          "fontSize": "32px",
+          "fontWeight": 700,
+          "color": "#163763",
+          "marginBottom": "36px"
+        },
+        {
+          "type": "usp_grid",
+          "display": "grid",
+          "gridTemplateColumns": "repeat(3, 1fr)",
+          "gap": "30px",
+          "maxWidth": "1080px",
+          "width": "92vw",
+          "children": [
+            {"icon": "quality", "title": "Quality of Work", "desc": "Expert repairs by seasoned diesel mechanics."},
+            {"icon": "attention", "title": "Attention to Detail", "desc": "Thorough inspections and meticulous work."},
+            {"icon": "transparency", "title": "Transparency & Honesty", "desc": "No hidden fees, just upfront pricing and clear communication."},
+            {"icon": "speed", "title": "Speed & Efficiency", "desc": "We work fast to get your fleet back on the road."},
+            {"icon": "responsiveness", "title": "Always Responsive", "desc": "We're always available and keep you updated every step of the way."},
+            {"icon": "satisfaction", "title": "Satisfaction Guaranteed", "desc": "We stand behind our work with a comprehensive warranty and your complete satisfaction is our priority."}
+          ]
+        }
+      ]
+    },
+    "about_section": {
+      "id": "about",
+      "background": "#FFFFFF",
+      "padding": "56px 0",
+      "display": "flex",
+      "flexDirection": "column",
+      "alignItems": "center",
+      "maxWidth": "920px",
+      "margin": "0 auto",
+      "children": [
+        {
+          "type": "title",
+          "text": "Diesel Mechanics With a Fleet Manager's Perspective",
+          "fontSize": "28px",
+          "fontWeight": 700,
+          "marginBottom": "22px"
+        },
+        {
+          "type": "paragraph",
+          "text": "At Diesel Dudes, we understand the importance of keeping your fleet running smoothly. Our leadership team also operates a trucking company, and our lead mechanic has over 15 years of experience as a fleet manager, specializing in diesel trucks and heavy equipment. We're not just mechanics – we're partners in your business's success.",
+          "fontSize": "18px",
+          "lineHeight": "1.7",
+          "marginBottom": "12px"
+        },
+        {
+          "type": "paragraph",
+          "text": "With locations serving both the Charlotte, NC, and Columbia, SC markets, Diesel Dudes offers unparalleled service, quick response times, and comprehensive repairs for all diesel makes and models.",
+          "fontSize": "18px",
+          "lineHeight": "1.7"
+        }
+      ]
+    },
+    "cta_section": {
+      "background": "#163763",
+      "color": "#FFF",
+      "padding": "60px 0",
+      "borderRadius": "24px",
+      "display": "flex",
+      "flexDirection": "column",
+      "alignItems": "center",
+      "width": "86vw",
+      "maxWidth": "1040px",
+      "margin": "52px auto 0 auto",
+      "children": [
+        {
+          "type": "title",
+          "text": "Ready For Fast, Reliable Diesel Repair?",
+          "fontSize": "30px",
+          "fontWeight": 800,
+          "marginBottom": "12px"
+        },
+        {
+          "type": "subtitle",
+          "text": "Contact Diesel Dudes Today!",
+          "fontSize": "22px",
+          "marginBottom": "28px"
+        },
+        {
+          "type": "cta_group",
+          "display": "flex",
+          "gap": "18px",
+          "children": [
+            {
+              "type": "button",
+              "text": "Call Now For Service",
+              "width": "210px",
+              "height": "56px",
+              "fontSize": "20px",
+              "background": "#FF9F1C",
+              "borderRadius": "32px",
+              "color": "#FFF",
+              "fontWeight": 700
+            },
+            {
+              "type": "button",
+              "text": "Request On-Site Services",
+              "width": "210px",
+              "height": "56px",
+              "fontSize": "20px",
+              "background": "#F9FBFC",
+              "borderRadius": "32px",
+              "color": "#163763",
+              "border": "2px solid #FFF",
+              "fontWeight": 700
+            }
+          ]
+        }
+      ]
+    },
+    "footer": {
+      "background": "#232F3E",
+      "color": "#FFF",
+      "padding": "44px 0 18px 0",
+      "width": "100vw",
+      "display": "flex",
+      "flexDirection": "column",
+      "alignItems": "center",
+      "children": [
+        {
+          "type": "links_grid",
+          "display": "grid",
+          "gridTemplateColumns": "repeat(4, 1fr)",
+          "gap": "48px",
+          "width": "1100px",
+          "children": [
+            {
+              "type": "links_column",
+              "title": "Services",
+              "fontWeight": 700,
+              "fontSize": "18px",
+              "links": [
+                {"text": "Tire Services", "href": "/services/mobile-tire-services"},
+                {"text": "Brake Repairs", "href": "/services/mobile-brake-repairs"},
+                {"text": "Fuel Systems", "href": "/services/fuel-system-services"},
+                {"text": "Electrical", "href": "/services/mobile-electrical-repairs"}
+              ]
+            },
+            {
+              "type": "links_column",
+              "title": "Company",
+              "fontWeight": 700,
+              "fontSize": "18px",
+              "links": [
+                {"text": "About Us", "href": "/about"},
+                {"text": "Blog & Tips", "href": "/blog"},
+                {"text": "Contact", "href": "/contact"}
+              ]
+            },
+            {
+              "type": "links_column",
+              "title": "Resources",
+              "fontWeight": 700,
+              "fontSize": "18px",
+              "links": [
+                {"text": "Emergency Service", "href": "/services/emergency-roadside-assistance"},
+                {"text": "I-77 Breakdown Guide", "href": "/i77-breakdown-guide"},
+                {"text": "Common Problems", "href": "/common-problems"}
+              ]
+            },
+            {
+              "type": "contact_column",
+              "title": "Contact",
+              "fontWeight": 700,
+              "fontSize": "18px",
+              "phone": "(803) 230-6390"
+            }
+          ]
+        },
+        {
+          "type": "bottomRow",
+          "marginTop": "32px",
+          "width": "94vw",
+          "display": "flex",
+          "flexDirection": "row",
+          "justifyContent": "center",
+          "alignItems": "center",
+          "fontSize": "16px",
+          "color": "#B9D0EB",
+          "text": "© 2025 Diesel Dudes. All rights reserved. Emergency Roadside Assistance & On-Site Diesel Repairs. Serving All Makes and Models | Call Now for Fast, Reliable Service.",
+          "gap": "18px",
+          "links": [
+            {"text": "Terms of Service", "href": "/terms-of-service"},
+            {"text": "Privacy Policy", "href": "/privacy-policy"}
+          ]
+        }
+      ]
+    }
+  }
+}
