@@ -12,82 +12,77 @@ const Hero = (): ReactElement => {
   };
 
   return (
-    <section className="hero-section relative overflow-hidden text-white" style={{
-      background: `linear-gradient(135deg, var(--dark-navy) 0%, var(--primary-blue) 100%)`
-    }}>
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `url("data:image/svg+xml,%3csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3e%3cg fill='none' fill-rule='evenodd'%3e%3cg fill='%23ffffff' fill-opacity='0.1'%3e%3ccircle cx='30' cy='30' r='2'/%3e%3c/g%3e%3c/g%3e%3c/svg%3e")`,
-          backgroundRepeat: 'repeat'
-        }}></div>
-      </div>
+    <section className="relative min-h-screen overflow-hidden text-white flex items-center justify-center">
+      {/* Background Image with Dark Overlay */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: `url('/hero-background.webp')`,
+          filter: 'brightness(0.4)'
+        }}
+      />
       
-      <div className="relative z-10 container text-center flex items-center justify-center min-h-[600px]">
-        <div className="max-w-4xl">
-          {/* Main Title */}
-          <h1 className="hero-headline mb-6 text-white">
-            <span className="block">MOBILE DIESEL MECHANIC</span>
-            <span className="block" style={{ color: 'var(--warning-orange)' }}>CHARLOTTE &amp; COLUMBIA</span>
+      {/* Dark Gradient Overlay for Better Text Readability */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/50" />
+      
+      {/* Content Container */}
+      <div className="relative z-10 container text-center px-6 lg:px-12">
+        <div className="max-w-5xl mx-auto">
+          {/* Main Title - Exact Match to Screenshot */}
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 tracking-tight leading-none">
+            <span className="block text-white drop-shadow-lg">MOBILE DIESEL MECHANIC</span>
+            <span className="block text-white drop-shadow-lg">CHARLOTTE & COLUMBIA</span>
           </h1>
           
-          {/* Subtitle */}
-          <p className="body-large mb-8 text-gray-100 max-w-3xl mx-auto">
-            24/7 Emergency Service | On-Site Repairs | Fast Response
-          </p>
+          {/* Subtitle with Underline */}
+          <div className="mb-8 space-y-2">
+            <p className="text-xl md:text-2xl text-white drop-shadow-md">
+              <span className="underline decoration-2 underline-offset-4">Emergency Roadside Assistance</span> & On-Site Diesel Repairs
+            </p>
+            <p className="text-lg md:text-xl text-white/90 drop-shadow-md">
+              Serving All Makes and Models | Call Now for Fast, Reliable Service.
+            </p>
+          </div>
           
-          {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 max-w-lg mx-auto" style={{ marginTop: 'var(--space-xl)' }}>
+          {/* CTA Buttons - Exact Match to Screenshot */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
             <a
               href="tel:8032306390"
-              className="button-primary w-full sm:w-auto text-center"
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-white bg-orange-500 hover:bg-orange-600 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 min-w-[280px]"
+              style={{
+                backgroundColor: '#FF6B35'
+              }}
             >
-              Call Now for Service
+              <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+              </svg>
+              CALL NOW FOR SERVICE
             </a>
             <button
               onClick={scrollToContact}
-              className="button-secondary w-full sm:w-auto text-white bg-transparent border-2 border-white hover:bg-white"
-              style={{
-                borderColor: 'white',
-                color: 'white'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = 'white';
-                e.currentTarget.style.color = 'var(--dark-navy)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.color = 'white';
-              }}
+              className="inline-flex items-center justify-center px-8 py-4 text-lg font-bold text-black bg-white hover:bg-gray-100 rounded-full transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 min-w-[200px]"
             >
-              Get a Quote
+              GET A QUOTE
             </button>
-          </div>
-          
-          {/* Trust Indicators */}
-          <div className="mt-12 flex flex-wrap justify-center items-center gap-8 text-sm font-semibold text-gray-200">
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--success-green)' }}></div>
-              <span>Licensed &amp; Insured</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--success-green)' }}></div>
-              <span>15+ Years Experience</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: 'var(--success-green)' }}></div>
-              <span>All Makes &amp; Models</span>
-            </div>
           </div>
         </div>
       </div>
       
-      {/* Bottom Curve */}
-      <div className="absolute bottom-0 left-0 right-0 h-9" 
-           style={{
-             backgroundColor: 'var(--background-white)',
-             clipPath: 'ellipse(100% 100% at 50% 100%)'
-           }}>
+      {/* Scroll Down Arrow */}
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+        <svg 
+          className="w-8 h-8 text-white opacity-80" 
+          fill="none" 
+          stroke="currentColor" 
+          viewBox="0 0 24 24"
+        >
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={3} 
+            d="M19 14l-7 7m0 0l-7-7m7 7V3" 
+          />
+        </svg>
       </div>
     </section>
   );

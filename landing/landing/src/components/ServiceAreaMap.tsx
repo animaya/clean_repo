@@ -2,99 +2,133 @@
 
 import { ReactElement } from 'react';
 
-interface ServiceArea {
-  state: string;
-  cities: string[];
-}
-
 
 const ServiceAreaMap = (): ReactElement => {
-  const serviceAreas: ServiceArea[] = [
-    {
-      state: "North Carolina",
-      cities: [
-        "Charlotte", "Huntersville", "Concord", "Monroe", "Gastonia",
-        "Indian Land", "Matthews", "Cornelius", "Mooresville",
-        "Kannapolis", "Harrisburg"
-      ]
-    },
-    {
-      state: "South Carolina", 
-      cities: [
-        "Columbia", "Rock Hill", "Fort Mill", "Lexington",
-        "West Columbia", "Irmo", "Blythewood", "York", "Chester",
-        "Winnsboro", "Gaffney"
-      ]
-    }
+  // North Carolina cities
+  const ncCities = [
+    "Charlotte", "Huntersville", "Concord", "Monroe",
+    "Gastonia", "Indian Land", "Matthews", "Cornelius",
+    "Mooresville", "Statesville", "Kannapolis", "Harrisburg"
+  ];
+
+  // South Carolina cities  
+  const scCities = [
+    "Columbia", "Rock Hill", "Fort Mill", "Lexington",
+    "West Columbia", "Irmo", "Blythewood", "York",
+    "Chester", "Winnsboro", "Gaffney", "Spartanburg"
   ];
 
   return (
-    <section id="areas" className="section-padding" style={{ backgroundColor: 'var(--background-white)' }}>
+    <section id="areas" className="section-padding" style={{ backgroundColor: 'var(--off-white)' }}>
       <div className="container">
-        <div className="text-center" style={{ marginBottom: 'var(--space-2xl)' }}>
-          <h2 className="section-headline mb-6" style={{ color: 'var(--dark-navy)' }}>
-            Service Area Map
+        {/* Header */}
+        <div className="text-center mb-12">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: 'var(--dark-navy)' }}>
+            SERVICE AREA MAP
           </h2>
+          <p className="text-lg md:text-xl text-gray-600">
+            24/7 Mobile Diesel Repair Services Along the I-77 Corridor
+          </p>
         </div>
         
-        {/* Map Placeholder */}
-        <div className="max-w-3xl mx-auto" style={{ marginBottom: 'var(--space-2xl)' }}>
-          <div 
-            className="rounded-3xl p-12 text-center shadow-lg"
-            style={{ 
-              background: `linear-gradient(135deg, var(--primary-blue-light) 0%, var(--off-white) 100%)`
-            }}
-          >
-            <div className="text-6xl mb-4">🗺️</div>
-            <h3 className="subheading mb-2" style={{ color: 'var(--dark-navy)' }}>
-              Serving Charlotte &amp; Columbia Metro Areas
-            </h3>
-            <p className="body-large">
-              Professional mobile diesel repair services across NC and SC
-            </p>
+        {/* Main Content Grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-7xl mx-auto items-start">
+          
+          {/* Left Side - I-77 Corridor Image */}
+          <div className="order-2 lg:order-1">
+            <div className="relative rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-amber-200 to-amber-400" style={{ aspectRatio: '4/5' }}>
+              {/* Placeholder for truck/highway image */}
+              <div className="absolute inset-0 bg-gradient-to-br from-amber-100 to-amber-300 flex items-end justify-center p-8">
+                {/* Truck silhouette placeholder */}
+                <div className="absolute bottom-4 left-4 w-32 h-20 bg-black/20 rounded-lg flex items-center justify-center">
+                  <svg className="w-24 h-12 text-black/40" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M20 8h-3l-1-1h-5l-1 1H7v1c0 .6.4 1 1 1h1l1 1v1h8v-1l1-1h1c.6 0 1-.4 1-1V8zm-8 8c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm6 0c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"/>
+                  </svg>
+                </div>
+                
+                {/* I-77 Corridor Badge */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                  <div className="px-8 py-4 rounded-full shadow-lg" style={{ backgroundColor: '#FF6B35' }}>
+                    <span className="text-white font-bold text-xl md:text-2xl tracking-wide">
+                      I-77 CORRIDOR
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        
-        {/* Service Areas Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-4xl mx-auto">
-          {serviceAreas.map((area, index) => (
-            <div key={index} className="text-center lg:text-left">
-              <h3 className="subheading mb-6" style={{ color: 'var(--dark-navy)' }}>
-                {area.state}
+
+          {/* Right Side - Service Areas */}
+          <div className="order-1 lg:order-2 space-y-8">
+            
+            {/* North Carolina */}
+            <div>
+              <h3 className="text-2xl md:text-3xl font-bold mb-6" style={{ color: 'var(--dark-navy)' }}>
+                NORTH CAROLINA
               </h3>
-              <div className="grid grid-cols-2 gap-3">
-                {area.cities.map((city, cityIndex) => (
+              <div className="flex flex-wrap gap-3">
+                {ncCities.map((city, index) => (
                   <div
-                    key={cityIndex}
-                    className="rounded-lg px-4 py-3 font-medium transition-colors"
+                    key={index}
+                    className="px-6 py-3 rounded-full border-2 transition-all duration-300 hover:shadow-md cursor-pointer"
                     style={{ 
-                      backgroundColor: 'var(--off-white)',
-                      color: 'var(--medium-gray)'
+                      borderColor: '#E2E8F0',
+                      backgroundColor: 'white',
+                      color: 'var(--dark-navy)'
                     }}
-                    onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'var(--primary-blue-light)'}
-                    onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'var(--off-white)'}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--primary-blue)';
+                      e.currentTarget.style.backgroundColor = 'var(--primary-blue-light)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = '#E2E8F0';
+                      e.currentTarget.style.backgroundColor = 'white';
+                    }}
                   >
-                    {city}
+                    <span className="font-medium text-sm md:text-base">{city}</span>
                   </div>
                 ))}
               </div>
             </div>
-          ))}
+
+            {/* South Carolina */}
+            <div>
+              <h3 className="text-2xl md:text-3xl font-bold mb-6" style={{ color: 'var(--dark-navy)' }}>
+                SOUTH CAROLINA
+              </h3>
+              <div className="flex flex-wrap gap-3">
+                {scCities.map((city, index) => (
+                  <div
+                    key={index}
+                    className="px-6 py-3 rounded-full border-2 transition-all duration-300 hover:shadow-md cursor-pointer"
+                    style={{ 
+                      borderColor: '#E2E8F0',
+                      backgroundColor: 'white',
+                      color: 'var(--dark-navy)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.borderColor = 'var(--primary-blue)';
+                      e.currentTarget.style.backgroundColor = 'var(--primary-blue-light)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.borderColor = '#E2E8F0';
+                      e.currentTarget.style.backgroundColor = 'white';
+                    }}
+                  >
+                    <span className="font-medium text-sm md:text-base">{city}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
         
-        {/* Coverage Note */}
-        <div className="text-center mt-12">
-          <p className="body-large italic font-medium" style={{ color: 'var(--primary-blue)' }}>
-            Plus surrounding areas within 50 miles of Charlotte &amp; Columbia
-          </p>
-          <div 
-            className="mt-8 inline-flex items-center gap-3 rounded-full px-6 py-3"
-            style={{ backgroundColor: 'var(--primary-blue-light)' }}
-          >
-            <div className="w-3 h-3 rounded-full animate-pulse" style={{ backgroundColor: 'var(--success-green)' }}></div>
-            <span className="font-semibold" style={{ color: 'var(--dark-navy)' }}>
-              Available 24/7 for Emergency Service
-            </span>
+        {/* Bottom Note */}
+        <div className="text-center mt-16">
+          <div className="inline-block px-8 py-4 rounded-lg" style={{ backgroundColor: '#FEF2F2' }}>
+            <p className="text-lg font-medium" style={{ color: 'var(--dark-navy)' }}>
+              Plus surrounding areas within 50 miles of Charlotte & Columbia
+            </p>
           </div>
         </div>
       </div>
