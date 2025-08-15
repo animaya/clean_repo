@@ -39,7 +39,7 @@ class TentacleSegment {
         this.hue = hue;
         this.angle = 0;
         this.targetAngle = 0;
-        this.angleConstraint = Math.PI / 6; // ±30 degrees for smoother movement with more joints
+        this.angleConstraint = Math.PI / 4; // ±45 degrees for balanced flexibility
     }
 
     getEndPosition() {
@@ -62,11 +62,15 @@ class Tentacle {
         this.basePosition = basePosition.copy();
         this.segments = [];
         this.target = basePosition.copy();
+        this.smoothTarget = basePosition.copy();
+        this.targetVelocity = new Vector2(0, 0);
         this.parameters = {
             speed: 1.0,
             curlines: 0.5,
             rigidness: 0.3,
-            randomness: 0.2
+            randomness: 0.2,
+            smoothing: 0.05,
+            damping: 0.95
         };
         
         this.initializeSegments(segmentCount);
@@ -115,7 +119,19 @@ class Tentacle {
             targetPos.y += noiseY;
         }
         
-        this.target = targetPos;
+        // Apply smoothing to reduce jittery movement
+        const deltaX = targetPos.x - this.smoothTarget.x;
+        const deltaY = targetPos.y - this.smoothTarget.y;
+        
+        // Update velocity with momentum
+        this.targetVelocity.x = this.targetVelocity.x * this.parameters.damping + deltaX * this.parameters.smoothing;
+        this.targetVelocity.y = this.targetVelocity.y * this.parameters.damping + deltaY * this.parameters.smoothing;
+        
+        // Update smooth target position
+        this.smoothTarget.x += this.targetVelocity.x;
+        this.smoothTarget.y += this.targetVelocity.y;
+        
+        this.target = this.smoothTarget.copy();
     }
 
     update() {
@@ -125,7 +141,7 @@ class Tentacle {
         this.applyConstraints();
     }
 
-    solveFABRIK(iterations = 2) {
+    solveFABRIK(iterations = 3) {
         for (let iter = 0; iter < iterations; iter++) {
             this.forwardReach();
             this.backwardReach();
@@ -180,23 +196,50 @@ class Tentacle {
     applyConstraints() {
         const rigidnessFactor = this.parameters.rigidness;
         
+        // Only apply constraints if rigidness is significant
+        if (rigidnessFactor < 0.1) return;
+        
         for (let i = 1; i < this.segments.length; i++) {
             const segment = this.segments[i];
             const prevSegment = this.segments[i - 1];
             
-            if (rigidnessFactor > 0) {
-                const maxAngleDiff = segment.angleConstraint * (1 - rigidnessFactor);
-                const angleDiff = segment.angle - prevSegment.angle;
-                const constrainedDiff = Math.max(-maxAngleDiff, 
-                                               Math.min(maxAngleDiff, angleDiff));
-                segment.angle = prevSegment.angle + constrainedDiff;
+            // Calculate current angle from positions (FABRIK-determined)
+            const direction = Vector2.subtract(segment.position, prevSegment.position);
+            const currentAngle = Math.atan2(direction.y, direction.x);
+            
+            // Progressive flexibility - tips are more flexible
+            const flexibilityMultiplier = 1.0 + (i / this.segments.length) * 0.3;
+            const maxAngleDiff = segment.angleConstraint * flexibilityMultiplier * (1 - rigidnessFactor * 0.5);
+            
+            // Calculate angle difference
+            let angleDiff = currentAngle - prevSegment.angle;
+            
+            // Normalize angle difference to [-π, π]
+            while (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+            while (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+            
+            const constrainedDiff = Math.max(-maxAngleDiff, 
+                                           Math.min(maxAngleDiff, angleDiff));
+            
+            // Only modify if constraint is violated
+            if (Math.abs(angleDiff) > maxAngleDiff) {
+                const targetAngle = prevSegment.angle + constrainedDiff;
                 
+                // Maintain segment length while adjusting angle
+                const segmentLength = Vector2.distance(prevSegment.position, segment.position);
                 const newEndPos = new Vector2(
-                    prevSegment.position.x + Math.cos(segment.angle) * prevSegment.length,
-                    prevSegment.position.y + Math.sin(segment.angle) * prevSegment.length
+                    prevSegment.position.x + Math.cos(targetAngle) * segmentLength,
+                    prevSegment.position.y + Math.sin(targetAngle) * segmentLength
                 );
-                segment.position = newEndPos;
+                
+                // Smooth the position adjustment
+                segment.position.x = segment.position.x * 0.7 + newEndPos.x * 0.3;
+                segment.position.y = segment.position.y * 0.7 + newEndPos.y * 0.3;
             }
+            
+            // Update segment angle based on final position
+            const finalDirection = Vector2.subtract(segment.position, prevSegment.position);
+            segment.angle = Math.atan2(finalDirection.y, finalDirection.x);
         }
     }
 
