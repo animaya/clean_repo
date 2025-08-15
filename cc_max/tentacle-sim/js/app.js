@@ -65,7 +65,7 @@ class TentacleSimulationApp {
         const baseX = this.canvas.width * 0.25; // Left side of canvas
         const baseY = this.canvas.height * 0.5; // Center vertically
         
-        this.tentacle = new Tentacle(new Vector2(baseX, baseY), 8);
+        this.tentacle = new Tentacle(new Vector2(baseX, baseY), 16);
         
         const targetX = this.canvas.width * 0.75; // Right side of canvas  
         const targetY = this.canvas.height * 0.5; // Center vertically

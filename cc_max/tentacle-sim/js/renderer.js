@@ -43,7 +43,7 @@ class TentacleRenderer {
 
             const hue = this.getSegmentHue(i, tentacle.segments.length);
             const saturation = 70;
-            const lightness = 60 - (i * 5); // Darker towards the tip
+            const lightness = 60 - (i * 2.5); // Slower darkening for more segments
             
             this.ctx.strokeStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
             this.ctx.lineWidth = segment.thickness * 0.8; // Slightly thinner than joints
@@ -61,7 +61,7 @@ class TentacleRenderer {
             
             const hue = this.getSegmentHue(i, tentacle.segments.length);
             const saturation = 80;
-            const lightness = 50 - (i * 3);
+            const lightness = 50 - (i * 1.5); // Reduced lightness change for more segments
             
             this.ctx.fillStyle = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
             this.ctx.strokeStyle = '#333';

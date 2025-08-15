@@ -223,7 +223,7 @@ class TentacleControls {
         this.tentacle.basePosition = new Vector2(centerX - 200, centerY);
         this.mousePosition = new Vector2(centerX + 200, centerY);
         
-        this.tentacle.initializeSegments(8);
+        this.tentacle.initializeSegments(16);
         this.tentacle.updateTarget(this.mousePosition);
     }
 

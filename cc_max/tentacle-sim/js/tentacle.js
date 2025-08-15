@@ -39,7 +39,7 @@ class TentacleSegment {
         this.hue = hue;
         this.angle = 0;
         this.targetAngle = 0;
-        this.angleConstraint = Math.PI / 4; // ±45 degrees
+        this.angleConstraint = Math.PI / 6; // ±30 degrees for smoother movement with more joints
     }
 
     getEndPosition() {
@@ -58,7 +58,7 @@ class TentacleSegment {
 }
 
 class Tentacle {
-    constructor(basePosition, segmentCount = 8) {
+    constructor(basePosition, segmentCount = 16) {
         this.basePosition = basePosition.copy();
         this.segments = [];
         this.target = basePosition.copy();
@@ -75,10 +75,10 @@ class Tentacle {
     }
 
     initializeSegments(count) {
-        const baseLength = 60;
+        const baseLength = 90; // Increased from 60 to 90 (1.5x)
         const baseThickness = 40;
-        const lengthReduction = 0.85;
-        const thicknessReduction = 0.85;
+        const lengthReduction = 0.92; // Slower reduction for more segments
+        const thicknessReduction = 0.92; // Slower reduction for more segments
         
         let currentPos = this.basePosition.copy();
         
@@ -125,7 +125,7 @@ class Tentacle {
         this.applyConstraints();
     }
 
-    solveFABRIK(iterations = 3) {
+    solveFABRIK(iterations = 2) {
         for (let iter = 0; iter < iterations; iter++) {
             this.forwardReach();
             this.backwardReach();
