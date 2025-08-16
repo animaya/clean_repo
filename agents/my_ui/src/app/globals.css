@@ -878,6 +878,208 @@
   }
 }
 
+/* Trusted Partner Section */
+.trusted-partner-section {
+  background: var(--neutral-white);
+  padding: var(--space-6xl) 0;
+}
+
+.trusted-partner-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Header Row: Logo and Main Title on Same Level */
+.trusted-partner-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-4xl);
+  gap: var(--space-2xl);
+}
+
+.trusted-partner-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  flex-shrink: 0;
+}
+
+.trusted-partner-logo-text {
+  font-family: var(--font-script);
+  font-size: 4rem;
+  color: var(--primary-orange);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  line-height: 1;
+  margin-bottom: -0.5rem;
+}
+
+.trusted-partner-logo-subtitle {
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--secondary-teal);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-top: -0.25rem;
+}
+
+.trusted-partner-title {
+  font-family: var(--font-primary);
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: var(--neutral-black);
+  line-height: 1.1;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  text-align: right;
+  margin: 0;
+  flex: 1;
+}
+
+/* Body Content: Centered */
+.trusted-partner-body {
+  text-align: center;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.trusted-partner-subtitle {
+  font-family: var(--font-primary);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--neutral-black);
+  margin-bottom: var(--space-3xl);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.trusted-partner-description {
+  margin-bottom: var(--space-2xl);
+  text-align: center;
+}
+
+.trusted-partner-paragraph {
+  font-family: var(--font-secondary);
+  font-size: 1.125rem;
+  color: var(--neutral-medium-gray);
+  line-height: 1.7;
+  margin-bottom: var(--space-xl);
+  text-align: center;
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: var(--space-xl);
+}
+
+.trusted-partner-cta {
+  background: var(--primary-orange);
+  color: var(--neutral-white);
+  font-family: var(--font-primary);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 1.25rem 2.5rem;
+  border: none;
+  border-radius: 50px;
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  transition: all 0.3s ease;
+  display: inline-block;
+  margin-top: var(--space-lg);
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 1);
+  border: 3px solid var(--neutral-black);
+  cursor: pointer;
+}
+
+.trusted-partner-cta:hover {
+  background: var(--primary-orange-hover);
+  transform: translateY(-2px);
+  box-shadow: 6px 6px 0px rgba(0, 0, 0, 1);
+}
+
+.trusted-partner-cta:active {
+  transform: translateY(0);
+  box-shadow: 4px 4px 0px rgba(0, 0, 0, 1);
+}
+
+/* Responsive Design for Trusted Partner */
+@media (max-width: 1024px) {
+  .trusted-partner-header {
+    flex-direction: column;
+    text-align: center;
+    gap: var(--space-3xl);
+  }
+  
+  .trusted-partner-logo {
+    align-items: center;
+    text-align: center;
+  }
+  
+  .trusted-partner-title {
+    font-size: 2.25rem;
+    text-align: center;
+  }
+  
+  .trusted-partner-logo-text {
+    font-size: 3.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .trusted-partner-section {
+    padding: var(--space-4xl) 0;
+  }
+  
+  .trusted-partner-header {
+    margin-bottom: var(--space-2xl);
+  }
+  
+  .trusted-partner-title {
+    font-size: 1.875rem;
+  }
+  
+  .trusted-partner-subtitle {
+    font-size: 1.25rem;
+    margin-bottom: var(--space-lg);
+  }
+  
+  .trusted-partner-paragraph {
+    font-size: 1rem;
+  }
+  
+  .trusted-partner-logo-text {
+    font-size: 3rem;
+  }
+  
+  .trusted-partner-cta {
+    font-size: 0.875rem;
+    padding: 1rem 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .trusted-partner-title {
+    font-size: 1.5rem;
+  }
+  
+  .trusted-partner-subtitle {
+    font-size: 1.125rem;
+  }
+  
+  .trusted-partner-logo-text {
+    font-size: 2.5rem;
+  }
+  
+  .trusted-partner-logo-subtitle {
+    font-size: 0.75rem;
+  }
+}
+
 body {
   background: var(--bg-light);
   color: var(--neutral-black);

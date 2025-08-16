@@ -370,6 +370,41 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Trusted Partner Section */}
+      <section className="trusted-partner-section section-padding">
+        <div className="container">
+          <div className="trusted-partner-content">
+            {/* Top Row: Logo and Main Title */}
+            <div className="trusted-partner-header">
+              <div className="trusted-partner-logo">
+                <span className="trusted-partner-logo-text">Diesel Dudes</span>
+                <span className="trusted-partner-logo-subtitle">MECHANIC SERVICES</span>
+              </div>
+              <h2 className="trusted-partner-title">IS YOUR TRUSTED MOBILE MECHANIC PARTNER</h2>
+            </div>
+
+            {/* Center Content */}
+            <div className="trusted-partner-body">
+              <h3 className="trusted-partner-subtitle">DIESEL MECHANICS WITH A FLEET MANAGER'S PERSPECTIVE</h3>
+              
+              <div className="trusted-partner-description">
+                <p className="trusted-partner-paragraph">
+                  At Diesel Dudes, we understand the importance of keeping your fleet running smoothly. Our leadership team also operates a trucking company, and our lead mechanic has over 15 years of experience as a fleet manager, specializing in diesel trucks and heavy equipment. We're not just mechanics – we're partners in your business's success.
+                </p>
+                
+                <p className="trusted-partner-paragraph">
+                  With locations serving both the Charlotte, NC, and Columbia, SC markets, Diesel Dudes offers unparalleled service, quick response times, and comprehensive repairs for all diesel makes and models.
+                </p>
+                
+                <a href="#contact" className="trusted-partner-cta">
+                  CONTACT US FOR DIESEL REPAIR NEEDS
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
