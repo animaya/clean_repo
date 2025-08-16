@@ -299,6 +299,77 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Need Help Now Section */}
+      <section className="need-help-section section-padding">
+        <div className="container">
+          {/* Orange CTA Banner */}
+          <div className="cta-banner">
+            <div className="cta-banner-text">Need Help Now?</div>
+            <div className="cta-banner-subtitle">Call us 24/7 for immediate assistance</div>
+            <a href="tel:+18032306390" className="cta-banner-phone">
+              (803) 230-6390
+            </a>
+          </div>
+
+          {/* Six Feature Cards */}
+          <div className="features-grid">
+            {/* Feature 1 - Quality of Work */}
+            <div className="feature-badge">
+              <div className="feature-number">1</div>
+              <div className="feature-content">
+                <h4>Quality of Work</h4>
+                <p>Expert repairs by seasoned diesel mechanics.</p>
+              </div>
+            </div>
+
+            {/* Feature 2 - Attention to Detail */}
+            <div className="feature-badge">
+              <div className="feature-number">2</div>
+              <div className="feature-content">
+                <h4>Attention to Detail</h4>
+                <p>Thorough inspections and meticulous work.</p>
+              </div>
+            </div>
+
+            {/* Feature 3 - Transparency & Honesty */}
+            <div className="feature-badge">
+              <div className="feature-number">3</div>
+              <div className="feature-content">
+                <h4>Transparency & Honesty</h4>
+                <p>No hidden fees, just upfront pricing and clear communication.</p>
+              </div>
+            </div>
+
+            {/* Feature 4 - Speed & Efficiency */}
+            <div className="feature-badge">
+              <div className="feature-number">4</div>
+              <div className="feature-content">
+                <h4>Speed & Efficiency</h4>
+                <p>We work fast to get your fleet back on the road.</p>
+              </div>
+            </div>
+
+            {/* Feature 5 - Always Responsive */}
+            <div className="feature-badge">
+              <div className="feature-number">5</div>
+              <div className="feature-content">
+                <h4>Always Responsive</h4>
+                <p>We're always available and keep you updated every step of the way.</p>
+              </div>
+            </div>
+
+            {/* Feature 6 - Satisfaction Guaranteed */}
+            <div className="feature-badge">
+              <div className="feature-number">6</div>
+              <div className="feature-content">
+                <h4>Satisfaction Guaranteed</h4>
+                <p>We stand behind our work with a comprehensive warranty and your complete satisfaction is our priority.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
