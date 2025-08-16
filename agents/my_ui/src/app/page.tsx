@@ -484,6 +484,59 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Final CTA Section */}
+      <section className="final-cta-section section-padding">
+        <div className="container">
+          <div className="final-cta-content">
+            {/* Diesel Repair Icon */}
+            <div className="final-cta-icon">
+              <svg width="80" height="80" viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Toolbox Icon */}
+                <rect x="20" y="30" width="40" height="30" rx="3" stroke="currentColor" strokeWidth="2.5" fill="none"/>
+                <rect x="25" y="35" width="30" height="8" rx="1" stroke="currentColor" strokeWidth="2" fill="none"/>
+                <rect x="25" y="47" width="30" height="8" rx="1" stroke="currentColor" strokeWidth="2" fill="none"/>
+                
+                {/* Handle */}
+                <path d="M30 30V25C30 21.686 32.686 19 36 19H44C47.314 19 50 21.686 50 25V30" stroke="currentColor" strokeWidth="2.5" fill="none"/>
+                
+                {/* Wrench */}
+                <g transform="translate(55,15) rotate(45)">
+                  <rect x="0" y="6" width="20" height="4" rx="2" fill="currentColor"/>
+                  <circle cx="2" cy="8" r="3" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <circle cx="18" cy="8" r="2" fill="currentColor"/>
+                </g>
+                
+                {/* Screwdriver */}
+                <g transform="translate(10,25) rotate(-30)">
+                  <rect x="0" y="7" width="15" height="2" fill="currentColor"/>
+                  <circle cx="0" cy="8" r="2" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                </g>
+              </svg>
+            </div>
+
+            {/* Main Heading */}
+            <h2 className="final-cta-title">
+              READY FOR FAST, RELIABLE DIESEL REPAIR?
+            </h2>
+
+            {/* Subtitle */}
+            <p className="final-cta-subtitle">
+              Contact Diesel Dudes Today!
+            </p>
+
+            {/* Action Buttons */}
+            <div className="final-cta-buttons">
+              <a href="tel:+18032306390" className="btn-primary">
+                📞 CALL NOW FOR SERVICE
+              </a>
+              <a href="#contact" className="btn-secondary">
+                REQUEST ON-SITE SERVICES
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="footer">
         <div className="footer-container">
