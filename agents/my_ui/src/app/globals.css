@@ -586,6 +586,147 @@
   }
 }
 
+/* Mobile Services Section Styles */
+.mobile-services-section {
+  background: var(--neutral-white);
+  text-align: center;
+}
+
+.mobile-services-badge {
+  display: inline-block;
+  background: var(--secondary-teal);
+  color: var(--neutral-white);
+  font-family: var(--font-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 0.75rem 2rem;
+  border-radius: 25px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: var(--space-2xl);
+}
+
+.mobile-services-title {
+  text-align: center;
+  margin-bottom: var(--space-4xl);
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+/* Service Items Grid (4-column responsive) */
+.service-items-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: var(--space-xl);
+  margin: var(--space-3xl) 0;
+}
+
+/* Service Grid Item (Small Service Cards) */
+.service-grid-item {
+  background: var(--neutral-white);
+  border-radius: 12px;
+  padding: 2rem 1.5rem;
+  box-shadow: 8px 8px 0px rgba(0, 0, 0, 1);
+  border: 4px solid var(--neutral-black);
+  transition: all 0.3s ease;
+  text-align: center;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.service-grid-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 12px 12px 0px rgba(0, 0, 0, 1);
+}
+
+.service-grid-icon {
+  width: 48px;
+  height: 48px;
+  margin-bottom: var(--space-lg);
+  color: var(--primary-orange);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.service-grid-icon svg {
+  width: 100%;
+  height: 100%;
+}
+
+.service-grid-title {
+  font-family: var(--font-primary);
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--neutral-black);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-md);
+  line-height: 1.2;
+}
+
+.service-grid-description {
+  font-family: var(--font-secondary);
+  font-size: 0.875rem;
+  color: var(--neutral-medium-gray);
+  line-height: 1.5;
+  text-align: center;
+}
+
+/* Responsive Design for Mobile Services */
+@media (max-width: 768px) {
+  .service-items-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-lg);
+  }
+  
+  .service-grid-item {
+    padding: 1.25rem;
+    min-height: 180px;
+  }
+  
+  .service-grid-title {
+    font-size: 0.875rem;
+  }
+  
+  .service-grid-description {
+    font-size: 0.75rem;
+  }
+  
+  .mobile-services-title {
+    font-size: 1.75rem;
+  }
+}
+
+@media (min-width: 768px) {
+  .service-items-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .service-items-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .mobile-services-badge {
+    font-size: 0.75rem;
+    padding: 0.5rem 1.5rem;
+  }
+  
+  .service-items-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);
+  }
+}
+
 body {
   background: var(--bg-light);
   color: var(--neutral-black);

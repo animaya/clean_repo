@@ -168,6 +168,137 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Mobile Truck Repair Services Section */}
+      <section className="mobile-services-section section-padding">
+        <div className="container">
+          {/* Teal Badge */}
+          <div className="mobile-services-badge">
+            <span className="badge-text">WE'VE GOT YOU COVERED</span>
+          </div>
+
+          {/* Section Title */}
+          <h2 className="mobile-services-title text-h1 text-dark">
+            MOBILE TRUCK REPAIR SERVICES
+          </h2>
+
+          {/* Service Items Grid */}
+          <div className="service-items-grid">
+            {/* Tires */}
+            <div className="service-grid-item">
+              <div className="service-grid-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="24" cy="24" r="20" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <circle cx="24" cy="24" r="12" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <circle cx="24" cy="24" r="6" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <path d="M24 4V8M24 40V44M4 24H8M40 24H44" stroke="currentColor" strokeWidth="2"/>
+                  <path d="M11.757 11.757L14.586 14.586M33.414 33.414L36.243 36.243M36.243 11.757L33.414 14.586M14.586 33.414L11.757 36.243" stroke="currentColor" strokeWidth="2"/>
+                </svg>
+              </div>
+              <h3 className="service-grid-title">TIRES</h3>
+              <p className="service-grid-description">Mobile tire repairs, replacements, and balancing.</p>
+            </div>
+
+            {/* Brakes */}
+            <div className="service-grid-item">
+              <div className="service-grid-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <circle cx="24" cy="24" r="10" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <circle cx="24" cy="24" r="4" stroke="currentColor" strokeWidth="2" fill="currentColor"/>
+                  <path d="M14 14L20 20M34 14L28 20M34 34L28 28M14 34L20 28" stroke="currentColor" strokeWidth="2"/>
+                </svg>
+              </div>
+              <h3 className="service-grid-title">BRAKES</h3>
+              <p className="service-grid-description">Full brake inspections, replacements, and adjustments.</p>
+            </div>
+
+            {/* Fuel Systems */}
+            <div className="service-grid-item">
+              <div className="service-grid-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 12V36C8 38.209 9.791 40 12 40H28C30.209 40 32 38.209 32 36V28" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <path d="M32 28H36C38.209 28 40 26.209 40 24V20C40 17.791 38.209 16 36 16H32V28Z" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <circle cx="36" cy="12" r="4" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <path d="M12 12H28V20H12V12Z" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <circle cx="16" cy="32" r="2" fill="currentColor"/>
+                  <circle cx="24" cy="32" r="2" fill="currentColor"/>
+                </svg>
+              </div>
+              <h3 className="service-grid-title">FUEL SYSTEMS</h3>
+              <p className="service-grid-description">Fuel line, pump repairs, and emergency fuel delivery.</p>
+            </div>
+
+            {/* Electrical */}
+            <div className="service-grid-item">
+              <div className="service-grid-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M28 8L12 24H20L16 40L32 24H24L28 8Z" stroke="currentColor" strokeWidth="2" fill="none"/>
+                </svg>
+              </div>
+              <h3 className="service-grid-title">ELECTRICAL</h3>
+              <p className="service-grid-description">Diagnostics and electrical system repairs.</p>
+            </div>
+
+            {/* Batteries */}
+            <div className="service-grid-item">
+              <div className="service-grid-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <rect x="8" y="16" width="32" height="20" rx="2" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <rect x="20" y="12" width="8" height="4" rx="1" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <path d="M16 24H20M28 24H32" stroke="currentColor" strokeWidth="2"/>
+                  <path d="M30 22V26" stroke="currentColor" strokeWidth="2"/>
+                </svg>
+              </div>
+              <h3 className="service-grid-title">BATTERIES</h3>
+              <p className="service-grid-description">Mobile battery replacements and charging solutions.</p>
+            </div>
+
+            {/* Airbags */}
+            <div className="service-grid-item">
+              <div className="service-grid-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="24" cy="24" r="16" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <circle cx="24" cy="24" r="8" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <path d="M24 8V16M24 32V40M8 24H16M32 24H40" stroke="currentColor" strokeWidth="2"/>
+                  <rect x="12" y="12" width="24" height="24" rx="12" stroke="currentColor" strokeWidth="2" fill="none" opacity="0.3"/>
+                </svg>
+              </div>
+              <h3 className="service-grid-title">AIRBAGS</h3>
+              <p className="service-grid-description">Diagnose and repair air suspension issues.</p>
+            </div>
+
+            {/* Wheel Seals */}
+            <div className="service-grid-item">
+              <div className="service-grid-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="24" cy="24" r="18" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <circle cx="24" cy="24" r="12" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <circle cx="24" cy="24" r="6" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <path d="M24 6L26 12L32 10L28 16L34 18L28 22L30 28L24 26L18 30L22 24L16 22L22 18L20 12L24 14V6Z" stroke="currentColor" strokeWidth="2" fill="none"/>
+                </svg>
+              </div>
+              <h3 className="service-grid-title">WHEEL SEALS</h3>
+              <p className="service-grid-description">Prevent leaks and ensure smooth operation.</p>
+            </div>
+
+            {/* Alternators & Starters */}
+            <div className="service-grid-item">
+              <div className="service-grid-icon">
+                <svg width="48" height="48" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <circle cx="24" cy="24" r="16" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <circle cx="24" cy="24" r="8" stroke="currentColor" strokeWidth="2" fill="none"/>
+                  <path d="M24 8V16M40 24H32M24 40V32M8 24H16" stroke="currentColor" strokeWidth="2"/>
+                  <path d="M35.314 12.686L29.657 18.343M35.314 35.314L29.657 29.657M12.686 35.314L18.343 29.657M12.686 12.686L18.343 18.343" stroke="currentColor" strokeWidth="2"/>
+                  <circle cx="24" cy="24" r="3" fill="currentColor"/>
+                </svg>
+              </div>
+              <h3 className="service-grid-title">ALTERNATORS & STARTERS</h3>
+              <p className="service-grid-description">On-site replacements to keep your truck moving.</p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
