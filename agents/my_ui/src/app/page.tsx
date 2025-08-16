@@ -32,7 +32,8 @@ export default function Home() {
       <section className="hero">
         <div className="hero-content">
           <h1 className="hero-title text-white">
-            Mobile Diesel Mechanic<br />Charlotte & Columbia
+            <span className="hero-title-line">MOBILE DIESEL MECHANIC</span>
+            <span className="hero-title-line">CHARLOTTE & COLUMBIA</span>
           </h1>
           <p className="hero-subtitle">
             <span className="hero-subtitle-emphasis">Emergency Roadside Assistance</span> & On-Site Diesel Repairs<br />
