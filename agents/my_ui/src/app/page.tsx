@@ -405,6 +405,84 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      {/* Service Area Map Section */}
+      <section className="service-area-section section-padding">
+        <div className="container">
+          {/* Section Title */}
+          <h2 className="service-area-title text-h1 text-dark">
+            SERVICE AREA MAP
+          </h2>
+          
+          {/* Subtitle */}
+          <p className="service-area-subtitle">
+            24/7 Mobile Diesel Repair Services Along the I-77 Corridor
+          </p>
+
+          {/* Map and Locations Layout */}
+          <div className="service-area-content">
+            {/* Map Container */}
+            <div className="service-area-map">
+              <div className="map-image-container">
+                <img 
+                  src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" 
+                  alt="I-77 Corridor Service Area"
+                  className="map-image"
+                />
+                <div className="corridor-label">
+                  <span className="corridor-text">I-77 CORRIDOR</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Locations Grid */}
+            <div className="service-locations">
+              {/* North Carolina */}
+              <div className="location-group">
+                <h3 className="location-group-title">NORTH CAROLINA</h3>
+                <div className="location-pills">
+                  <span className="location-pill">Charlotte</span>
+                  <span className="location-pill">Huntersville</span>
+                  <span className="location-pill">Concord</span>
+                  <span className="location-pill">Monroe</span>
+                  <span className="location-pill">Gastonia</span>
+                  <span className="location-pill">Indian Land</span>
+                  <span className="location-pill">Matthews</span>
+                  <span className="location-pill">Cornelius</span>
+                  <span className="location-pill">Mooresville</span>
+                  <span className="location-pill">Statesville</span>
+                  <span className="location-pill">Kannapolis</span>
+                  <span className="location-pill">Harrisburg</span>
+                </div>
+              </div>
+
+              {/* South Carolina */}
+              <div className="location-group">
+                <h3 className="location-group-title">SOUTH CAROLINA</h3>
+                <div className="location-pills">
+                  <span className="location-pill">Columbia</span>
+                  <span className="location-pill">Rock Hill</span>
+                  <span className="location-pill">Fort Mill</span>
+                  <span className="location-pill">Lexington</span>
+                  <span className="location-pill">West Columbia</span>
+                  <span className="location-pill">Irmo</span>
+                  <span className="location-pill">Blythewood</span>
+                  <span className="location-pill">York</span>
+                  <span className="location-pill">Chester</span>
+                  <span className="location-pill">Winnsboro</span>
+                  <span className="location-pill">Gaffney</span>
+                  <span className="location-pill">Spartanburg</span>
+                </div>
+              </div>
+
+              {/* Additional Coverage Note */}
+              <div className="coverage-note">
+                <p>Plus surrounding areas within 50 miles of Charlotte & Columbia</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }
