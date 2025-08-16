@@ -204,6 +204,190 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Results/Testimonials Section */}
+      <section className="px-4 py-16 bg-gray-50">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-3xl lg:text-4xl font-bold text-center mb-16">
+            Какой <em className="italic font-normal">результат</em> ты можешь получить пройдя тренинг
+          </h2>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {/* Case Study 1 */}
+            <div className="space-y-6">
+              <h3 className="text-xl font-bold text-black">
+                Агентство недвижимости вырастило конверсию на 40%
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-gray-500 mb-2">До тренинга:</p>
+                  <p className="text-sm text-black">
+                    Сегментация по демографии не работала, продажи не росли
+                  </p>
+                </div>
+                
+                <div>
+                  <p className="text-sm text-gray-500 mb-2">После тренинга:</p>
+                  <p className="text-sm text-black mb-3">
+                    Нашли сегменты и их графы работ, перестроили продажи
+                  </p>
+                  <div className="space-y-1">
+                    <div className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium inline-block">
+                      — конверсия в покупку +40%
+                    </div>
+                    <div className="text-sm text-black">
+                      — ROMI 800% ➤ 1 400%
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="border-t pt-4">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"></div>
+                  <div>
+                    <p className="font-semibold text-sm">Денис</p>
+                    <p className="text-xs text-gray-600">CEO агентства Pleada</p>
+                  </div>
+                </div>
+                <a href="#" className="text-sm text-gray-600 hover:text-black">
+                  Читать полностью
+                </a>
+              </div>
+            </div>
+
+            {/* Case Study 2 */}
+            <div className="space-y-6">
+              <h3 className="text-xl font-bold text-black">
+                Новый IT-продукт принёс +5% выручки на клиента
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-gray-500 mb-2">До тренинга:</p>
+                  <p className="text-sm text-black">
+                    Было не очень понятно, что делать, а бизнес ждал стратегию
+                  </p>
+                </div>
+                
+                <div>
+                  <p className="text-sm text-gray-500 mb-2">После тренинга:</p>
+                  <p className="text-sm text-black mb-3">
+                    Нашла возможность отстроиться от конкурентов новым продуктом
+                  </p>
+                  <div className="space-y-1">
+                    <div className="text-sm text-black">
+                      — выручка на клиента +5%
+                    </div>
+                    <div className="text-sm text-black">
+                      — +90 миллионов в месяц для компании
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="border-t pt-4">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"></div>
+                  <div>
+                    <p className="font-semibold text-sm">Юлия</p>
+                    <p className="text-xs text-gray-600">Product Manager Rossko</p>
+                  </div>
+                </div>
+                <a href="#" className="text-sm text-gray-600 hover:text-black">
+                  Читать полностью
+                </a>
+              </div>
+            </div>
+
+            {/* Case Study 3 */}
+            <div className="space-y-6">
+              <h3 className="text-xl font-bold text-black">
+                Фокус на сегменте дал +37% выручки для стоматологии
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-gray-500 mb-2">До тренинга:</p>
+                  <p className="text-sm text-black">
+                    Повторяли фичи за конкурентами, выручка не росла
+                  </p>
+                </div>
+                
+                <div>
+                  <p className="text-sm text-gray-500 mb-2">После тренинга:</p>
+                  <p className="text-sm text-black mb-3">
+                    Узнали сегменты, сфокусировались, перестроили привлечение
+                  </p>
+                  <div className="space-y-1">
+                    <div className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium inline-block">
+                      — конверсия в продажу +40%
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="border-t pt-4">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"></div>
+                  <div>
+                    <p className="font-semibold text-sm">Павел</p>
+                    <p className="text-xs text-gray-600">CEO ArtDent</p>
+                  </div>
+                </div>
+                <a href="#" className="text-sm text-gray-600 hover:text-black">
+                  Читать полностью
+                </a>
+              </div>
+            </div>
+
+            {/* Case Study 4 */}
+            <div className="space-y-6">
+              <h3 className="text-xl font-bold text-black">
+                Мы нашли денежный сегмент и средний чек вырос в три раза
+              </h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm text-gray-500 mb-2">До тренинга:</p>
+                  <p className="text-sm text-black">
+                    Неосознанно работали со сложным сегментом
+                  </p>
+                </div>
+                
+                <div>
+                  <p className="text-sm text-gray-500 mb-2">После тренинга:</p>
+                  <p className="text-sm text-black mb-3">
+                    Нашли денежный сегмент, сделали комплексное решение и добавили статус
+                  </p>
+                  <div className="space-y-1">
+                    <div className="bg-green-100 text-green-800 px-2 py-1 rounded text-sm font-medium inline-block">
+                      — средний чек 150k ➤ 450k
+                    </div>
+                    <div className="text-sm text-black">
+                      — выручка +60%
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="border-t pt-4">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="w-10 h-10 bg-gray-300 rounded-full flex-shrink-0"></div>
+                  <div>
+                    <p className="font-semibold text-sm">Анастасия</p>
+                    <p className="text-xs text-gray-600">CEO LiFT</p>
+                  </div>
+                </div>
+                <a href="#" className="text-sm text-gray-600 hover:text-black">
+                  Читать полностью
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Lead Capture Form Section */}
       <section className="px-4 py-16" style={{backgroundColor: '#D3F7FA'}}>
         <div className="max-w-6xl mx-auto">
