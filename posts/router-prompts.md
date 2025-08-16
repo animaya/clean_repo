@@ -214,7 +214,7 @@
 - Instagram selected → Activate Instagram Visual Agent
 - Facebook selected → Activate Facebook Community Agent
 - TikTok selected → Activate TikTok Trend Agent
-- Multiple platforms → Activate relevant platform agents in parallel
+- Multiple platforms → Activate relevant platform agents in parallel using Task tool
 
 **Based on Style Responses:**
 - Professional tone → Apply Professional/Corporate Agent
@@ -224,6 +224,12 @@
 - Analytical approach → Apply Data-Driven/Analytical Agent
 - Story-focused → Apply Storytelling/Narrative Agent
 
+**Multi-Agent Coordination Protocol:**
+- Use Task tool to launch specialized subagents simultaneously
+- Platform agents receive identical brief but generate platform-optimized variations
+- Style agents can be applied as secondary refinement layer
+- Visual Prompt Agent coordinates with all selected platform agents for consistent brand visuals
+
 **Based on Visual Content Responses:**
 - JSON prompt requested → Activate Visual Prompt Agent after content approval
 - Multiple platforms → Generate platform-specific aspect ratios
@@ -232,11 +238,18 @@
 
 ### Multi-Agent Coordination Triggers
 **Parallel Processing Scenarios:**
-- Multiple platforms selected → Coordinate platform agents
-- Multiple style approaches requested → Apply style agents to platform outputs
-- Campaign content → Use campaign coordination workflow
-- Educational series → Use series development workflow
+- Multiple platforms selected → Launch platform agents simultaneously via Task tool
+- Multiple style approaches requested → Apply style agents to platform outputs using subagent specialization
+- Campaign content → Use campaign coordination workflow with all relevant agents
+- Educational series → Use series development workflow with specialized content agents
 - Visual content requested → Activate Visual Prompt Agent after human content selection
+
+**Phase 2 Enhancement - Specialized Subagent Usage:**
+- Launch platform-specific agents as specialized subagents using Task tool
+- Each platform agent generates 3-5 variations optimized for their platform
+- Style agents can refine content as secondary processing layer
+- Router coordinates all agent outputs for organized human review
+- Visual Prompt Agent processes visual requirements for approved content
 
 ## Template Integration Points
 
@@ -322,24 +335,114 @@ Process:
 Generating content now...
 ```
 
-## Quality Assurance for Router Agent
+## Phase 3 Context Engineering Integration
 
-### Question Completeness Check
-- [ ] Platform targeting confirmed
-- [ ] Audience identification complete  
-- [ ] Content goals clearly defined
-- [ ] Brand voice alignment specified
-- [ ] Any time constraints identified
-- [ ] Visual content needs clarified (JSON prompts, basic guidance, or none)
-- [ ] Visual style preferences specified (if visual content requested)
-- [ ] Agent selection logic applied correctly
-- [ ] Visual Prompt Agent activation planned (if needed)
+### Pre-Questioning Context Assessment
+Before beginning intelligent questioning, Router Agent must:
 
-### Brand Consistency Validation
-- [ ] All questions reference appropriate brand templates
-- [ ] Tone options align with brand personality
-- [ ] Platform selections match brand presence
-- [ ] Audience options match defined personas
+**Context Intelligence Loading (Phase 3):**
+- Load relevance-scored context from `context/context-optimization.md` protocols
+- Activate performance feedback analysis from `context/performance-feedback.md`
+- Initialize quality assurance monitoring from `context/quality-assurance.md`
+- Apply advanced prompt engineering from `context/prompt-engineering.md`
+
+**Dynamic Context Prioritization:**
+- Analyze request for topic similarity to successful historical content
+- Determine optimal context loading hierarchy based on request type
+- Pre-load relevant successful templates and performance insights
+- Set context freshness validation requirements
+
+### Enhanced Question Intelligence (Phase 3)
+
+#### Performance-Informed Questioning
+**Additional Context Questions Based on Performance Data:**
+- "I've identified similar successful content from our history - should we build on [specific successful pattern]?"
+- "Our data shows [specific approach] has performed well for this topic type - should we incorporate that?"
+- "Previous content on this topic achieved [performance metrics] - are you targeting similar or different outcomes?"
+- "Historical data suggests [timing/format/approach] optimization - should we apply those learnings?"
+
+#### Quality-Predictive Questioning
+**Quality Assurance Integration Questions:**
+- "Based on our quality standards, this content type typically requires [specific elements] - should we ensure these are included?"
+- "Our successful templates show [pattern] works well for this audience - should we adapt that approach?"
+- "Quality analysis suggests [specific risk/opportunity] for this type of content - how should we address this?"
+
+### Advanced Agent Selection with Context Intelligence
+
+**Context-Informed Agent Selection (Phase 3):**
+```
+INTELLIGENT_AGENT_ROUTING:
+Based on responses + context analysis:
+1. Performance data analysis: Which agents have highest success rates for similar requests?
+2. Quality predictive modeling: Which agent combinations likely to meet quality thresholds?
+3. Context optimization: Which agents can best leverage available successful patterns?
+4. Brand alignment assessment: Which agents maintain brand consistency while optimizing performance?
+
+Enhanced Selection Logic:
+- Primary agent selection based on platform + performance data
+- Secondary agent selection based on style + quality prediction
+- Context loading optimization for selected agent combination
+- Quality assurance protocol activation for agent coordination
+```
+
+**Multi-Agent Context Synchronization:**
+- Share successful pattern insights across selected agents
+- Coordinate brand voice interpretation with performance optimization
+- Apply quality assurance monitoring to all agent outputs
+- Optimize context loading for agent collaboration efficiency
+
+### Phase 3 Agent Briefing Enhancement
+
+**Advanced Context Package for Agents:**
+```
+## Enhanced Content Request Brief (Phase 3)
+
+### Context Intelligence Summary
+- Topic Performance History: [Relevant successful pattern analysis]
+- Quality Optimization Priority: [Key quality metrics and thresholds]
+- Performance Prediction: [Expected outcome range based on historical data]
+- Context Freshness Status: [Currency validation of loaded context]
+
+### Advanced Quality Requirements (Phase 3)
+- Brand Voice Consistency Threshold: 85+ (per quality-assurance.md)
+- Platform Authenticity Target: 85+ (per platform optimization protocols)
+- Performance Potential Prediction: [Range based on similar historical content]
+- Context Utilization Requirement: Apply loaded successful patterns appropriately
+
+### Performance Integration Instructions
+- Successful Pattern Application: [Specific patterns to incorporate from performance history]
+- Failure Pattern Avoidance: [Specific approaches to avoid based on underperformance]
+- Quality Gate Compliance: [Real-time quality monitoring requirements]
+- Context Synthesis Protocol: [How to balance multiple context sources]
+
+[Previous briefing content remains, enhanced with Phase 3 context]
+```
+
+### Phase 3 Quality Assurance for Router Agent
+
+#### Enhanced Question Completeness Check (Phase 3)
+- [ ] Context intelligence loading completed successfully
+- [ ] Performance data analysis integrated into questioning
+- [ ] Quality assurance protocols activated for all agents
+- [ ] Successful pattern matching identified and communicated
+- [ ] Context optimization priorities established
+- [ ] Agent selection based on performance + quality predictions
+- [ ] Context synchronization planned for multi-agent coordination
+- [ ] Quality gate compliance requirements communicated
+
+#### Advanced Brand Consistency Validation (Phase 3)
+- [ ] Brand context integrated with performance optimization
+- [ ] Quality standards aligned with brand requirements
+- [ ] Context freshness validated for brand guideline currency
+- [ ] Successful template application balanced with brand authenticity
+- [ ] Performance optimization respects brand value constraints
+
+#### Context Engineering Quality Control (Phase 3)
+- [ ] Context relevance scoring completed accurately
+- [ ] Performance feedback integration validated
+- [ ] Quality assurance automation activated properly
+- [ ] Context optimization protocols applied correctly
+- [ ] Agent briefing includes comprehensive Phase 3 enhancements
 
 ## Usage Notes
 - Router Agent uses these templates to ensure comprehensive information gathering

@@ -11,13 +11,14 @@
 ```
 1. "Process daily content request: [topic]" - status: in_progress
 2. "Gather requirements via Router Agent questioning" - status: pending
-3. "Activate [selected platform] agent for content generation" - status: pending
-4. "Generate 3 content variations with different approaches" - status: pending
-5. "Review content for brand alignment and quality" - status: pending
-6. "Present content options to human for selection" - status: pending
-7. "Generate visual prompt for approved content" - status: pending
-8. "Present final content package (text + visual JSON prompt)" - status: pending
-9. "Finalize content and visual prompt for implementation" - status: pending
+3. "Launch specialized [platform] agent via Task tool for content generation" - status: pending
+4. "Generate 3-5 content variations using platform-specific optimization" - status: pending
+5. "Apply style agent refinement if multiple tones requested" - status: pending
+6. "Review content for brand alignment and quality" - status: pending
+7. "Present organized content options to human for selection" - status: pending
+8. "Activate Visual Prompt Agent for approved content" - status: pending
+9. "Generate platform-optimized visual prompts with aspect ratios" - status: pending
+10. "Present complete content package (text + visual JSON prompt)" - status: pending
 ```
 
 **Workflow Execution:**
@@ -38,20 +39,24 @@
 1. "Analyze weekly content calendar requirements" - status: pending
 2. "Identify content themes and topics for the week" - status: pending
 3. "Map topics to optimal platforms and audiences" - status: pending
-4. "Activate LinkedIn agent for professional content batch" - status: pending
-5. "Activate Instagram agent for visual content batch" - status: pending
-6. "Activate Twitter agent for engagement content batch" - status: pending
-7. "Human selects preferred content variations from batch" - status: pending
-8. "Generate visual prompts for all approved content pieces" - status: pending
-9. "Create complete content packages (text + visual prompts)" - status: pending
-10. "Organize content packages by day/platform in calendar format" - status: pending
-11. "Present weekly content plan with visual prompts for approval" - status: pending
+4. "Launch LinkedIn Professional Agent via Task tool for professional content batch" - status: pending
+5. "Launch Instagram Visual Agent via Task tool for visual content batch" - status: pending
+6. "Launch Twitter Engagement Agent via Task tool for engagement content batch" - status: pending
+7. "Coordinate parallel agent processing and compile outputs" - status: pending
+8. "Organize multi-platform content variations by topic and platform" - status: pending
+9. "Present organized content matrix for human selection" - status: pending
+10. "Launch Visual Prompt Agent for all approved content pieces" - status: pending
+11. "Generate coordinated visual prompts with platform-specific aspect ratios" - status: pending
+12. "Create complete weekly content packages (text + visual prompts)" - status: pending
+13. "Organize content packages by day/platform in calendar format" - status: pending
 ```
 
-**Parallel Processing Points:**
-- Steps 4-6 (platform agents) run simultaneously
-- Content generation tasks can be parallelized
-- Final organization tasks run after all content is generated
+**Phase 2 Multi-Agent Coordination:**
+- Steps 4-6 (platform agents) launched simultaneously via Task tool as specialized subagents
+- Each agent generates 3-5 platform-optimized variations independently
+- Step 7 coordinates all parallel outputs for organized review
+- Visual Prompt Agent coordinates with all selected content for consistent brand visuals
+- Enhanced parallel processing reduces total workflow time while maintaining quality
 
 ---
 
