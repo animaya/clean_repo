@@ -1,14 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
 @import "tailwindcss";
 
 @theme inline {
   --color-teal-50: #D3F7FA;
   --color-yellow-50: #F8F7F0;
-  --font-sans: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  --color-green-primary: #B9FF66;
+  --color-dark-primary: #191A23;
+  --font-space-grotesk: var(--font-space-grotesk);
+  --font-sans: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
 }
 
 body {
-  font-family: 'IBM Plex Sans', ui-sans-serif, system-ui, sans-serif;
+  font-family: var(--font-space-grotesk), ui-sans-serif, system-ui, sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

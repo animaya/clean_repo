@@ -1,9 +1,16 @@
 import type { Metadata } from "next";
+import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
 
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
+});
+
 export const metadata: Metadata = {
-  title: "Как создать продукт за 90 дней | Пошаговый план",
-  description: "Пошаговый план для создания цифрового продукта с нуля до первых продаж за 90 дней. Получите структурированный подход и избежите ошибок.",
+  title: "Positivus - Digital Marketing Agency",
+  description: "Our digital marketing agency helps businesses grow and succeed online through a range of services including SEO, PPC, social media marketing, and content creation.",
 };
 
 export default function RootLayout({
@@ -12,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="ru">
-      <body className="antialiased">
+    <html lang="en">
+      <body className={`${spaceGrotesk.variable} font-sans antialiased`}>
         {children}
       </body>
     </html>
