@@ -2513,6 +2513,939 @@ export default function BrainLanding() {
           </div>
         </div>
       </section>
+
+      {/* Footer Section */}
+      <footer className="bg-[#161C2D] px-4 sm:px-8 lg:px-0">
+        {/* Desktop Layout */}
+        <div className="hidden lg:block relative" style={{ width: '1600px', height: '565px', margin: '0 auto' }}>
+          {/* Footer Content Container */}
+          <div className="absolute" style={{ left: '245px', top: '121px', width: '1077px', height: '246px' }}>
+            {/* Company Column */}
+            <div className="absolute" style={{ left: '0px', top: '0px', width: '144px', height: '206px' }}>
+              {/* Company Header */}
+              <div className="absolute" style={{ left: '0px', top: '0px', width: '68px', height: '26px' }}>
+                <span 
+                  style={{
+                    color: '#FFFFFF',
+                    opacity: 0.65,
+                    fontFamily: 'Gilroy',
+                    fontWeight: 400,
+                    fontSize: '15px',
+                    lineHeight: '26px',
+                    letterSpacing: '-0.1px'
+                  }}
+                >
+                  Company
+                </span>
+              </div>
+              
+              {/* Company Links */}
+              <div className="absolute" style={{ left: '0px', top: '46px', width: '144px', height: '160px' }}>
+                <div className="space-y-[14px]">
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    About us
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    Contact us
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    Careers
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    Press
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Product Column */}
+            <div className="absolute" style={{ left: '190px', top: '0px', width: '125px', height: '246px' }}>
+              {/* Product Header */}
+              <div className="absolute" style={{ left: '0px', top: '0px', width: '54px', height: '26px' }}>
+                <span 
+                  style={{
+                    color: '#FFFFFF',
+                    opacity: 0.65,
+                    fontFamily: 'Gilroy',
+                    fontWeight: 400,
+                    fontSize: '15px',
+                    lineHeight: '26px',
+                    letterSpacing: '-0.1px'
+                  }}
+                >
+                  Product
+                </span>
+              </div>
+              
+              {/* Product Links */}
+              <div className="absolute" style={{ left: '0px', top: '46px', width: '125px', height: '200px' }}>
+                <div className="space-y-[14px]">
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    Features
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    Pricing
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    News
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    Help desk
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    Support
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Services Column */}
+            <div className="absolute" style={{ left: '380px', top: '0px', width: '156px', height: '206px' }}>
+              {/* Services Header */}
+              <div className="absolute" style={{ left: '0px', top: '0px', width: '56px', height: '26px' }}>
+                <span 
+                  style={{
+                    color: '#FFFFFF',
+                    opacity: 0.65,
+                    fontFamily: 'Gilroy',
+                    fontWeight: 400,
+                    fontSize: '15px',
+                    lineHeight: '26px',
+                    letterSpacing: '-0.1px'
+                  }}
+                >
+                  Services
+                </span>
+              </div>
+              
+              {/* Services Links */}
+              <div className="absolute" style={{ left: '0px', top: '46px', width: '156px', height: '160px' }}>
+                <div className="space-y-[14px]">
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    Digital Marketing
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    Content Writing
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    SEO for Business
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    UI Design
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Legal Column */}
+            <div className="absolute" style={{ left: '601px', top: '0px', width: '161px', height: '166px' }}>
+              {/* Legal Header */}
+              <div className="absolute" style={{ left: '0px', top: '0px', width: '38px', height: '26px' }}>
+                <span 
+                  style={{
+                    color: '#FFFFFF',
+                    opacity: 0.65,
+                    fontFamily: 'Gilroy',
+                    fontWeight: 400,
+                    fontSize: '15px',
+                    lineHeight: '26px',
+                    letterSpacing: '-0.1px'
+                  }}
+                >
+                  Legal
+                </span>
+              </div>
+              
+              {/* Legal Links */}
+              <div className="absolute" style={{ left: '0px', top: '46px', width: '161px', height: '120px' }}>
+                <div className="space-y-[14px]">
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    Privacy Policy
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    Terms & Conditions
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    Return Policy
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Contact us Column */}
+            <div className="absolute" style={{ left: '827px', top: '0px', width: '250px', height: '126px' }}>
+              {/* Contact us Header */}
+              <div className="absolute" style={{ left: '0px', top: '0px', width: '76px', height: '26px' }}>
+                <span 
+                  style={{
+                    color: '#FFFFFF',
+                    opacity: 0.65,
+                    fontFamily: 'Gilroy',
+                    fontWeight: 400,
+                    fontSize: '15px',
+                    lineHeight: '26px',
+                    letterSpacing: '-0.1px'
+                  }}
+                >
+                  Contact us
+                </span>
+              </div>
+              
+              {/* Contact Information */}
+              <div className="absolute" style={{ left: '0px', top: '46px', width: '250px', height: '80px' }}>
+                <div className="space-y-[14px]">
+                  <a 
+                    href="mailto:support@brainwave.io" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    support@brainwave.io
+                  </a>
+                  <a 
+                    href="tel:+133-394-3439-1435" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '17px',
+                      lineHeight: '29px',
+                      letterSpacing: '-0.2px'
+                    }}
+                  >
+                    +133-394-3439-1435
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Section */}
+          <div className="absolute" style={{ left: '245px', top: '475px', width: '1111px', height: '58px' }}>
+            {/* Divider Line */}
+            <div 
+              className="absolute bg-[#292F41]"
+              style={{ left: '0px', top: '0.5px', width: '1111px', height: '2px' }}
+            />
+
+            {/* Copyright Text */}
+            <div className="absolute" style={{ left: '0px', top: '32px', width: '425px', height: '26px' }}>
+              <span 
+                style={{
+                  color: '#FFFFFF',
+                  opacity: 0.65,
+                  fontFamily: 'Gilroy',
+                  fontWeight: 400,
+                  fontSize: '15px',
+                  lineHeight: '26px',
+                  letterSpacing: '-0.1px'
+                }}
+              >
+                © 2024 Copyright, All Right Reserved, Made by Sejal_ui_ux with
+              </span>
+              <Image
+                src="/images/heart-icon.svg"
+                alt="heart"
+                width={14}
+                height={12}
+                className="inline ml-1"
+              />
+            </div>
+
+            {/* Social Media Icons */}
+            <div className="absolute" style={{ left: '948px', top: '35px', width: '162px', height: '19px' }}>
+              <div className="flex items-center gap-[30px]">
+                {/* Twitter */}
+                <a 
+                  href="#" 
+                  className="hover:opacity-70 transition-opacity"
+                  style={{ width: '17px', height: '15px' }}
+                >
+                  <Image
+                    src="/images/twitter-icon.svg"
+                    alt="Twitter"
+                    width={17}
+                    height={15}
+                    className="w-full h-full"
+                  />
+                </a>
+                
+                {/* Facebook */}
+                <a 
+                  href="#" 
+                  className="hover:opacity-70 transition-opacity"
+                  style={{ width: '19px', height: '19px' }}
+                >
+                  <Image
+                    src="/images/facebook-icon.svg"
+                    alt="Facebook"
+                    width={19}
+                    height={19}
+                    className="w-full h-full"
+                  />
+                </a>
+                
+                {/* Instagram */}
+                <a 
+                  href="#" 
+                  className="hover:opacity-70 transition-opacity"
+                  style={{ width: '18px', height: '18px' }}
+                >
+                  <Image
+                    src="/images/instagram-icon.svg"
+                    alt="Instagram"
+                    width={18}
+                    height={18}
+                    className="w-full h-full"
+                  />
+                </a>
+                
+                {/* LinkedIn */}
+                <a 
+                  href="#" 
+                  className="hover:opacity-70 transition-opacity"
+                  style={{ width: '18px', height: '18px' }}
+                >
+                  <Image
+                    src="/images/linkedin-icon.svg"
+                    alt="LinkedIn"
+                    width={18}
+                    height={18}
+                    className="w-full h-full"
+                  />
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile/Tablet Responsive Layout */}
+        <div className="block lg:hidden py-12 sm:py-16">
+          <div className="max-w-4xl mx-auto">
+            {/* Footer Links Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-8 mb-12">
+              {/* Company Column */}
+              <div>
+                <h4 
+                  className="mb-4"
+                  style={{
+                    color: '#FFFFFF',
+                    opacity: 0.65,
+                    fontFamily: 'Gilroy',
+                    fontWeight: 400,
+                    fontSize: '14px',
+                    lineHeight: '24px',
+                    letterSpacing: '-0.1px'
+                  }}
+                >
+                  Company
+                </h4>
+                <div className="space-y-3">
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    About us
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    Contact us
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    Careers
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    Press
+                  </a>
+                </div>
+              </div>
+
+              {/* Product Column */}
+              <div>
+                <h4 
+                  className="mb-4"
+                  style={{
+                    color: '#FFFFFF',
+                    opacity: 0.65,
+                    fontFamily: 'Gilroy',
+                    fontWeight: 400,
+                    fontSize: '14px',
+                    lineHeight: '24px',
+                    letterSpacing: '-0.1px'
+                  }}
+                >
+                  Product
+                </h4>
+                <div className="space-y-3">
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    Features
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    Pricing
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    News
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    Help desk
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    Support
+                  </a>
+                </div>
+              </div>
+
+              {/* Services Column */}
+              <div>
+                <h4 
+                  className="mb-4"
+                  style={{
+                    color: '#FFFFFF',
+                    opacity: 0.65,
+                    fontFamily: 'Gilroy',
+                    fontWeight: 400,
+                    fontSize: '14px',
+                    lineHeight: '24px',
+                    letterSpacing: '-0.1px'
+                  }}
+                >
+                  Services
+                </h4>
+                <div className="space-y-3">
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    Digital Marketing
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    Content Writing
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    SEO for Business
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    UI Design
+                  </a>
+                </div>
+              </div>
+
+              {/* Legal Column */}
+              <div>
+                <h4 
+                  className="mb-4"
+                  style={{
+                    color: '#FFFFFF',
+                    opacity: 0.65,
+                    fontFamily: 'Gilroy',
+                    fontWeight: 400,
+                    fontSize: '14px',
+                    lineHeight: '24px',
+                    letterSpacing: '-0.1px'
+                  }}
+                >
+                  Legal
+                </h4>
+                <div className="space-y-3">
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    Privacy Policy
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    Terms & Conditions
+                  </a>
+                  <a 
+                    href="#" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    Return Policy
+                  </a>
+                </div>
+              </div>
+
+              {/* Contact us Column */}
+              <div className="col-span-2 sm:col-span-3 md:col-span-1">
+                <h4 
+                  className="mb-4"
+                  style={{
+                    color: '#FFFFFF',
+                    opacity: 0.65,
+                    fontFamily: 'Gilroy',
+                    fontWeight: 400,
+                    fontSize: '14px',
+                    lineHeight: '24px',
+                    letterSpacing: '-0.1px'
+                  }}
+                >
+                  Contact us
+                </h4>
+                <div className="space-y-3">
+                  <a 
+                    href="mailto:support@brainwave.io" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    support@brainwave.io
+                  </a>
+                  <a 
+                    href="tel:+133-394-3439-1435" 
+                    className="block hover:opacity-80 transition-opacity"
+                    style={{
+                      color: '#FFFFFF',
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '15px',
+                      lineHeight: '24px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    +133-394-3439-1435
+                  </a>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Section Mobile */}
+            <div className="border-t border-[#292F41] pt-8">
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
+                {/* Copyright Text */}
+                <div className="flex items-center text-center sm:text-left">
+                  <span 
+                    style={{
+                      color: '#FFFFFF',
+                      opacity: 0.65,
+                      fontFamily: 'Gilroy',
+                      fontWeight: 400,
+                      fontSize: '14px',
+                      lineHeight: '22px',
+                      letterSpacing: '-0.1px'
+                    }}
+                  >
+                    © 2024 Copyright, All Right Reserved, Made by Sejal_ui_ux with
+                  </span>
+                  <Image
+                    src="/images/heart-icon.svg"
+                    alt="heart"
+                    width={12}
+                    height={10}
+                    className="inline ml-1"
+                  />
+                </div>
+
+                {/* Social Media Icons */}
+                <div className="flex items-center gap-6">
+                  {/* Twitter */}
+                  <a 
+                    href="#" 
+                    className="hover:opacity-70 transition-opacity"
+                  >
+                    <Image
+                      src="/images/twitter-icon.svg"
+                      alt="Twitter"
+                      width={15}
+                      height={13}
+                    />
+                  </a>
+                  
+                  {/* Facebook */}
+                  <a 
+                    href="#" 
+                    className="hover:opacity-70 transition-opacity"
+                  >
+                    <Image
+                      src="/images/facebook-icon.svg"
+                      alt="Facebook"
+                      width={17}
+                      height={17}
+                    />
+                  </a>
+                  
+                  {/* Instagram */}
+                  <a 
+                    href="#" 
+                    className="hover:opacity-70 transition-opacity"
+                  >
+                    <Image
+                      src="/images/instagram-icon.svg"
+                      alt="Instagram"
+                      width={16}
+                      height={16}
+                    />
+                  </a>
+                  
+                  {/* LinkedIn */}
+                  <a 
+                    href="#" 
+                    className="hover:opacity-70 transition-opacity"
+                  >
+                    <Image
+                      src="/images/linkedin-icon.svg"
+                      alt="LinkedIn"
+                      width={16}
+                      height={16}
+                    />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </footer>
     </main>
   );
 }
