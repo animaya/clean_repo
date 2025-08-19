@@ -1,0 +1,48 @@
+Take this Figma link {$ARGUMENTS} using Figma MCP and design reference {$ARGUMENTS} and recreate the next section of the landing page pixel-perfect in our project.
+
+**CRITICAL REQUIREMENTS:**
+
+0. **App is constantly running on http://localhost:3000/brain:**
+    - You build landing page "zamesin/src/app/brain/page.tsx"
+
+1. **Extract Complete Design System Data:**
+    - Get exact measurements, spacing, and positioning from Figma
+    - Document all typography specs (font-family, weight, size, line-height, letter-spacing)
+    - Record precise color values (hex codes, opacity values)
+    - Note border-radius, shadows, and visual effects
+2. **Asset Management:**
+    - Download ALL SVGs, icons, and images from the specified section
+    - Maintain original aspect ratios and dimensions
+    - Save assets to `/public/images/` with descriptive names
+    - Use Next.js Image component with proper sizing
+3. **Implementation Standards:**
+    - Use exact pixel values from Figma (no approximations)
+    - Implement responsive breakpoints if specified in design
+    - Maintain existing font system (Inter via --font-inter CSS variable)
+    - Follow existing color scheme and CSS custom properties
+4. **Code Quality:**
+    - Use semantic HTML structure
+    - Implement proper accessibility (alt texts, ARIA labels)
+    - Add hover states and transitions matching design
+    - Ensure TypeScript compatibility
+5. **Verification Process:**
+    - Take screenshots at 1440px viewport after implementation
+    - Compare pixel-by-pixel with design reference
+    - Test interactive elements (buttons, links, animations)
+    - Validate on different screen sizes
+
+**SPECIFIC ATTENTION TO:**
+
+- Button vs link styling (check if it's actually clickable or decorative)
+- Video/media element dimensions and aspect ratios
+- Background patterns, gradients, or textures
+- Icon positioning and sizing within containers
+- Text hierarchy and content structure
+- Spacing between sections and elements
+
+**DELIVERABLES:**
+
+- Pixel-perfect section implementation
+- Downloaded and organized assets
+- Screenshot comparison showing accuracy
+- Updated component with proper TypeScript types

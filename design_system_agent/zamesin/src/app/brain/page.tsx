@@ -381,6 +381,361 @@ export default function BrainLanding() {
           </div>
         </div>
       </section>
+
+      {/* Progress Tracking Section */}
+      <section className="bg-white" style={{ padding: '120px 164px' }}>
+        <div className="relative" style={{ width: '1102px', height: '424px', margin: '0 auto' }}>
+          {/* Left Side - Dashboard Image */}
+          <div className="absolute" style={{ left: '0px', top: '0px', width: '500px', height: '383px' }}>
+            {/* Background shadow containers */}
+            <div 
+              className="absolute bg-[#94A2B6] rounded-lg"
+              style={{
+                left: '0px',
+                top: '0px',
+                width: '500px',
+                height: '383px',
+                boxShadow: '0px 42px 44px -10px rgba(1, 23, 48, 0.12)'
+              }}
+            />
+            <div 
+              className="absolute bg-[#94A2B6] rounded-lg"
+              style={{
+                left: '0px',
+                top: '0px',
+                width: '500px',
+                height: '383px',
+                boxShadow: '0px 42px 44px -10px rgba(1, 23, 48, 0.12)'
+              }}
+            />
+            
+            {/* Main Dashboard Image */}
+            <div 
+              className="absolute"
+              style={{
+                left: '-1px',
+                top: '-1px',
+                width: '579px',
+                height: '417px'
+              }}
+            >
+              <Image
+                src="/images/dashboard-laptop-56586a.png"
+                alt="Dashboard Interface"
+                width={479}
+                height={317}
+                className="rounded-lg"
+                style={{
+                  width: '579px',
+                  height: '417px'
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Right Side - Content */}
+          <div className="absolute" style={{ left: '692px', top: '84px', width: '410px', height: '280px' }}>
+            {/* Main Heading */}
+            <h2 
+              className="absolute"
+              style={{
+                left: '0px',
+                top: '0px',
+                color: '#161C2D',
+                fontFamily: 'Gilroy',
+                fontWeight: 700,
+                fontSize: '36px',
+                lineHeight: '48px',
+                letterSpacing: '-1.2px',
+                width: '389px',
+                height: '96px'
+              }}
+            >
+              Track your progress with our advanced site.
+            </h2>
+
+            {/* Description */}
+            <p 
+              className="absolute"
+              style={{
+                left: '0px',
+                top: '117px',
+                color: '#161C2D',
+                opacity: 0.7,
+                fontFamily: 'Gilroy',
+                fontWeight: 400,
+                fontSize: '19px',
+                lineHeight: '32px',
+                letterSpacing: '-0.2px',
+                width: '410px',
+                height: '96px'
+              }}
+            >
+              We share common trends and strategies for improving your rental income and making sure you stay in high demand.
+            </p>
+
+            {/* CTA Button */}
+            <div className="absolute" style={{ left: '0px', top: '248px', width: '180px', height: '32px' }}>
+              <a 
+                href="#"
+                className="absolute flex items-center hover:opacity-80 transition-opacity cursor-pointer"
+                style={{
+                  left: '0px',
+                  top: '-1px',
+                  width: '177.62px',
+                  height: '32px'
+                }}
+              >
+                <span
+                  className="absolute"
+                  style={{
+                    left: '0px',
+                    top: '0px',
+                    color: '#473BF0',
+                    fontFamily: 'Gilroy',
+                    fontWeight: 700,
+                    fontSize: '21px',
+                    lineHeight: '32px',
+                    letterSpacing: '-1.2px',
+                    width: '135px',
+                    height: '32px'
+                  }}
+                >
+                  Start a free trial
+                </span>
+                
+                {/* Arrow Icon Group */}
+                <div 
+                  className="absolute"
+                  style={{
+                    left: '165px',
+                    top: '10px',
+                    width: '13px',
+                    height: '11.27px'
+                  }}
+                >
+                  {/* Arrow Path 1 */}
+                  <svg 
+                    className="absolute"
+                    width="7" 
+                    height="12" 
+                    viewBox="0 0 7 12" 
+                    fill="none"
+                    style={{
+                      left: '6.93px',
+                      top: '0px'
+                    }}
+                  >
+                    <path 
+                      d="M1 1L6 6L1 11" 
+                      stroke="#473BF0" 
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  
+                  {/* Arrow Path 2 */}
+                  <svg 
+                    className="absolute"
+                    width="13" 
+                    height="2" 
+                    viewBox="0 0 13 2" 
+                    fill="none"
+                    style={{
+                      left: '0px',
+                      top: '4.33px'
+                    }}
+                  >
+                    <path 
+                      d="M0 1H12" 
+                      stroke="#473BF0" 
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Analytics Dashboard Section */}
+      <section className="bg-white" style={{ padding: '120px 164px' }}>
+        <div className="relative" style={{ width: '1110px', height: '468px', margin: '0 auto' }}>
+          {/* Left Side - Content */}
+          <div className="absolute" style={{ left: '0px', top: '94px', width: '434px', height: '280px' }}>
+            {/* Main Heading */}
+            <h2 
+              className="absolute"
+              style={{
+                left: '0px',
+                top: '0px',
+                color: '#161C2D',
+                fontFamily: 'Gilroy',
+                fontWeight: 700,
+                fontSize: '36px',
+                lineHeight: '48px',
+                letterSpacing: '-1.2px',
+                width: '404px',
+                height: '96px'
+              }}
+            >
+              Understand your visitors fast. Take quick actions.
+            </h2>
+
+            {/* Description */}
+            <p 
+              className="absolute"
+              style={{
+                left: '0px',
+                top: '117px',
+                color: '#161C2D',
+                opacity: 0.7,
+                fontFamily: 'Gilroy',
+                fontWeight: 400,
+                fontSize: '19px',
+                lineHeight: '32px',
+                letterSpacing: '-0.2px',
+                width: '434px',
+                height: '96px'
+              }}
+            >
+              We share common trends and strategies for improving your rental income and making sure you stay in high demand.
+            </p>
+
+            {/* CTA Button */}
+            <div className="absolute" style={{ left: '0px', top: '248px', width: '180px', height: '32px' }}>
+              <a 
+                href="#"
+                className="absolute flex items-center hover:opacity-80 transition-opacity cursor-pointer"
+                style={{
+                  left: '0px',
+                  top: '-1px',
+                  width: '177.62px',
+                  height: '32px'
+                }}
+              >
+                <span
+                  className="absolute"
+                  style={{
+                    left: '0px',
+                    top: '0px',
+                    color: '#473BF0',
+                    fontFamily: 'Gilroy',
+                    fontWeight: 700,
+                    fontSize: '21px',
+                    lineHeight: '32px',
+                    letterSpacing: '-1.2px',
+                    width: '135px',
+                    height: '32px'
+                  }}
+                >
+                  Start a free trial
+                </span>
+                
+                {/* Arrow Icon Group */}
+                <div 
+                  className="absolute"
+                  style={{
+                    left: '165px',
+                    top: '10px',
+                    width: '13px',
+                    height: '11.27px'
+                  }}
+                >
+                  {/* Arrow Path 1 */}
+                  <svg 
+                    className="absolute"
+                    width="7" 
+                    height="12" 
+                    viewBox="0 0 7 12" 
+                    fill="none"
+                    style={{
+                      left: '6.93px',
+                      top: '0px'
+                    }}
+                  >
+                    <path 
+                      d="M1 1L6 6L1 11" 
+                      stroke="#473BF0" 
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                  
+                  {/* Arrow Path 2 */}
+                  <svg 
+                    className="absolute"
+                    width="13" 
+                    height="2" 
+                    viewBox="0 0 13 2" 
+                    fill="none"
+                    style={{
+                      left: '0px',
+                      top: '4.33px'
+                    }}
+                  >
+                    <path 
+                      d="M0 1H12" 
+                      stroke="#473BF0" 
+                      strokeWidth="2"
+                      strokeLinecap="round"
+                    />
+                  </svg>
+                </div>
+              </a>
+            </div>
+          </div>
+
+          {/* Right Side - Dashboard Visualization */}
+          <div className="absolute" style={{ left: '601px', top: '0px', width: '509px', height: '468px' }}>
+            {/* Background Chart Image */}
+            <div 
+              className="absolute rounded-lg"
+              style={{
+                left: '245px',
+                top: '47px',
+                width: '264px',
+                height: '382px',
+                opacity: 0.48
+              }}
+            >
+              <Image
+                src="/images/dashboard-chart-56586a.png"
+                alt="Analytics Chart"
+                width={264}
+                height={382}
+                className="rounded-lg object-cover"
+              />
+            </div>
+
+            {/* Main Dashboard Interface */}
+            <div 
+              className="absolute rounded-lg"
+              style={{
+                left: '0px',
+                top: '0px',
+                width: '327px',
+                height: '468px',
+                boxShadow: '0px 31px 34px -20px rgba(0, 0, 0, 0.09)'
+              }}
+            >
+              <div className="relative w-full h-full bg-[#161C2D] rounded-lg overflow-hidden">
+                <Image
+                  src="/images/dashboard-main-56586a.png"
+                  alt="Dashboard Interface"
+                  width={327}
+                  height={468}
+                  className="object-cover w-full h-full"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
