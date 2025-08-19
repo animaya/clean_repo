@@ -2,65 +2,114 @@ import Image from 'next/image'
 
 export default function BrainLanding() {
   return (
-    <main className="min-h-screen">
-      {/* Header */}
-      <header className="relative bg-[#161C2D] px-4 sm:px-8 lg:px-[165px] py-6">
-        <div className="max-w-[1110px] mx-auto">
-        <nav className="flex items-center justify-between h-[50px]">
-          {/* Logo */}
-          <div 
-            className="text-white"
-            style={{
-              fontFamily: 'var(--font-inter)',
-              fontWeight: 700,
-              fontSize: '24px',
-              lineHeight: '28px',
-              letterSpacing: '-0.13px',
-              width: '154px',
-              height: '28px'
-            }}
-          >
-            Brainwave.io
+    <>
+      {/* Skip Navigation Link */}
+      <a 
+        href="#main-content" 
+        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 bg-[#473BF0] text-white px-4 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#B9FF66]"
+      >
+        Skip to main content
+      </a>
+      
+      <div className="min-h-screen">
+        {/* Header */}
+        <header className="relative bg-[#161C2D] px-4 sm:px-8 lg:px-[165px] py-6" role="banner">
+          <div className="max-w-[1110px] mx-auto">
+            <nav className="flex items-center justify-between h-[50px]" role="navigation" aria-label="Main navigation">
+              {/* Logo */}
+              <div 
+                className="text-white"
+                style={{
+                  fontFamily: 'var(--font-inter)',
+                  fontWeight: 700,
+                  fontSize: '24px',
+                  lineHeight: '28px',
+                  letterSpacing: '-0.13px',
+                  width: '154px',
+                  height: '28px'
+                }}
+              >
+                <a href="#" className="focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg p-1" aria-label="Brainwave.io home">
+                  Brainwave.io
+                </a>
+              </div>
+              
+              {/* Navigation Links */}
+              <ul className="hidden lg:flex items-center space-x-8 text-white" 
+                style={{
+                  fontFamily: 'var(--font-inter)',
+                  fontWeight: 400,
+                  fontSize: '15px',
+                  lineHeight: '26px',
+                  letterSpacing: '-0.1px'
+                }}
+              >
+                <li>
+                  <a 
+                    href="#demos" 
+                    className="hover:text-[#B9FF66] transition-colors focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
+                  >
+                    Demos
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#pages" 
+                    className="hover:text-[#B9FF66] transition-colors focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
+                  >
+                    Pages
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#support" 
+                    className="hover:text-[#B9FF66] transition-colors focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
+                  >
+                    Support
+                  </a>
+                </li>
+                <li>
+                  <a 
+                    href="#contact" 
+                    className="hover:text-[#B9FF66] transition-colors focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
+                  >
+                    Contact
+                  </a>
+                </li>
+              </ul>
+              
+              {/* Mobile Menu Button */}
+              <button 
+                className="lg:hidden text-white p-2 focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg" 
+                aria-label="Open mobile menu"
+                aria-expanded="false"
+              >
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                  <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </button>
+              
+              {/* CTA Button */}
+              <button 
+                className="hidden sm:flex bg-[#473BF0] text-white rounded-lg items-center justify-center hover:bg-[#3730e6] transition-colors focus:outline-none focus:ring-2 focus:ring-[#B9FF66] lg:w-[183px] lg:h-[50px] sm:w-[140px] sm:h-[44px]"
+                style={{
+                  fontFamily: 'var(--font-inter)',
+                  fontWeight: 700,
+                  fontSize: '17px',
+                  lineHeight: '21px',
+                  letterSpacing: '-0.5px'
+                }}
+                aria-label="Start a free trial"
+              >
+                <span className="lg:block sm:hidden">Start a free trial</span>
+                <span className="lg:hidden sm:block">Try Free</span>
+              </button>
+            </nav>
           </div>
-          
-          {/* Navigation Links */}
-          <div className="hidden lg:block text-white" style={{
-              fontFamily: 'var(--font-inter)',
-              fontWeight: 400,
-              fontSize: '15px',
-              lineHeight: '26px',
-              letterSpacing: '-0.1px',
-              width: '333px',
-              height: '26px',
-              textAlign: 'right'
-            }}>
-            Demos&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pages&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Support&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Contact
-          </div>
-          
-          {/* Mobile Menu Button */}
-          <button className="lg:hidden text-white p-2" aria-label="Menu">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </button>
-          
-          {/* CTA Button */}
-          <button 
-            className="hidden sm:flex bg-[#473BF0] text-white rounded-lg items-center justify-center hover:bg-[#3730e6] transition-colors lg:w-[183px] lg:h-[50px] sm:w-[140px] sm:h-[44px]"
-            style={{
-              fontFamily: 'var(--font-inter)',
-              fontWeight: 700,
-              fontSize: '17px',
-              lineHeight: '21px',
-              letterSpacing: '-0.5px'
-            }}
-          >
-            <span className="lg:block sm:hidden">Start a free trial</span>
-            <span className="lg:hidden sm:block">Try Free</span>
-          </button>
-        </nav>
-        </div>
-      </header>
+        </header>
+
+        {/* Main Content */}
+        <main id="main-content" role="main">
 
       {/* Hero Section */}
       <section className="relative bg-[#161C2D] overflow-hidden min-h-[500px] sm:min-h-[600px] lg:h-[770px] px-4 sm:px-8 lg:px-0">
@@ -125,7 +174,7 @@ export default function BrainLanding() {
               {/* CTA Link */}
               <a 
                 href="#"
-                className="inline-flex items-center text-[#B9FF66] hover:text-[#a3e659] transition-colors"
+                className="inline-flex items-center text-[#B9FF66] hover:text-[#a3e659] transition-colors focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                 style={{
                   fontFamily: 'var(--font-inter)',
                   fontWeight: 500,
@@ -133,6 +182,7 @@ export default function BrainLanding() {
                   lineHeight: '32px',
                   letterSpacing: '-0.2px'
                 }}
+                aria-label="Start a free trial"
               >
                 Start a free trial
                 <svg 
@@ -141,6 +191,7 @@ export default function BrainLanding() {
                   height="16" 
                   viewBox="0 0 16 16" 
                   fill="none"
+                  aria-hidden="true"
                 >
                   <path 
                     d="M1 8h14m-7-7l7 7-7 7" 
@@ -169,8 +220,11 @@ export default function BrainLanding() {
               
               {/* Play Button */}
               <div className="absolute inset-0 flex items-center justify-center">
-                <button className="w-[70px] h-[70px] bg-white rounded-full flex items-center justify-center shadow-xl hover:scale-105 transition-transform">
-                  <svg width="16" height="18" viewBox="0 0 16 18" fill="none">
+                <button 
+                  className="w-[70px] h-[70px] bg-white rounded-full flex items-center justify-center shadow-xl hover:scale-105 transition-transform focus:outline-none focus:ring-2 focus:ring-[#B9FF66]"
+                  aria-label="Play video"
+                >
+                  <svg width="16" height="18" viewBox="0 0 16 18" fill="none" aria-hidden="true">
                     <path d="M15 7.26795C16.3333 8.03775 16.3333 9.96225 15 10.732L3 17.1962C1.66667 17.966 8.88178e-07 17.0037 8.88178e-07 15.4641L8.88178e-07 2.5359C8.88178e-07 0.996304 1.66667 0.0339827 3 0.803848L15 7.26795Z" fill="#473BF0"/>
                   </svg>
                 </button>
@@ -181,12 +235,15 @@ export default function BrainLanding() {
       </section>
 
       {/* Features Section */}
-      <section className="bg-white" style={{ padding: '120px 164px' }}>
-        <div className="flex items-start justify-center gap-[24px]" style={{ width: '1112px', height: '135px', margin: '0 auto' }}>
+      <section className="bg-white" style={{ padding: '120px 164px' }} aria-labelledby="features-heading">
+        {/* Visually hidden section heading for screen readers */}
+        <h2 id="features-heading" className="sr-only">Key Features</h2>
+        
+        <div className="flex items-start justify-center gap-[24px]" style={{ width: '1112px', height: '135px', margin: '0 auto' }} role="list">
           {/* Feature 1 - Organize your campaigns */}
-          <div className="flex items-start" style={{ width: '344px', height: '134px' }}>
+          <article className="flex items-start" style={{ width: '344px', height: '134px' }} role="listitem">
             {/* Icon Container */}
-            <div className="relative flex-shrink-0 mr-[25px]" style={{ width: '35px', height: '37px', marginTop: '9px' }}>
+            <div className="relative flex-shrink-0 mr-[25px]" style={{ width: '35px', height: '37px', marginTop: '9px' }} aria-hidden="true">
               {/* Layers Icon */}
               <div className="absolute inset-0">
                 <Image
@@ -239,12 +296,12 @@ export default function BrainLanding() {
                 With lots of unique blocks, you can easily build a page without coding. Build your next landing page.
               </p>
             </div>
-          </div>
+          </article>
 
           {/* Feature 2 - Manage customers */}
-          <div className="flex items-start" style={{ width: '341px', height: '134px' }}>
+          <article className="flex items-start" style={{ width: '341px', height: '134px' }} role="listitem">
             {/* Icon Container */}
-            <div className="relative flex-shrink-0 mr-[25px]" style={{ width: '37px', height: '38px', marginTop: '9px' }}>
+            <div className="relative flex-shrink-0 mr-[25px]" style={{ width: '37px', height: '38px', marginTop: '9px' }} aria-hidden="true">
               {/* Sync Icon */}
               <div className="absolute inset-0">
                 <Image
@@ -311,12 +368,12 @@ export default function BrainLanding() {
                 With lots of unique blocks, you can easily build a page without coding. Build your next landing page.
               </p>
             </div>
-          </div>
+          </article>
 
           {/* Feature 3 - Track progress fast */}
-          <div className="flex items-start" style={{ width: '353px', height: '134px' }}>
+          <article className="flex items-start" style={{ width: '353px', height: '134px' }} role="listitem">
             {/* Icon Container */}
-            <div className="relative flex-shrink-0 mr-[26px]" style={{ width: '34px', height: '34px', marginTop: '9px' }}>
+            <div className="relative flex-shrink-0 mr-[26px]" style={{ width: '34px', height: '34px', marginTop: '9px' }} aria-hidden="true">
               {/* Chart Bars Icon */}
               <div className="absolute inset-0">
                 <Image
@@ -383,7 +440,7 @@ export default function BrainLanding() {
                 With lots of unique blocks, you can easily build a page without coding. Build your next landing page.
               </p>
             </div>
-          </div>
+          </article>
         </div>
       </section>
 
@@ -483,13 +540,14 @@ export default function BrainLanding() {
             <div className="absolute" style={{ left: '0px', top: '248px', width: '180px', height: '32px' }}>
               <a 
                 href="#"
-                className="absolute flex items-center hover:opacity-80 transition-opacity cursor-pointer"
+                className="absolute flex items-center hover:opacity-80 transition-opacity cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                 style={{
                   left: '0px',
                   top: '-1px',
                   width: '177.62px',
                   height: '32px'
                 }}
+                aria-label="Start a free trial"
               >
                 <span
                   className="absolute"
@@ -2182,7 +2240,7 @@ export default function BrainLanding() {
                   </div>
                 </div>
 
-                <button className="w-full bg-[#473BF0] bg-opacity-[0.08] text-[#473BF0] rounded-lg py-3 px-6 flex items-center justify-center hover:bg-[#473BF0] hover:text-white transition-all mb-4">
+                <button className="w-full bg-[#473BF0] bg-opacity-[0.08] text-[#473BF0] rounded-lg py-3 px-6 flex items-center justify-center hover:bg-[#473BF0] hover:text-white transition-all mb-4 focus:outline-none focus:ring-2 focus:ring-[#B9FF66]" aria-label="Start free trial">
                   <span className="font-bold text-sm mr-2">Start Free Trial</span>
                   <div className="relative w-3 h-3">
                     <Image src="/images/arrow-right-path1.svg" alt="" width={6} height={10} className="absolute right-0" />
@@ -2280,7 +2338,7 @@ export default function BrainLanding() {
                   </div>
                 </div>
 
-                <button className="w-full bg-[#473BF0] text-white rounded-lg py-3 px-6 flex items-center justify-center hover:bg-[#3730e6] transition-colors mb-4">
+                <button className="w-full bg-[#473BF0] text-white rounded-lg py-3 px-6 flex items-center justify-center hover:bg-[#3730e6] transition-colors mb-4 focus:outline-none focus:ring-2 focus:ring-[#B9FF66]" aria-label="Start free trial">
                   <span className="font-bold text-sm mr-2">Start Free Trial</span>
                   <div className="relative w-3 h-3">
                     <svg className="absolute" width="6" height="10" viewBox="0 0 7 12" fill="none" style={{right: '0px', top: '0px'}}>
@@ -2379,7 +2437,7 @@ export default function BrainLanding() {
                   </div>
                 </div>
 
-                <button className="w-full bg-[#473BF0] bg-opacity-[0.08] text-[#473BF0] rounded-lg py-3 px-6 flex items-center justify-center hover:bg-[#473BF0] hover:text-white transition-all mb-4">
+                <button className="w-full bg-[#473BF0] bg-opacity-[0.08] text-[#473BF0] rounded-lg py-3 px-6 flex items-center justify-center hover:bg-[#473BF0] hover:text-white transition-all mb-4 focus:outline-none focus:ring-2 focus:ring-[#B9FF66]" aria-label="Start free trial">
                   <span className="font-bold text-sm mr-2">Start Free Trial</span>
                   <div className="relative w-3 h-3">
                     <Image src="/images/arrow-right-path1.svg" alt="" width={6} height={10} className="absolute right-0" />
@@ -2518,9 +2576,10 @@ export default function BrainLanding() {
           </div>
         </div>
       </section>
+        </main>
 
       {/* Footer Section */}
-      <footer className="bg-[#161C2D] px-4 sm:px-8 lg:px-0">
+      <footer className="bg-[#161C2D] px-4 sm:px-8 lg:px-0" role="contentinfo">
         {/* Desktop Layout */}
         <div className="hidden lg:block relative" style={{ width: '1600px', height: '565px', margin: '0 auto' }}>
           {/* Footer Content Container */}
@@ -2549,7 +2608,7 @@ export default function BrainLanding() {
                 <div className="space-y-[14px]">
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2563,7 +2622,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2577,7 +2636,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2591,7 +2650,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2631,7 +2690,7 @@ export default function BrainLanding() {
                 <div className="space-y-[14px]">
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2645,7 +2704,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2659,7 +2718,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2673,7 +2732,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2687,7 +2746,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2727,7 +2786,7 @@ export default function BrainLanding() {
                 <div className="space-y-[14px]">
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2741,7 +2800,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2755,7 +2814,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2769,7 +2828,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2809,7 +2868,7 @@ export default function BrainLanding() {
                 <div className="space-y-[14px]">
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2823,7 +2882,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2837,7 +2896,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2877,7 +2936,7 @@ export default function BrainLanding() {
                 <div className="space-y-[14px]">
                   <a 
                     href="mailto:support@brainwave.io" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -2891,7 +2950,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="tel:+133-394-3439-1435" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3031,7 +3090,7 @@ export default function BrainLanding() {
                 <div className="space-y-3">
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3045,7 +3104,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3059,7 +3118,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3073,7 +3132,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3107,7 +3166,7 @@ export default function BrainLanding() {
                 <div className="space-y-3">
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3121,7 +3180,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3135,7 +3194,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3149,7 +3208,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3163,7 +3222,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3197,7 +3256,7 @@ export default function BrainLanding() {
                 <div className="space-y-3">
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3211,7 +3270,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3225,7 +3284,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3239,7 +3298,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3273,7 +3332,7 @@ export default function BrainLanding() {
                 <div className="space-y-3">
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3287,7 +3346,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3301,7 +3360,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="#" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3335,7 +3394,7 @@ export default function BrainLanding() {
                 <div className="space-y-3">
                   <a 
                     href="mailto:support@brainwave.io" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3349,7 +3408,7 @@ export default function BrainLanding() {
                   </a>
                   <a 
                     href="tel:+133-394-3439-1435" 
-                    className="block hover:opacity-80 transition-opacity"
+                    className="block hover:opacity-80 transition-opacity focus:outline-none focus:ring-2 focus:ring-[#B9FF66] rounded-lg px-2 py-1"
                     style={{
                       color: '#FFFFFF',
                       fontFamily: 'Gilroy',
@@ -3451,6 +3510,7 @@ export default function BrainLanding() {
           </div>
         </div>
       </footer>
-    </main>
+      </div>
+    </>
   );
 }
