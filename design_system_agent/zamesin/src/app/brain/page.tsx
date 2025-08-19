@@ -4,8 +4,9 @@ export default function BrainLanding() {
   return (
     <main className="min-h-screen">
       {/* Header */}
-      <header className="relative bg-[#161C2D] px-[165px] py-6">
-        <nav className="flex items-center justify-between" style={{ width: '1110px', height: '50px' }}>
+      <header className="relative bg-[#161C2D] px-4 sm:px-8 lg:px-[165px] py-6">
+        <div className="max-w-[1110px] mx-auto">
+        <nav className="flex items-center justify-between h-[50px]">
           {/* Logo */}
           <div 
             className="text-white"
@@ -23,9 +24,7 @@ export default function BrainLanding() {
           </div>
           
           {/* Navigation Links */}
-          <div 
-            className="text-white"
-            style={{
+          <div className="hidden lg:block text-white" style={{
               fontFamily: 'var(--font-inter)',
               fontWeight: 400,
               fontSize: '15px',
@@ -34,17 +33,21 @@ export default function BrainLanding() {
               width: '333px',
               height: '26px',
               textAlign: 'right'
-            }}
-          >
+            }}>
             Demos&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Pages&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Support&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Contact
           </div>
           
+          {/* Mobile Menu Button */}
+          <button className="lg:hidden text-white p-2" aria-label="Menu">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </button>
+          
           {/* CTA Button */}
           <button 
-            className="bg-[#473BF0] text-white rounded-lg flex items-center justify-center hover:bg-[#3730e6] transition-colors"
+            className="hidden sm:flex bg-[#473BF0] text-white rounded-lg items-center justify-center hover:bg-[#3730e6] transition-colors lg:w-[183px] lg:h-[50px] sm:w-[140px] sm:h-[44px]"
             style={{
-              width: '183px',
-              height: '50px',
               fontFamily: 'var(--font-inter)',
               fontWeight: 700,
               fontSize: '17px',
@@ -52,13 +55,15 @@ export default function BrainLanding() {
               letterSpacing: '-0.5px'
             }}
           >
-            Start a free trial
+            <span className="lg:block sm:hidden">Start a free trial</span>
+            <span className="lg:hidden sm:block">Try Free</span>
           </button>
         </nav>
+        </div>
       </header>
 
       {/* Hero Section */}
-      <section className="relative bg-[#161C2D] overflow-hidden" style={{ height: '770px' }}>
+      <section className="relative bg-[#161C2D] overflow-hidden min-h-[500px] sm:min-h-[600px] lg:h-[770px] px-4 sm:px-8 lg:px-0">
         {/* Background */}
         <div className="absolute inset-0">
           {/* Subtle dot patterns on the right side */}
