@@ -174,6 +174,213 @@ export default function BrainLanding() {
           </div>
         </div>
       </section>
+
+      {/* Features Section */}
+      <section className="bg-white" style={{ padding: '120px 164px' }}>
+        <div className="flex items-start justify-center gap-[24px]" style={{ width: '1112px', height: '135px', margin: '0 auto' }}>
+          {/* Feature 1 - Organize your campaigns */}
+          <div className="flex items-start" style={{ width: '344px', height: '134px' }}>
+            {/* Icon Container */}
+            <div className="relative flex-shrink-0 mr-[25px]" style={{ width: '35px', height: '37px', marginTop: '9px' }}>
+              {/* Layers Icon */}
+              <div className="absolute inset-0">
+                <Image
+                  src="/images/layers-icon-overlay.svg"
+                  alt=""
+                  width={35}
+                  height={27}
+                  style={{ position: 'absolute', top: '0px', left: '0px' }}
+                />
+                <Image
+                  src="/images/layers-icon.svg"
+                  alt=""
+                  width={35}
+                  height={16}
+                  style={{ position: 'absolute', top: '21px', left: '0px' }}
+                />
+              </div>
+            </div>
+            
+            {/* Content */}
+            <div className="flex-1">
+              <h3 
+                className="mb-[15px]"
+                style={{
+                  color: '#161C2D',
+                  fontFamily: 'Gilroy',
+                  fontWeight: 700,
+                  fontSize: '21px',
+                  lineHeight: '32px',
+                  letterSpacing: '-0.5px',
+                  width: '240px',
+                  height: '32px'
+                }}
+              >
+                Organize your campaigns
+              </h3>
+              <p 
+                style={{
+                  color: '#161C2D',
+                  opacity: 0.7,
+                  fontFamily: 'Gilroy',
+                  fontWeight: 400,
+                  fontSize: '17px',
+                  lineHeight: '29px',
+                  letterSpacing: '-0.2px',
+                  width: '283px',
+                  height: '87px'
+                }}
+              >
+                With lots of unique blocks, you can easily build a page without coding. Build your next landing page.
+              </p>
+            </div>
+          </div>
+
+          {/* Feature 2 - Manage customers */}
+          <div className="flex items-start" style={{ width: '341px', height: '134px' }}>
+            {/* Icon Container */}
+            <div className="relative flex-shrink-0 mr-[25px]" style={{ width: '37px', height: '38px', marginTop: '9px' }}>
+              {/* Sync Icon */}
+              <div className="absolute inset-0">
+                <Image
+                  src="/images/sync-icon-main.svg"
+                  alt=""
+                  width={18}
+                  height={21}
+                  style={{ position: 'absolute', top: '0px', left: '8px' }}
+                />
+                <Image
+                  src="/images/sync-icon-part1.svg"
+                  alt=""
+                  width={13}
+                  height={7}
+                  style={{ position: 'absolute', top: '23px', left: '24px' }}
+                />
+                <Image
+                  src="/images/sync-icon-part2.svg"
+                  alt=""
+                  width={13}
+                  height={7}
+                  style={{ position: 'absolute', top: '31px', left: '24px' }}
+                />
+                <Image
+                  src="/images/sync-icon-base.svg"
+                  alt=""
+                  width={25}
+                  height={12}
+                  style={{ position: 'absolute', top: '24px', left: '0px' }}
+                />
+              </div>
+            </div>
+            
+            {/* Content */}
+            <div className="flex-1">
+              <h3 
+                className="mb-[15px]"
+                style={{
+                  color: '#161C2D',
+                  fontFamily: 'Gilroy',
+                  fontWeight: 700,
+                  fontSize: '21px',
+                  lineHeight: '32px',
+                  letterSpacing: '-0.5px',
+                  width: '179px',
+                  height: '32px'
+                }}
+              >
+                Manage customers
+              </h3>
+              <p 
+                style={{
+                  color: '#161C2D',
+                  opacity: 0.7,
+                  fontFamily: 'Gilroy',
+                  fontWeight: 400,
+                  fontSize: '17px',
+                  lineHeight: '29px',
+                  letterSpacing: '-0.2px',
+                  width: '275px',
+                  height: '87px'
+                }}
+              >
+                With lots of unique blocks, you can easily build a page without coding. Build your next landing page.
+              </p>
+            </div>
+          </div>
+
+          {/* Feature 3 - Track progress fast */}
+          <div className="flex items-start" style={{ width: '353px', height: '134px' }}>
+            {/* Icon Container */}
+            <div className="relative flex-shrink-0 mr-[26px]" style={{ width: '34px', height: '34px', marginTop: '9px' }}>
+              {/* Chart Bars Icon */}
+              <div className="absolute inset-0">
+                <Image
+                  src="/images/chart-bar-1.svg"
+                  alt=""
+                  width={7}
+                  height={15}
+                  style={{ position: 'absolute', top: '19px', left: '14px' }}
+                />
+                <Image
+                  src="/images/chart-bar-2.svg"
+                  alt=""
+                  width={7}
+                  height={7}
+                  style={{ position: 'absolute', top: '27px', left: '0px' }}
+                />
+                <Image
+                  src="/images/chart-bar-3.svg"
+                  alt=""
+                  width={7}
+                  height={22}
+                  style={{ position: 'absolute', top: '12px', left: '27px' }}
+                />
+                <Image
+                  src="/images/chart-bar-base.svg"
+                  alt=""
+                  width={25}
+                  height={13}
+                  style={{ position: 'absolute', top: '0px', left: '3px' }}
+                />
+              </div>
+            </div>
+            
+            {/* Content */}
+            <div className="flex-1">
+              <h3 
+                className="mb-[15px]"
+                style={{
+                  color: '#161C2D',
+                  fontFamily: 'Gilroy',
+                  fontWeight: 700,
+                  fontSize: '21px',
+                  lineHeight: '32px',
+                  letterSpacing: '-0.5px',
+                  width: '175px',
+                  height: '32px'
+                }}
+              >
+                Track progress fast
+              </h3>
+              <p 
+                style={{
+                  color: '#161C2D',
+                  opacity: 0.7,
+                  fontFamily: 'Gilroy',
+                  fontWeight: 400,
+                  fontSize: '17px',
+                  lineHeight: '29px',
+                  letterSpacing: '-0.2px',
+                  width: '292px',
+                  height: '87px'
+                }}
+              >
+                With lots of unique blocks, you can easily build a page without coding. Build your next landing page.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   );
 }
