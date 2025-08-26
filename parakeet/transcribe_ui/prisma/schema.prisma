@@ -1,0 +1,136 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model UploadedFiles {
+  id                     Int      @id @default(autoincrement())
+  filename               String
+  originalFilename       String
+  originalFormat         String
+  convertedFormat        String?
+  fileSize               Int
+  convertedFileSize      Int?
+  filePath               String
+  convertedFilePath      String?
+  uploadMethod           String   // 'drag_drop' or 'url_download'
+  sourceUrl              String?
+  uploadDate             DateTime @default(now())
+  conversionStartedAt    DateTime?
+  conversionCompletedAt  DateTime?
+  status                 String   @default("uploaded") // 'uploaded', 'converting', 'converted', 'conversion_failed', 'ready_for_transcription'
+  errorMessage           String?
+  checksum               String?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  // Relationships
+  transcriptionJobs      TranscriptionJobs[]
+  fileMetadata           FileMetadata[]
+  sessionFiles           SessionFiles[]
+
+  @@index([status])
+  @@index([uploadDate])
+  @@index([filename])
+  @@map("uploaded_files")
+}
+
+model TranscriptionJobs {
+  id                     Int      @id @default(autoincrement())
+  fileId                 Int
+  jobUuid                String   @unique
+  modelName              String   @default("mlx-community/parakeet-tdt-0.6b-v3")
+  outputFormat           String   @default("srt") // 'srt', 'txt', 'vtt', 'json'
+  outputFilePath         String?
+  status                 String   @default("queued") // 'queued', 'processing', 'completed', 'failed', 'cancelled'
+  progressPercentage     Int      @default(0)
+  estimatedDuration      Int?
+  actualDuration         Int?
+  errorMessage           String?
+  transcriptionText      String?
+  wordCount              Int?
+  confidenceScore        Float?
+  createdAt              DateTime @default(now())
+  startedAt              DateTime?
+  completedAt            DateTime?
+  updatedAt              DateTime @updatedAt
+
+  // Relationships
+  uploadedFile           UploadedFiles @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+  @@index([fileId])
+  @@index([jobUuid])
+  @@index([createdAt])
+  @@map("transcription_jobs")
+}
+
+model FileMetadata {
+  id                     Int      @id @default(autoincrement())
+  fileId                 Int
+  durationSeconds        Float?
+  sampleRate             Int?
+  channels               Int?
+  bitRate                Int?
+  codec                  String?
+  formatLongName         String?
+  tagsTitle              String?
+  tagsArtist             String?
+  tagsAlbum              String?
+  tagsDate               String?
+  tagsGenre              String?
+  languageDetected       String?
+  audioQualityScore      Float?
+  noiseLevel             String? // 'low', 'medium', 'high'
+  extractedAt            DateTime @default(now())
+
+  // Relationships
+  uploadedFile           UploadedFiles @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@index([fileId])
+  @@index([durationSeconds])
+  @@index([languageDetected])
+  @@map("file_metadata")
+}
+
+model UploadSessions {
+  id                     Int      @id @default(autoincrement())
+  sessionUuid            String   @unique
+  totalFiles             Int      @default(0)
+  completedFiles         Int      @default(0)
+  failedFiles            Int      @default(0)
+  totalSizeBytes         Int      @default(0)
+  processedSizeBytes     Int      @default(0)
+  status                 String   @default("active") // 'active', 'completed', 'failed', 'cancelled'
+  createdAt              DateTime @default(now())
+  completedAt            DateTime?
+  updatedAt              DateTime @updatedAt
+
+  // Relationships
+  sessionFiles           SessionFiles[]
+
+  @@index([status])
+  @@index([sessionUuid])
+  @@map("upload_sessions")
+}
+
+model SessionFiles {
+  id                     Int      @id @default(autoincrement())
+  sessionId              Int
+  fileId                 Int
+  orderIndex             Int
+  createdAt              DateTime @default(now())
+
+  // Relationships
+  uploadSession          UploadSessions @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  uploadedFile           UploadedFiles  @relation(fields: [fileId], references: [id], onDelete: Cascade)
+
+  @@unique([sessionId, fileId])
+  @@index([sessionId])
+  @@index([fileId])
+  @@map("session_files")
+}
