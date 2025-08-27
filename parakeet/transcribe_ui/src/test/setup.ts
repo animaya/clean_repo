@@ -1,5 +1,10 @@
 import { beforeAll, afterEach, afterAll, beforeEach } from 'vitest'
 import { PrismaClient } from '@prisma/client'
+import '@testing-library/jest-dom'
+
+// Setup React for testing
+import React from 'react'
+global.React = React
 
 // Use unique database for each test run to avoid conflicts
 const testDbName = `test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.db`
