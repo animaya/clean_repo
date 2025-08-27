@@ -1,6 +1,6 @@
 # Product Roadmap
 
-> Last Updated: 2025-08-26
+> Last Updated: 2025-08-27
 > Version: 1.0.0
 > Status: In Progress
 
@@ -16,7 +16,7 @@
   - URL input for remote audio/video files
   - Support for MP3, WAV formats
   - File validation and error handling
-  - Progress indicators during upload
+  - [x] Progress indicators during upload
 
   **Conversion for unsupported filetypes**
   - File type check for parakeet cli
@@ -35,7 +35,7 @@
   - Clean, responsive interface using Tailwind CSS
   - File management dashboard
   - Download completed transcriptions
-  - Processing status indicators
+  - [x] Processing status indicators
 
 - [x] **Local Storage System**
   - [x] SQLite integration for transcription history

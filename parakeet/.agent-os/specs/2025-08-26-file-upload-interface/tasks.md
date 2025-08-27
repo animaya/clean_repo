@@ -37,15 +37,15 @@ These are the tasks to be completed for the spec detailed in @.agent-os/specs/20
   - [x] 3.7 Add cleanup for temporary conversion files
   - [x] 3.8 Verify all tests pass
 
-- [ ] 4. Real-time Progress Tracking System
-  - [ ] 4.1 Write tests for WebSocket/SSE progress tracking
-  - [ ] 4.2 Implement WebSocket server for real-time communication
-  - [ ] 4.3 Create progress tracking service with event emission
-  - [ ] 4.4 Add client-side WebSocket connection management
-  - [ ] 4.5 Implement progress state management in React components
-  - [ ] 4.6 Create fallback SSE implementation for compatibility
-  - [ ] 4.7 Add connection retry and error recovery logic
-  - [ ] 4.8 Verify all tests pass
+- [x] 4. Real-time Progress Tracking System
+  - [x] 4.1 Write tests for WebSocket/SSE progress tracking
+  - [x] 4.2 Implement WebSocket server for real-time communication
+  - [x] 4.3 Create progress tracking service with event emission
+  - [x] 4.4 Add client-side WebSocket connection management
+  - [x] 4.5 Implement progress state management in React components
+  - [x] 4.6 Create fallback SSE implementation for compatibility
+  - [x] 4.7 Add connection retry and error recovery logic
+  - [x] 4.8 Verify all tests pass
 
 - [ ] 5. Drag-and-Drop Upload Interface
   - [ ] 5.1 Write tests for upload components and user interactions
