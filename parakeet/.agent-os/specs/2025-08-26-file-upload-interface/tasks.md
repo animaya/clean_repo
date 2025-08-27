@@ -17,15 +17,15 @@ These are the tasks to be completed for the spec detailed in @.agent-os/specs/20
   - [x] 1.7 Create file duplicate detection and handling
   - [x] 1.8 Verify all tests pass
 
-- [ ] 2. Core Upload API Endpoints
-  - [ ] 2.1 Write tests for upload API endpoints and validation
-  - [ ] 2.2 Implement POST /api/upload endpoint with multipart/form-data support
-  - [ ] 2.3 Create URL-based upload endpoint POST /api/upload/url
-  - [ ] 2.4 Add file validation middleware (format, size, duration limits)
-  - [ ] 2.5 Implement upload session tracking and management
-  - [ ] 2.6 Create error handling and response standardization
-  - [ ] 2.7 Add rate limiting and security measures
-  - [ ] 2.8 Verify all tests pass
+- [x] 2. Core Upload API Endpoints
+  - [x] 2.1 Write tests for upload API endpoints and validation
+  - [x] 2.2 Implement POST /api/upload endpoint with multipart/form-data support
+  - [x] 2.3 Create URL-based upload endpoint POST /api/upload/url
+  - [x] 2.4 Add file validation middleware (format, size, duration limits)
+  - [x] 2.5 Implement upload session tracking and management
+  - [x] 2.6 Create error handling and response standardization
+  - [x] 2.7 Add rate limiting and security measures
+  - [x] 2.8 Verify all tests pass
 
 - [ ] 3. FFmpeg Conversion Pipeline
   - [ ] 3.1 Write tests for audio conversion service and format detection
