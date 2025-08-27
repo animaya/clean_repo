@@ -27,15 +27,15 @@ These are the tasks to be completed for the spec detailed in @.agent-os/specs/20
   - [x] 2.7 Add rate limiting and security measures
   - [x] 2.8 Verify all tests pass
 
-- [ ] 3. FFmpeg Conversion Pipeline
-  - [ ] 3.1 Write tests for audio conversion service and format detection
-  - [ ] 3.2 Create FFmpeg wrapper service with format conversion capabilities
-  - [ ] 3.3 Implement audio format detection and validation
-  - [ ] 3.4 Add conversion queue system with job management
-  - [ ] 3.5 Create progress tracking for conversion operations
-  - [ ] 3.6 Implement error handling for failed conversions
-  - [ ] 3.7 Add cleanup for temporary conversion files
-  - [ ] 3.8 Verify all tests pass
+- [x] 3. FFmpeg Conversion Pipeline
+  - [x] 3.1 Write tests for audio conversion service and format detection
+  - [x] 3.2 Create FFmpeg wrapper service with format conversion capabilities
+  - [x] 3.3 Implement audio format detection and validation
+  - [x] 3.4 Add conversion queue system with job management
+  - [x] 3.5 Create progress tracking for conversion operations
+  - [x] 3.6 Implement error handling for failed conversions
+  - [x] 3.7 Add cleanup for temporary conversion files
+  - [x] 3.8 Verify all tests pass
 
 - [ ] 4. Real-time Progress Tracking System
   - [ ] 4.1 Write tests for WebSocket/SSE progress tracking

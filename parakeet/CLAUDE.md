@@ -89,3 +89,5 @@ npm run build
 npm start
 ```
 
+
+- best practices are in this doc @.agent-os/standards/best-practices.md
