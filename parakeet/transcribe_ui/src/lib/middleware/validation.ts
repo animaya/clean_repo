@@ -3,6 +3,7 @@ import path from 'path'
 import crypto from 'crypto'
 
 export type SupportedAudioFormat = 'mp3' | 'wav' | 'm4a' | 'flac' | 'ogg' | 'wma'
+export type SupportedVideoFormat = 'mp4' | 'avi' | 'mov' | 'mkv' | 'webm'
 
 export interface FileValidationResult {
   isValid: boolean
@@ -35,15 +36,23 @@ export interface SanitizedFile {
 }
 
 const SUPPORTED_AUDIO_FORMATS: SupportedAudioFormat[] = ['mp3', 'wav', 'm4a', 'flac', 'ogg', 'wma']
+const SUPPORTED_VIDEO_FORMATS: SupportedVideoFormat[] = ['mp4', 'avi', 'mov', 'mkv', 'webm']
+const SUPPORTED_FORMATS = [...SUPPORTED_AUDIO_FORMATS, ...SUPPORTED_VIDEO_FORMATS]
 const SUPPORTED_MIME_TYPES = [
+  // Audio formats
   'audio/mp3', 'audio/mpeg', 'audio/mp3',
   'audio/wav', 'audio/wave', 'audio/x-wav',
   'audio/m4a', 'audio/mp4', 'audio/aac',
   'audio/flac', 'audio/x-flac',
   'audio/ogg', 'audio/vorbis',
-  'audio/x-ms-wma', 'audio/wma'
+  'audio/x-ms-wma', 'audio/wma',
+  // Video formats (for audio extraction)
+  'video/mp4', 'video/x-msvideo', 'video/avi',
+  'video/quicktime', 'video/x-ms-wmv',
+  'video/x-matroska', 'video/mkv',
+  'video/webm'
 ]
-const MAX_FILE_SIZE = 100 * 1024 * 1024 // 100MB
+const MAX_FILE_SIZE = 300 * 1024 * 1024 // 300MB
 const MAX_FILES_PER_REQUEST = 10
 const SUSPICIOUS_EXTENSIONS = ['.exe', '.bat', '.sh', '.cmd', '.scr', '.com', '.pif', '.js', '.vbs']
 
@@ -138,8 +147,8 @@ function validateSingleFile(file: File): { isValid: boolean; errors: string[]; w
 
   // Check file format by extension
   const extension = getFileExtension(file.name)
-  if (extension && !SUPPORTED_AUDIO_FORMATS.includes(extension as SupportedAudioFormat)) {
-    errors.push(`Unsupported file format: ${file.name}`)
+  if (extension && !SUPPORTED_FORMATS.includes(extension as any)) {
+    errors.push(`Unsupported file format: ${file.name}. Supported formats: ${SUPPORTED_FORMATS.join(', ')}`)
   } else if (!extension) {
     warnings.push(`File has no extension: ${file.name}`)
   }
@@ -181,13 +190,15 @@ export async function validateFileContent(file: File): Promise<{ isValid: boolea
       return { isValid: false, error: 'Could not detect file type from content' }
     }
 
-    // Check if detected type matches expected audio formats
+    // Check if detected type matches expected audio or video formats
     const isAudioFile = detectedType.mime.startsWith('audio/')
+    const isVideoFile = detectedType.mime.startsWith('video/')
+    const isValidFile = isAudioFile || isVideoFile
     
     return {
-      isValid: isAudioFile,
+      isValid: isValidFile,
       detectedType: detectedType.mime,
-      error: isAudioFile ? undefined : `File content is ${detectedType.mime}, not an audio file`
+      error: isValidFile ? undefined : `File content is ${detectedType.mime}, not an audio or video file`
     }
   } catch (error) {
     return { isValid: false, error: 'Failed to analyze file content' }
@@ -262,12 +273,19 @@ function getFileExtension(filename: string): string {
  */
 function getMimeTypesForExtension(extension: string): string[] {
   const mimeMap: Record<string, string[]> = {
+    // Audio formats
     'mp3': ['audio/mp3', 'audio/mpeg'],
     'wav': ['audio/wav', 'audio/wave', 'audio/x-wav'],
     'm4a': ['audio/m4a', 'audio/mp4', 'audio/aac'],
     'flac': ['audio/flac'],
     'ogg': ['audio/ogg', 'audio/vorbis'],
-    'wma': ['audio/x-ms-wma']
+    'wma': ['audio/x-ms-wma'],
+    // Video formats
+    'mp4': ['video/mp4', 'audio/mp4'],
+    'avi': ['video/x-msvideo', 'video/avi'],
+    'mov': ['video/quicktime'],
+    'mkv': ['video/x-matroska'],
+    'webm': ['video/webm']
   }
   
   return mimeMap[extension] || []

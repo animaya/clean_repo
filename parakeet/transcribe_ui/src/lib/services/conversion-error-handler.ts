@@ -63,7 +63,7 @@ export class ConversionErrorHandler {
     const shouldRetry = this.shouldRetryError(errorInfo, attemptNumber)
     
     // Attempt recovery if possible
-    let recoveryResult: ConversionResult | undefined
+    let recoveryResult: ConversionResult | null = null
     if (errorInfo.canRecover && shouldRetry) {
       recoveryResult = await this.attemptRecovery(error, job)
     }
@@ -74,7 +74,7 @@ export class ConversionErrorHandler {
       userMessage: this.generateUserFriendlyMessage(errorInfo, job),
       technicalDetails: this.generateTechnicalDetails(error, job),
       suggestedActions: this.generateSuggestedActions(errorInfo, job),
-      recoveryResult
+      ...(recoveryResult && { recoveryResult })
     }
   }
 
@@ -327,7 +327,7 @@ export class ConversionErrorHandler {
       'INVALID_CHANNELS': 'Invalid channel configuration. Please use mono (1) or stereo (2) channels.',
       'EMPTY_FILE': 'The selected file appears to be empty or corrupted.',
       'FILE_TOO_SMALL': 'The file is too small to be a valid audio file.',
-      'FILE_TOO_LARGE': 'The file is too large. Maximum supported size is 100MB.',
+      'FILE_TOO_LARGE': 'The file is too large. Maximum supported size is 300MB.',
       'MEMORY_ERROR': 'Conversion failed due to insufficient memory. Try with a smaller file or lower quality settings.',
       'NETWORK_ERROR': 'Network connection issue. Please check your internet connection and try again.',
       'TIMEOUT_ERROR': 'Conversion timed out. This might happen with very large files.',
@@ -400,7 +400,7 @@ export class ConversionErrorHandler {
         'Re-download the file if it came from the internet'
       ],
       'FILE_TOO_LARGE': [
-        'Use a file smaller than 100MB',
+        'Use a file smaller than 300MB',
         'Compress the file using another tool first',
         'Split large files into smaller segments'
       ],

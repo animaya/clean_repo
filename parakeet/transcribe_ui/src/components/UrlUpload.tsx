@@ -18,7 +18,7 @@ const UrlUpload: React.FC<UrlUploadProps> = ({
   onUrlUpload,
   onError,
   disabled = false,
-  maxSize = 100 * 1024 * 1024, // 100MB
+  maxSize = 300 * 1024 * 1024, // 300MB
 }) => {
   const [url, setUrl] = useState('')
   const [validation, setValidation] = useState<ValidationState>({
@@ -59,24 +59,89 @@ const UrlUpload: React.FC<UrlUploadProps> = ({
         return
       }
 
-      // Optional: Check file size via HEAD request
+      // Check for known hosting platforms that don't support direct downloads
+      const url = new URL(urlToValidate)
+      const unsupportedHosts = [
+        'kaggle.com',
+        'www.kaggle.com',
+        'github.com', // Repository pages, not GitHub Pages
+        'www.github.com',
+        'drive.google.com',
+        'dropbox.com',
+        'onedrive.live.com'
+      ]
+      
+      // Allow GitHub Pages sites (*.github.io) but block main GitHub
+      const isGitHubPages = url.hostname.endsWith('.github.io')
+      const shouldBlock = unsupportedHosts.includes(url.hostname) && !isGitHubPages
+      
+      if (shouldBlock) {
+        setValidation({
+          isValid: false,
+          error: 'Please use a direct download link. Dataset pages and file sharing platforms are not supported.',
+          isValidating: false,
+        })
+        return
+      }
+
+      // Optional: Check file size via HEAD request (skip CORS-blocked domains)
       try {
         const response = await fetch(urlToValidate, { method: 'HEAD' })
+        
+        if (!response.ok) {
+          setValidation({
+            isValid: false,
+            error: 'Unable to access the audio file. Please check the URL.',
+            isValidating: false,
+          })
+          return
+        }
+        
         const contentLength = response.headers.get('content-length')
+        const contentType = response.headers.get('content-type')
+        
+        // Verify it's actually an audio file
+        if (contentType) {
+          const audioContentTypes = [
+            'audio/',
+            'application/ogg',
+            'video/ogg', // OGG can be video/ogg but contain only audio
+          ]
+          
+          const isAudioType = audioContentTypes.some(type => contentType.includes(type))
+          
+          if (!isAudioType) {
+            setValidation({
+              isValid: false,
+              error: `URL does not point to an audio file (Content-Type: ${contentType})`,
+              isValidating: false,
+            })
+            return
+          }
+        }
         
         if (contentLength) {
           const fileSize = parseInt(contentLength, 10)
           if (fileSize > maxSize) {
             setValidation({
               isValid: false,
-              error: `File size exceeds 100MB limit (${Math.round(fileSize / 1024 / 1024)}MB)`,
+              error: `File size exceeds 300MB limit (${Math.round(fileSize / 1024 / 1024)}MB)`,
               isValidating: false,
             })
             return
           }
         }
-      } catch {
-        // If HEAD request fails, we'll still allow the URL
+      } catch (error: any) {
+        // Handle CORS and network errors more gracefully
+        if (error.message?.includes('CORS')) {
+          setValidation({
+            isValid: false,
+            error: 'Cannot validate this URL due to CORS restrictions. Please use a direct download link.',
+            isValidating: false,
+          })
+          return
+        }
+        // If HEAD request fails for other reasons, we'll still allow the URL
         // The actual download will handle any network issues
       }
 
@@ -161,7 +226,7 @@ const UrlUpload: React.FC<UrlUploadProps> = ({
           Upload from URL
         </h3>
         <p className="text-sm text-gray-600" id={helpId}>
-          Supports direct links to audio files (MP3, WAV, M4A, FLAC, OGG, AAC)
+          Supports direct download links to audio files (MP3, WAV, M4A, FLAC, OGG, AAC)
         </p>
       </div>
 
@@ -276,10 +341,11 @@ const UrlUpload: React.FC<UrlUploadProps> = ({
           Supported URL Formats
         </h4>
         <ul className="text-xs text-blue-700 space-y-1">
-          <li>• Direct links to audio files (ending in .mp3, .wav, etc.)</li>
-          <li>• Maximum file size: 100MB</li>
-          <li>• Files will be downloaded and processed locally</li>
-          <li>• Your privacy is protected - no server-side storage</li>
+          <li>• Direct download links to audio files (ending in .mp3, .wav, etc.)</li>
+          <li>• Maximum file size: 300MB</li>
+          <li>• Files must be publicly accessible without authentication</li>
+          <li>• Dataset pages (Kaggle, GitHub) are not supported - use direct links</li>
+          <li>• Files are downloaded and processed locally for privacy</li>
         </ul>
       </div>
     </div>

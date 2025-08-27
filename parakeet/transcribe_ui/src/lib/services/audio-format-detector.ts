@@ -60,7 +60,7 @@ export class AudioFormatDetector {
   }
 
   private readonly defaultValidationRules: AudioValidationRules = {
-    maxFileSize: 100 * 1024 * 1024, // 100MB
+    maxFileSize: 300 * 1024 * 1024, // 300MB
     maxDuration: 7200, // 2 hours in seconds
     minDuration: 0.1, // 0.1 seconds
     supportedFormats: ['mp3', 'wav', 'm4a', 'flac', 'ogg'],

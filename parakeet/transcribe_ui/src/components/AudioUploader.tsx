@@ -28,7 +28,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
   onUploadComplete,
   onError,
   maxFiles = 10,
-  maxSize = 100 * 1024 * 1024, // 100MB
+  maxSize = 300 * 1024 * 1024, // 300MB
 }) => {
   const [files, setFiles] = useState<FileWithStatus[]>([])
 
@@ -61,7 +61,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
     
     // Start upload process for each file
     newFiles.forEach(file => {
-      simulateUpload(file)
+      uploadFile(file)
     })
   }, [createFileWithStatus, maxFiles, onUploadStart])
 
@@ -70,100 +70,125 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
     onError(rejectedFiles)
   }, [onError])
 
-  // Simulate file upload process (replace with real upload logic)
-  const simulateUpload = useCallback((file: FileWithStatus) => {
-    // Update file status to uploading
-    setFiles(prevFiles =>
-      prevFiles.map(f =>
-        f.id === file.id ? { ...f, status: 'uploading' as const, progress: 0 } : f
+  // Upload file to server
+  const uploadFile = useCallback(async (file: FileWithStatus) => {
+    try {
+      // Update file status to uploading
+      setFiles(prevFiles =>
+        prevFiles.map(f =>
+          f.id === file.id ? { ...f, status: 'uploading' as const, progress: 0 } : f
+        )
       )
-    )
 
-    // Simulate upload progress
-    let progress = 0
-    const uploadInterval = setInterval(() => {
-      progress += Math.random() * 15
-      if (progress >= 100) {
-        progress = 100
-        clearInterval(uploadInterval)
-        
-        // Start conversion phase
-        setFiles(prevFiles =>
-          prevFiles.map(f =>
-            f.id === file.id 
-              ? { ...f, status: 'converting' as const, progress: 0 }
-              : f
+      // Create FormData for file upload
+      const formData = new FormData()
+      formData.append('files', file)
+      
+      // Create XMLHttpRequest for progress tracking
+      const xhr = new XMLHttpRequest()
+      
+      // Track upload progress
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const progress = (event.loaded / event.total) * 100
+          setFiles(prevFiles =>
+            prevFiles.map(f =>
+              f.id === file.id ? { ...f, progress: Math.floor(progress) } : f
+            )
           )
-        )
-        
-        // Simulate conversion
-        simulateConversion(file)
-      } else {
-        setFiles(prevFiles =>
-          prevFiles.map(f =>
-            f.id === file.id ? { ...f, progress: Math.floor(progress) } : f
-          )
-        )
-        onUploadProgress(file.id, Math.floor(progress))
+          onUploadProgress(file.id, Math.floor(progress))
+        }
       }
-    }, 200)
-  }, [onUploadProgress])
 
-  // Simulate file conversion process
-  const simulateConversion = useCallback((file: FileWithStatus) => {
-    let progress = 0
-    const conversionInterval = setInterval(() => {
-      progress += Math.random() * 20
-      if (progress >= 100) {
-        progress = 100
-        clearInterval(conversionInterval)
-        
-        // Mark as completed
-        setFiles(prevFiles =>
-          prevFiles.map(f =>
-            f.id === file.id 
-              ? { 
-                  ...f, 
-                  status: 'completed' as const, 
-                  progress: 100,
-                  duration: Math.floor(Math.random() * 300) + 60 // Random duration 1-6 minutes
-                }
-              : f
-          )
-        )
-        
-        // Check if all files are completed
-        setFiles(prevFiles => {
-          const updatedFiles = prevFiles.map(f =>
-            f.id === file.id 
-              ? { 
-                  ...f, 
-                  status: 'completed' as const, 
-                  progress: 100,
-                  duration: Math.floor(Math.random() * 300) + 60
-                }
-              : f
-          )
-          
-          const allCompleted = updatedFiles.every(f => 
-            f.status === 'completed' || f.status === 'error'
-          )
-          
-          if (allCompleted) {
-            onUploadComplete(updatedFiles)
+      // Handle completion
+      const uploadResult = await new Promise<any>((resolve, reject) => {
+        xhr.onload = () => {
+          console.log('Upload response status:', xhr.status)
+          console.log('Upload response text:', xhr.responseText)
+          if (xhr.status === 200) {
+            const response = JSON.parse(xhr.responseText)
+            console.log('Parsed response:', response)
+            // Handle nested response structure
+            const uploadData = response.data || response
+            if (response.success && uploadData.uploads && uploadData.uploads.length > 0) {
+              console.log('Upload successful, file info:', uploadData.uploads[0])
+              resolve(uploadData.uploads[0]) // Return the first uploaded file info
+            } else {
+              console.error('Response validation failed:', { success: response.success, uploads: uploadData.uploads, data: response.data })
+              reject(new Error('Upload failed: Invalid response'))
+            }
+          } else {
+            reject(new Error(`Upload failed: ${xhr.statusText}`))
           }
-          
-          return updatedFiles
-        })
-      } else {
-        setFiles(prevFiles =>
-          prevFiles.map(f =>
-            f.id === file.id ? { ...f, progress: Math.floor(progress) } : f
-          )
+        }
+
+        xhr.onerror = () => reject(new Error('Upload failed: Network error'))
+        
+        xhr.open('POST', '/api/upload')
+        xhr.send(formData)
+      })
+
+      // Update file with server response
+      setFiles(prevFiles => {
+        const updatedFiles = prevFiles.map(f =>
+          f.id === file.id 
+            ? { 
+                ...f, 
+                id: uploadResult.id, // Use the database ID from server
+                status: 'completed' as const, 
+                progress: 100,
+                duration: uploadResult.duration || 0
+              }
+            : f
         )
-      }
-    }, 150)
-  }, [onUploadComplete])
+        
+        const allCompleted = updatedFiles.every(f => 
+          f.status === 'completed' || f.status === 'error'
+        )
+        
+        if (allCompleted) {
+          // Use setTimeout to avoid calling during render
+          setTimeout(() => {
+            onUploadComplete(updatedFiles)
+          }, 0)
+        }
+        
+        return updatedFiles
+      })
+
+    } catch (error) {
+      console.error('Upload error:', error)
+      // Mark file as failed
+      setFiles(prevFiles =>
+        prevFiles.map(f =>
+          f.id === file.id 
+            ? { 
+                ...f, 
+                status: 'error' as const, 
+                progress: 0,
+                error: error instanceof Error ? error.message : 'Upload failed'
+              }
+            : f
+        )
+      )
+      
+      // Check if all files are processed (completed or failed)
+      setFiles(prevFiles => {
+        const allProcessed = prevFiles.every(f => 
+          f.status === 'completed' || f.status === 'error'
+        )
+        
+        if (allProcessed) {
+          setTimeout(() => {
+            onUploadComplete(prevFiles)
+          }, 0)
+        }
+        
+        return prevFiles
+      })
+    }
+  }, [onUploadProgress, onUploadComplete])
+
 
   // Handle file removal
   const handleFileRemove = useCallback((fileToRemove: File) => {
@@ -185,9 +210,9 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
     
     // Restart upload
     setTimeout(() => {
-      simulateUpload(fileWithId)
+      uploadFile(fileWithId)
     }, 500)
-  }, [simulateUpload])
+  }, [uploadFile])
 
   const hasFiles = files.length > 0
   const canAddMore = files.length < maxFiles
@@ -199,7 +224,10 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
         <DropZone
           onFilesDrop={handleFilesDrop}
           onFileReject={handleFileReject}
-          accept={{ 'audio/*': ['.mp3', '.wav', '.m4a', '.flac'] }}
+          accept={{ 
+            'audio/*': ['.mp3', '.wav', '.m4a', '.flac', '.ogg', '.wma'],
+            'video/*': ['.mp4', '.avi', '.mov', '.mkv', '.webm']
+          }}
           maxSize={maxSize}
           maxFiles={maxFiles - files.length}
         >
@@ -212,7 +240,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
                            xs:text-lg
                            sm:text-xl
                            md:text-2xl">
-                Drag and drop audio files here
+                Drag and drop audio or video files here
               </p>
               <p className="text-base text-gray-500
                            xs:text-sm
@@ -220,12 +248,10 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
                 or click to browse
               </p>
             </div>
-            <div className="text-sm text-gray-400 space-y-2
+            <div className="text-sm text-gray-400
                            xs:text-xs
                            sm:text-sm">
-              <p>Supports: MP3, WAV, M4A, FLAC</p>
-              <p>Max size: 100MB per file • Max duration: 2 hours</p>
-              <p>Remaining slots: {maxFiles - files.length} / {maxFiles}</p>
+              <p>Audio: MP3, WAV, M4A, FLAC, OGG, WMA • Video: MP4, AVI, MOV, MKV, WEBM • Max: 300MB, 2hrs • Slots: {maxFiles - files.length}/{maxFiles}</p>
             </div>
           </div>
         </DropZone>

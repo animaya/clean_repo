@@ -36,7 +36,7 @@ const MIME_TYPE_TO_EXTENSION: Record<SupportedMimeType, SupportedAudioFormat[]> 
   'audio/ogg': ['ogg']
 }
 
-const MAX_FILE_SIZE = parseInt(process.env.MAX_FILE_SIZE || '104857600', 10) // 100MB default
+const MAX_FILE_SIZE = parseInt(process.env.MAX_FILE_SIZE || '314572800', 10) // 300MB default
 const MAX_FILENAME_LENGTH = 255
 
 /**

@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'development') {
 // Configuration
 const UPLOADS_DIR = process.env.UPLOADS_DIR || '/tmp/uploads'
 const DOWNLOAD_TIMEOUT = 30000 // 30 seconds
-const MAX_DOWNLOAD_SIZE = 100 * 1024 * 1024 // 100MB
+const MAX_DOWNLOAD_SIZE = 300 * 1024 * 1024 // 300MB
 
 interface UrlDownloadRequest {
   urls: string[]
@@ -142,7 +142,7 @@ async function processUrlDownload(
 
     // Check content type
     const contentType = response.headers.get('Content-Type') || ''
-    if (!contentType.startsWith('audio/') && !isLikelyAudioContent(contentType, extractedFilename)) {
+    if (!contentType.startsWith('audio/') && !contentType.includes('ogg') && !isLikelyAudioContent(contentType, extractedFilename)) {
       throw new Error(`Content-Type is not audio: ${contentType}`)
     }
 

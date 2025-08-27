@@ -165,7 +165,7 @@ export class FFmpegConversionService implements ProgressTracker {
 
       // Read converted file
       const outputData = await this.ffmpeg.readFile(outputFileNameTemp)
-      const outputUint8Array = new Uint8Array(outputData as ArrayBuffer)
+      const outputUint8Array = outputData instanceof Uint8Array ? outputData : new Uint8Array(outputData as unknown as ArrayBuffer)
 
       // Extract metadata from converted file
       const metadata = await this.extractMetadata(outputUint8Array, options.outputFormat)
@@ -373,8 +373,8 @@ export class FFmpegConversionService implements ProgressTracker {
       )
     }
 
-    // Maximum file size check (100MB)
-    const maxSize = 100 * 1024 * 1024
+    // Maximum file size check (300MB)
+    const maxSize = 300 * 1024 * 1024
     if (data.length > maxSize) {
       throw new ConversionError(
         `File too large. Maximum size is ${maxSize / 1024 / 1024}MB`,

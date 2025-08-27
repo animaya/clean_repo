@@ -29,7 +29,7 @@ const UploadInterface: React.FC<UploadInterfaceProps> = ({
   onUploadComplete,
   onError,
   maxFiles = 10,
-  maxSize = 100 * 1024 * 1024, // 100MB
+  maxSize = 300 * 1024 * 1024, // 300MB
   className = '',
 }) => {
   const [files, setFiles] = useState<FileWithStatus[]>([])
@@ -89,9 +89,102 @@ const UploadInterface: React.FC<UploadInterfaceProps> = ({
   // Handle URL upload
   const handleUrlUpload = useCallback(async (url: string) => {
     announce(`Starting download from URL: ${url}`)
-    // URL upload logic would go here
-    // For now, just announce the action
-  }, [announce])
+    
+    // Extract filename from URL for display
+    const urlObj = new URL(url)
+    const pathname = urlObj.pathname
+    let fileName = pathname.substring(pathname.lastIndexOf('/') + 1)
+    if (!fileName || !fileName.includes('.')) {
+      const extension = pathname.includes('.') ? pathname.split('.').pop() : 'mp3'
+      fileName = `audio_${Date.now()}.${extension}`
+    }
+    
+    // Generate temporary file ID for tracking
+    const tempFileId = `temp_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`
+    
+    // Add file to pending state
+    const pendingFile: FileWithStatus = {
+      id: tempFileId,
+      name: fileName,
+      size: 0,
+      status: 'uploading',
+      progress: 0
+    }
+    
+    setFiles(prev => [...prev, pendingFile])
+    announce(`Added ${fileName} to download queue`)
+    
+    try {
+      // Call the server-side URL upload API
+      const response = await fetch('/api/upload/url', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          urls: [url],
+          convertFormat: 'wav',
+          outputQuality: 'medium'
+        })
+      })
+      
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || `Server error: ${response.status}`)
+      }
+      
+      const data = await response.json()
+      
+      // Handle nested data structure from API response
+      const responseData = data.data || data
+      
+      if (!data.success || !responseData.imports || responseData.imports.length === 0) {
+        throw new Error('Invalid response from upload API')
+      }
+      
+      const importResult = responseData.imports[0]
+      
+      if (importResult.status !== 'completed') {
+        throw new Error(importResult.error || 'Upload failed')
+      }
+      
+      // Update file with completed status and real server file ID
+      const completedFile: FileWithStatus = {
+        id: importResult.fileId, // Use the real server file ID
+        name: importResult.filename,
+        size: 0, // Size will be determined by server
+        status: 'completed',
+        progress: 100
+      }
+      
+      setFiles(prev => prev.map(f => 
+        f.id === tempFileId ? completedFile : f
+      ))
+      
+      announce(`Successfully uploaded ${fileName}`)
+      
+      // Call onUploadComplete with the completed file
+      const allCompletedFiles = files.filter(f => f.status === 'completed' && f.id !== tempFileId)
+      allCompletedFiles.push(completedFile)
+      
+      onUploadComplete?.(allCompletedFiles)
+      
+    } catch (error) {
+      console.error('URL upload failed:', error)
+      
+      // Update file status to error
+      setFiles(prev => prev.map(f => 
+        f.id === tempFileId ? { 
+          ...f, 
+          status: 'error',
+          error: error instanceof Error ? error.message : 'Upload failed'
+        } : f
+      ))
+      
+      announce(`Failed to upload ${fileName}: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      onError?.(error instanceof Error ? error : new Error('Upload failed'))
+    }
+  }, [announce, files, onUploadComplete, onError])
 
   // Handle errors
   const handleError = useCallback((error: Error | FileRejection[]) => {
@@ -183,22 +276,6 @@ const UploadInterface: React.FC<UploadInterfaceProps> = ({
         ))}
       </div>
 
-      {/* Keyboard Shortcuts Help */}
-      <details className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-        <summary className="text-sm font-medium text-blue-800 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500 rounded">
-          Keyboard Shortcuts
-        </summary>
-        <div className="mt-3 space-y-1 text-xs text-blue-700">
-          {shortcuts.filter(s => !s.disabled).map((shortcut, index) => (
-            <div key={index} className="flex justify-between">
-              <span>{shortcut.description.split('(')[0].trim()}</span>
-              <kbd className="bg-white px-1 py-0.5 rounded text-blue-800 font-mono">
-                {shortcut.description.match(/\(([^)]+)\)/)?.[1]}
-              </kbd>
-            </div>
-          ))}
-        </div>
-      </details>
 
       {/* Upload Method Tabs */}
       <div className="border-b border-gray-200">
@@ -264,7 +341,7 @@ const UploadInterface: React.FC<UploadInterfaceProps> = ({
         ref={fileInputRef}
         type="file"
         multiple
-        accept="audio/*,.mp3,.wav,.m4a,.flac"
+        accept="audio/*,video/*,.mp3,.wav,.m4a,.flac,.ogg,.wma,.mp4,.avi,.mov,.mkv,.webm"
         onChange={(e) => {
           const files = Array.from(e.target.files || [])
           if (files.length > 0 && !showUrlInput) {
@@ -276,13 +353,6 @@ const UploadInterface: React.FC<UploadInterfaceProps> = ({
         tabIndex={-1}
       />
 
-      {/* Help Text */}
-      <div className="text-xs text-gray-500 space-y-1">
-        <p>• Supports MP3, WAV, M4A, FLAC audio files</p>
-        <p>• Maximum file size: 100MB per file</p>
-        <p>• All processing happens locally on your device</p>
-        <p>• Use keyboard shortcuts for faster navigation</p>
-      </div>
     </div>
   )
 }

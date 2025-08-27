@@ -9,7 +9,7 @@ export interface StorageConfig {
 
 const defaultConfig: StorageConfig = {
   uploadDir: 'uploads',
-  maxFileSize: 100 * 1024 * 1024, // 100MB
+  maxFileSize: 300 * 1024 * 1024, // 300MB
   allowedFormats: ['.mp3', '.wav', '.m4a', '.flac'],
 }
 

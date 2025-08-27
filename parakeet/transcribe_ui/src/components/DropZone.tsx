@@ -14,8 +14,11 @@ interface DropZoneProps {
 const DropZone: React.FC<DropZoneProps> = ({
   onFilesDrop,
   onFileReject,
-  accept = { 'audio/*': ['.mp3', '.wav', '.m4a', '.flac'] },
-  maxSize = 100 * 1024 * 1024, // 100MB
+  accept = { 
+    'audio/*': ['.mp3', '.wav', '.m4a', '.flac', '.ogg', '.wma'],
+    'video/*': ['.mp4', '.avi', '.mov', '.mkv', '.webm']
+  },
+  maxSize = 300 * 1024 * 1024, // 300MB
   maxFiles = 10,
   disabled = false,
   children,
@@ -71,7 +74,7 @@ const DropZone: React.FC<DropZoneProps> = ({
     if (isDragReject) return 'Drop zone (rejecting invalid files)'
     if (isDragAccept) return 'Drop zone (accepting files)'
     if (isDragActive) return 'Drop zone (drag active)'
-    return 'Drop zone for audio files'
+    return 'Drop zone for audio and video files'
   }
 
   return (
@@ -93,18 +96,18 @@ const DropZone: React.FC<DropZoneProps> = ({
           <div>
             {isDragReject && (
               <p className="text-red-600 font-medium">
-                Invalid file type - Please drop audio files only
+                Invalid file type - Please drop audio or video files only
               </p>
             )}
             {isDragAccept && (
               <p className="text-blue-600 font-medium">
-                Drop your audio files here
+                Drop your audio or video files here
               </p>
             )}
             {!isDragActive && (
               <>
                 <p className="text-lg font-medium text-gray-700 mb-2">
-                  Drag and drop audio files here
+                  Drag and drop audio or video files here
                 </p>
                 <p className="text-sm text-gray-500">
                   or click to browse
@@ -113,9 +116,8 @@ const DropZone: React.FC<DropZoneProps> = ({
             )}
           </div>
           {!isDragActive && (
-            <div className="text-xs text-gray-400 space-y-1">
-              <p>Supports: MP3, WAV, M4A, FLAC</p>
-              <p>Max size: 100MB per file • Max files: {maxFiles}</p>
+            <div className="text-xs text-gray-400">
+              <p>Audio: MP3, WAV, M4A, FLAC, OGG, WMA • Video: MP4, AVI, MOV, MKV, WEBM • Max: 300MB • Files: {maxFiles}</p>
             </div>
           )}
         </div>

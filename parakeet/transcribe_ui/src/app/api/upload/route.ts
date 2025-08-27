@@ -21,7 +21,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // Configuration
 const UPLOADS_DIR = process.env.UPLOADS_DIR || '/tmp/uploads'
-const MAX_REQUEST_SIZE = 100 * 1024 * 1024 // 100MB
+const MAX_REQUEST_SIZE = 300 * 1024 * 1024 // 300MB
 
 /**
  * POST /api/upload
