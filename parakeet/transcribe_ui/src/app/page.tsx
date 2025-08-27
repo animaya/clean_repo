@@ -1,103 +1,148 @@
-import Image from "next/image";
+'use client'
+
+import React from 'react'
+import UploadInterface from '@/components/UploadInterface'
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const handleUploadComplete = (files: any[]) => {
+    console.log('Upload completed:', files)
+    // Here you would integrate with the transcription service
+  }
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  const handleError = (error: any) => {
+    console.error('Upload error:', error)
+  }
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <header className="bg-white border-b border-gray-200 shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-6
+                       xs:px-6
+                       sm:px-8
+                       lg:px-12">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900
+                           xs:text-xl
+                           sm:text-2xl
+                           md:text-3xl
+                           lg:text-4xl">
+                Parakeet
+              </h1>
+              <p className="text-gray-600 mt-1
+                           xs:text-sm
+                           sm:text-base
+                           md:text-lg">
+                AI-Powered Audio Transcription
+              </p>
+            </div>
+            
+            <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-500">
+              <div className="flex items-center">
+                <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+                Privacy-First • Local Processing
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-4xl mx-auto px-4 py-8
+                     xs:px-6 xs:py-6
+                     sm:px-8 sm:py-10
+                     lg:px-12 lg:py-16">
+        <div className="space-y-6">
+          {/* Introduction */}
+          <div className="text-center space-y-4 mb-12
+                         xs:mb-8
+                         sm:mb-10
+                         md:mb-12">
+            <h2 className="text-xl font-semibold text-gray-900
+                         xs:text-lg
+                         sm:text-xl
+                         md:text-2xl">
+              Upload Audio Files for Transcription
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto leading-relaxed
+                         xs:text-sm
+                         sm:text-base
+                         md:text-lg">
+              Secure, privacy-first audio transcription using Nvidia's Parakeet ASR models. 
+              All processing happens locally on your device - your audio never leaves your computer.
+            </p>
+          </div>
+
+          {/* Upload Interface */}
+          <div className="bg-white rounded-xl shadow-lg p-6
+                         xs:p-4
+                         sm:p-6
+                         md:p-8
+                         lg:p-10">
+            <UploadInterface
+              onUploadComplete={handleUploadComplete}
+              onError={handleError}
+              maxFiles={10}
+              maxSize={100 * 1024 * 1024} // 100MB
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid grid-cols-1 gap-6 mt-12
+                         xs:gap-4 xs:mt-8
+                         sm:grid-cols-2 sm:gap-6 sm:mt-10
+                         lg:grid-cols-3 lg:mt-16">
+            <div className="bg-white p-6 rounded-lg shadow-md
+                           xs:p-4
+                           sm:p-6">
+              <div className="text-2xl mb-3">🔒</div>
+              <h3 className="font-semibold text-gray-900 mb-2">Privacy-First</h3>
+              <p className="text-gray-600 text-sm">
+                All audio processing happens locally on your device. No data is sent to servers.
+              </p>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-md
+                           xs:p-4
+                           sm:p-6">
+              <div className="text-2xl mb-3">⚡</div>
+              <h3 className="font-semibold text-gray-900 mb-2">Fast & Accurate</h3>
+              <p className="text-gray-600 text-sm">
+                Powered by Nvidia's Parakeet ASR models optimized for Apple Silicon.
+              </p>
+            </div>
+            
+            <div className="bg-white p-6 rounded-lg shadow-md
+                           xs:p-4
+                           sm:p-6
+                           sm:col-span-2
+                           lg:col-span-1">
+              <div className="text-2xl mb-3">🎵</div>
+              <h3 className="font-semibold text-gray-900 mb-2">Multiple Formats</h3>
+              <p className="text-gray-600 text-sm">
+                Supports MP3, WAV, M4A, FLAC and more. Automatic format conversion.
+              </p>
+            </div>
+          </div>
         </div>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+
+      {/* Footer */}
+      <footer className="bg-white border-t border-gray-200 mt-16
+                       xs:mt-12
+                       sm:mt-16
+                       lg:mt-24">
+        <div className="max-w-7xl mx-auto px-4 py-8
+                       xs:px-6 xs:py-6
+                       sm:px-8 sm:py-8
+                       lg:px-12">
+          <div className="text-center text-sm text-gray-500">
+            <p>Parakeet Audio Transcription • Built with Next.js and Tailwind CSS</p>
+            <p className="mt-1">Powered by Nvidia Parakeet ASR Models via MLX</p>
+          </div>
+        </div>
       </footer>
     </div>
-  );
+  )
 }

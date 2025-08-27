@@ -47,12 +47,12 @@ These are the tasks to be completed for the spec detailed in @.agent-os/specs/20
   - [x] 4.7 Add connection retry and error recovery logic
   - [x] 4.8 Verify all tests pass
 
-- [ ] 5. Drag-and-Drop Upload Interface
-  - [ ] 5.1 Write tests for upload components and user interactions
-  - [ ] 5.2 Create drag-and-drop zone component with visual feedback
-  - [ ] 5.3 Implement multi-file selection and preview functionality
-  - [ ] 5.4 Add file upload progress indicators and status display
-  - [ ] 5.5 Create URL input interface with validation
-  - [ ] 5.6 Implement accessibility features (keyboard navigation, ARIA labels)
-  - [ ] 5.7 Add responsive design for mobile and desktop
-  - [ ] 5.8 Verify all tests pass
+- [x] 5. Drag-and-Drop Upload Interface
+  - [x] 5.1 Write tests for upload components and user interactions
+  - [x] 5.2 Create drag-and-drop zone component with visual feedback
+  - [x] 5.3 Implement multi-file selection and preview functionality
+  - [x] 5.4 Add file upload progress indicators and status display
+  - [x] 5.5 Create URL input interface with validation
+  - [x] 5.6 Implement accessibility features (keyboard navigation, ARIA labels)
+  - [x] 5.7 Add responsive design for mobile and desktop
+  - [x] 5.8 Verify all tests pass

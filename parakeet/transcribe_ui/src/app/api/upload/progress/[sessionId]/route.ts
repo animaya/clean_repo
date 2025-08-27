@@ -3,9 +3,9 @@ import { getProgressTrackingService } from '@/lib/services/progress-tracking'
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { sessionId: string } }
+  { params }: { params: Promise<{ sessionId: string }> }
 ) {
-  const sessionId = params.sessionId
+  const { sessionId } = await params
 
   if (!sessionId) {
     return new Response('Session ID required', { status: 400 })
