@@ -1,10 +1,13 @@
 import { beforeAll, afterEach, afterAll, beforeEach } from 'vitest'
 import { PrismaClient } from '@prisma/client'
 
+// Use unique database for each test run to avoid conflicts
+const testDbName = `test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}.db`
+
 const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: 'file:./test.db'
+      url: `file:./${testDbName}`
     }
   }
 })
@@ -12,17 +15,6 @@ const prisma = new PrismaClient({
 beforeAll(async () => {
   // Create database schema for tests
   await prisma.$executeRaw`PRAGMA foreign_keys = ON;`
-  
-  // Clean up any existing tables
-  try {
-    await prisma.$executeRaw`DROP TABLE IF EXISTS session_files;`
-    await prisma.$executeRaw`DROP TABLE IF EXISTS file_metadata;`
-    await prisma.$executeRaw`DROP TABLE IF EXISTS transcription_jobs;`
-    await prisma.$executeRaw`DROP TABLE IF EXISTS upload_sessions;`
-    await prisma.$executeRaw`DROP TABLE IF EXISTS uploaded_files;`
-  } catch {
-    // Tables might not exist, which is fine
-  }
 
   // Create tables manually since we can't run migrations in tests
   await prisma.$executeRaw`
