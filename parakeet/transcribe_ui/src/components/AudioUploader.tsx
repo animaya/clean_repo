@@ -5,6 +5,7 @@ import FilePreview, { FileStatus } from './FilePreview'
 
 interface FileWithStatus extends File {
   id: string
+  serverId?: string | number // Store server ID separately to avoid key conflicts
   status: FileStatus['status']
   progress?: number
   error?: string
@@ -134,7 +135,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
           f.id === file.id 
             ? { 
                 ...f, 
-                id: uploadResult.id, // Use the database ID from server
+                serverId: uploadResult.id, // Store database ID separately
                 name: uploadResult.originalName || uploadResult.filename || f.name, // Use original name from server
                 size: uploadResult.fileSize || f.size, // Use size from server
                 status: 'completed' as const, 
@@ -151,7 +152,12 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
         if (allCompleted) {
           // Use setTimeout to avoid calling during render
           setTimeout(() => {
-            onUploadComplete(updatedFiles)
+            // Map files to use serverId for transcription while keeping original id for React keys
+            const filesForCallback = updatedFiles.map(f => ({
+              ...f,
+              id: f.serverId ? String(f.serverId) : f.id // Use serverId for the callback
+            }))
+            onUploadComplete(filesForCallback)
           }, 0)
         }
         
@@ -182,7 +188,12 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
         
         if (allProcessed) {
           setTimeout(() => {
-            onUploadComplete(prevFiles)
+            // Map files to use serverId for transcription while keeping original id for React keys
+            const filesForCallback = prevFiles.map(f => ({
+              ...f,
+              id: f.serverId ? String(f.serverId) : f.id // Use serverId for the callback
+            }))
+            onUploadComplete(filesForCallback)
           }, 0)
         }
         

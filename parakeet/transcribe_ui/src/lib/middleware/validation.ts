@@ -50,7 +50,9 @@ const SUPPORTED_MIME_TYPES = [
   'video/mp4', 'video/x-msvideo', 'video/avi',
   'video/quicktime', 'video/x-ms-wmv',
   'video/x-matroska', 'video/mkv',
-  'video/webm'
+  'video/webm',
+  // Fallback for files detected as generic binary when extension is supported
+  'application/octet-stream'
 ]
 const MAX_FILE_SIZE = 300 * 1024 * 1024 // 300MB
 const MAX_FILES_PER_REQUEST = 10
@@ -157,6 +159,13 @@ function validateSingleFile(file: File): { isValid: boolean; errors: string[]; w
   if (!SUPPORTED_MIME_TYPES.includes(file.type)) {
     if (file.type === '') {
       warnings.push(`No MIME type provided for: ${file.name}`)
+    } else if (file.type === 'application/octet-stream') {
+      // Allow octet-stream only if extension is supported
+      if (extension && SUPPORTED_FORMATS.includes(extension as any)) {
+        warnings.push(`Generic MIME type detected but extension is supported: ${file.name}`)
+      } else {
+        errors.push(`Unsupported file: ${file.name} (generic binary with unsupported extension)`)
+      }
     } else {
       errors.push(`Unsupported MIME type: ${file.type} for file ${file.name}`)
     }
