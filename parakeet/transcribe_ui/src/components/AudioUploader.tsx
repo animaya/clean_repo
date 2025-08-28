@@ -135,6 +135,8 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
             ? { 
                 ...f, 
                 id: uploadResult.id, // Use the database ID from server
+                name: uploadResult.originalName || uploadResult.filename || f.name, // Use original name from server
+                size: uploadResult.fileSize || f.size, // Use size from server
                 status: 'completed' as const, 
                 progress: 100,
                 duration: uploadResult.duration || 0

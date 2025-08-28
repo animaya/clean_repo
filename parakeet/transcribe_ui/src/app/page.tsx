@@ -1,7 +1,7 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
-import UploadInterface from '@/components/UploadInterface'
+import React, { useState, useEffect, useRef } from 'react'
+import UploadInterface, { UploadInterfaceRef } from '@/components/UploadInterface'
 import TranscriptionModal from '@/components/TranscriptionModal'
 import ProgressBar from '@/components/ProgressBar'
 
@@ -16,6 +16,8 @@ interface TranscriptionResult {
   timestamp: string
   preview: string
   jobId?: string // For tracking async jobs
+  fileSize?: number // Original file size in bytes
+  originalFile?: any // Reference to original file data
 }
 
 export default function Home() {
@@ -26,6 +28,9 @@ export default function Home() {
   const [estimatedTimeRemaining, setEstimatedTimeRemaining] = useState<number | null>(null)
   const [selectedTranscription, setSelectedTranscription] = useState<TranscriptionResult | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  
+  // Ref to access UploadInterface methods
+  const uploadInterfaceRef = useRef<UploadInterfaceRef>(null)
 
   // Load transcription results from localStorage on component mount
   useEffect(() => {
@@ -49,6 +54,16 @@ export default function Home() {
 
   const handleUploadComplete = async (files: any[]) => {
     console.log('Upload completed:', files)
+    console.log('Files details:')
+    files.forEach((file, index) => {
+      console.log(`File ${index}:`, {
+        id: file.id,
+        name: file.name,
+        size: file.size,
+        status: file.status,
+        originalFilename: file.originalFilename
+      })
+    })
     setUploadedFiles(files)
     // Don't start transcription automatically anymore
   }
@@ -56,9 +71,20 @@ export default function Home() {
   const handleStartTranscription = async () => {
     if (uploadedFiles.length === 0) return
     
+    console.log('Starting transcription, clearing uploaded files...')
+    console.log('Files before clearing:', uploadedFiles)
+    
     setIsTranscribing(true)
     setTranscriptionProgress(0)
     setEstimatedTimeRemaining(null)
+    
+    // Clear uploaded files from the queue when transcription starts
+    setUploadedFiles([])
+    
+    // Also trigger clearing of the UploadInterface component immediately
+    uploadInterfaceRef.current?.clearFiles()
+    
+    console.log('Files cleared from upload queue')
     
     const startTime = Date.now()
     let progressInterval: NodeJS.Timeout | null = null
@@ -151,14 +177,16 @@ export default function Home() {
         // Create placeholder results for each job
         const placeholderResults = uploadedFiles.map((file, index) => ({
           id: `${file.id}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          fileName: file.name || file.originalFilename || `File ${index + 1}`,
+          fileName: file.name || file.originalFilename || `Audio File ${index + 1}`,
           status: 'processing' as const,
           transcript: '',
           preview: '',
           duration: 0,
           confidence: 0,
           timestamp: new Date().toISOString(),
-          jobId: jobIds[index] // Store job ID for tracking
+          jobId: jobIds[index], // Store job ID for tracking
+          fileSize: file.size || 0, // Store original file size for display
+          originalFile: file // Store reference to original file data
         }))
         
         setTranscriptionResults(prev => [...prev, ...placeholderResults])
@@ -251,16 +279,18 @@ export default function Home() {
       console.error('Transcription error:', error)
       
       // Show error state to user
-      const errorResults = uploadedFiles.map(file => ({
+      const errorResults = uploadedFiles.map((file, index) => ({
         id: `${file.id}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        fileName: file.name || file.originalName,
+        fileName: file.name || file.originalFilename || `Audio File ${index + 1}`,
         status: 'failed' as const,
         transcript: '',
         preview: '',
         duration: 0,
         confidence: 0,
         error: error instanceof Error ? error.message : 'Unknown transcription error',
-        timestamp: new Date().toISOString()
+        timestamp: new Date().toISOString(),
+        fileSize: file.size || 0,
+        originalFile: file
       }))
       
       setTranscriptionResults(prev => [...prev, ...errorResults])
@@ -330,6 +360,7 @@ export default function Home() {
                          md:p-8
                          lg:p-10">
             <UploadInterface
+              ref={uploadInterfaceRef}
               onUploadComplete={handleUploadComplete}
               onError={handleError}
               maxFiles={10}
@@ -366,9 +397,9 @@ export default function Home() {
                     <div className="flex items-center space-x-3">
                       <div className="text-2xl">🎵</div>
                       <div>
-                        <p className="font-medium text-gray-900">{file.name}</p>
+                        <p className="font-medium text-gray-900">{file.name || file.originalFilename || 'Unknown file'}</p>
                         <p className="text-sm text-gray-500">
-                          {(file.size / 1024 / 1024).toFixed(2)} MB
+                          {file.size && !isNaN(file.size) ? (file.size / 1024 / 1024).toFixed(2) + ' MB' : 'Size unknown'}
                         </p>
                       </div>
                     </div>
@@ -448,11 +479,14 @@ export default function Home() {
                         <p className="text-sm text-gray-500 mb-1">
                           {new Date(result.timestamp).toLocaleDateString()}
                         </p>
-                        {result.status === 'completed' && result.duration > 0 && (
-                          <p className="text-sm text-gray-500">
-                            {Math.floor(result.duration / 60)}m {Math.floor(result.duration % 60)}s
-                          </p>
-                        )}
+                        <div className="text-sm text-gray-500 space-y-1">
+                          {result.fileSize && !isNaN(result.fileSize) && (
+                            <p>{(result.fileSize / 1024 / 1024).toFixed(2)} MB</p>
+                          )}
+                          {result.status === 'completed' && result.duration > 0 && (
+                            <p>{Math.floor(result.duration / 60)}m {Math.floor(result.duration % 60)}s</p>
+                          )}
+                        </div>
                       </div>
                       
                       <button

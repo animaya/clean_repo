@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useRef, useMemo } from 'react'
+import React, { useState, useCallback, useRef, useMemo, useEffect, forwardRef, useImperativeHandle } from 'react'
 import { FileRejection } from 'react-dropzone'
 import AudioUploader from './AudioUploader'
 import UrlUpload from './UrlUpload'
@@ -25,13 +25,17 @@ interface UploadInterfaceProps {
   className?: string
 }
 
-const UploadInterface: React.FC<UploadInterfaceProps> = ({
+export interface UploadInterfaceRef {
+  clearFiles: () => void
+}
+
+const UploadInterface = forwardRef<UploadInterfaceRef, UploadInterfaceProps>(({
   onUploadComplete,
   onError,
   maxFiles = 10,
   maxSize = 300 * 1024 * 1024, // 300MB
   className = '',
-}) => {
+}, ref) => {
   const [files, setFiles] = useState<FileWithStatus[]>([])
   const [showUrlInput, setShowUrlInput] = useState(false)
   const [announcements, setAnnouncements] = useState<string[]>([])
@@ -39,6 +43,22 @@ const UploadInterface: React.FC<UploadInterfaceProps> = ({
   // Refs for accessibility
   const urlInputRef = useRef<HTMLInputElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  // Announce status changes for screen readers
+  const announce = useCallback((message: string) => {
+    setAnnouncements(prev => [...prev.slice(-4), message]) // Keep last 5 announcements
+  }, [])
+
+  // Clear files function
+  const clearAllFiles = useCallback(() => {
+    setFiles([])
+    announce('All files cleared')
+  }, [announce])
+
+  // Expose clearFiles function via ref
+  useImperativeHandle(ref, () => ({
+    clearFiles: clearAllFiles
+  }), [clearAllFiles])
 
   // Calculate status counts for UploadStatus component
   const statusCounts = useMemo(() => {
@@ -57,11 +77,6 @@ const UploadInterface: React.FC<UploadInterfaceProps> = ({
   const totalSize = useMemo(() => {
     return files.reduce((total, file) => total + file.size, 0)
   }, [files])
-
-  // Announce status changes for screen readers
-  const announce = useCallback((message: string) => {
-    setAnnouncements(prev => [...prev.slice(-4), message]) // Keep last 5 announcements
-  }, [])
 
   // Handle upload start
   const handleUploadStart = useCallback((newFiles: File[]) => {
@@ -151,8 +166,8 @@ const UploadInterface: React.FC<UploadInterfaceProps> = ({
       // Update file with completed status and real server file ID
       const completedFile: FileWithStatus = {
         id: importResult.fileId, // Use the real server file ID
-        name: importResult.filename,
-        size: 0, // Size will be determined by server
+        name: importResult.originalName || importResult.filename || fileName,
+        size: importResult.fileSize || 0, // Use actual file size from server
         status: 'completed',
         progress: 100
       }
@@ -198,9 +213,8 @@ const UploadInterface: React.FC<UploadInterfaceProps> = ({
 
   // Clear all files
   const handleClearAll = useCallback(() => {
-    setFiles([])
-    announce('All files cleared')
-  }, [announce])
+    clearAllFiles()
+  }, [clearAllFiles])
 
   // Retry failed uploads
   const handleRetryFailed = useCallback(() => {
@@ -355,6 +369,8 @@ const UploadInterface: React.FC<UploadInterfaceProps> = ({
 
     </div>
   )
-}
+})
+
+UploadInterface.displayName = 'UploadInterface'
 
 export default UploadInterface
