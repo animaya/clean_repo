@@ -12,6 +12,8 @@ import { validateRateLimit } from '../../../lib/middleware/rate-limiting'
 import { createErrorResponse, createSuccessResponse, withErrorHandler, ValidationError, RateLimitError, StorageError } from '../../../lib/error-handling'
 import { createOrGetSession, updateSessionWithFiles, markFileCompleted, markFileFailed } from '../../../lib/session-management'
 import { UploadedFileInfo, UploadResponse } from '../../../types/api'
+import { transitionFileStatus } from '../../../lib/services/state-machine'
+import { AuditService, extractAuditContext } from '../../../lib/services/audit-service'
 
 // Use global Prisma instance or create new one
 const prisma = globalThis.__prisma || new PrismaClient()
@@ -28,6 +30,13 @@ const MAX_REQUEST_SIZE = 300 * 1024 * 1024 // 300MB
  * Handles multipart file uploads with validation and storage
  */
 export const POST = withErrorHandler(async (request: NextRequest) => {
+  // Parse form data once and use it throughout
+  const formData = await request.formData()
+  const sessionId = formData.get('sessionId')?.toString()
+  
+  // Extract audit context for logging with session-based user tracking
+  const auditContext = extractAuditContext(request, sessionId)
+  
   // Rate limiting check
   const rateLimitResult = await validateRateLimit(request, 'upload')
   if (!rateLimitResult.allowed) {
@@ -38,11 +47,6 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       rateLimitResult.remaining
     )
   }
-
-  // Parse multipart form data
-  const formData = await request.formData().catch(() => {
-    throw new ValidationError('Invalid multipart/form-data')
-  })
 
   // Extract files and options
   const files: File[] = []
@@ -58,7 +62,6 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
     throw new ValidationError('No files provided for upload')
   }
 
-  const sessionId = formData.get('sessionId')?.toString()
   const convertFormat = formData.get('convertFormat')?.toString() || 'wav'
   const outputQuality = formData.get('outputQuality')?.toString() || 'medium'
 
@@ -81,7 +84,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   await ensureUploadsDirectory()
 
   // Create or get upload session
-  const session = await createOrGetSession(sessionId)
+  const session = await createOrGetSession(sessionId, auditContext)
 
   const uploadedFiles: UploadedFileInfo[] = []
   const fileIds: number[] = []
@@ -90,7 +93,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   try {
     // Process each valid file
     for (const validFile of validationResult.validFiles) {
-      const processedFile = await processUploadedFile(validFile, convertFormat, outputQuality)
+      const processedFile = await processUploadedFile(validFile, convertFormat, outputQuality, auditContext)
       uploadedFiles.push(processedFile)
       fileIds.push(parseInt(processedFile.id))
       fileSizes.push(processedFile.fileSize)
@@ -131,7 +134,8 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
 async function processUploadedFile(
   validFile: any,
   convertFormat: string,
-  outputQuality: string
+  outputQuality: string,
+  auditContext: ReturnType<typeof extractAuditContext>
 ): Promise<UploadedFileInfo> {
   const { file, filename, originalName, size, format, mimeType } = validFile
 
@@ -162,7 +166,7 @@ async function processUploadedFile(
       fileSize: existingFile.fileSize,
       duration: 0, // Would need to extract from metadata
       mimeType: `audio/${existingFile.originalFormat}`,
-      status: 'uploaded',
+      status: existingFile.status.toLowerCase() as any,
       uploadedAt: existingFile.uploadDate.toISOString()
     }
   }
@@ -172,22 +176,35 @@ async function processUploadedFile(
     const buffer = await file.arrayBuffer()
     await fs.writeFile(filePath, new Uint8Array(buffer))
 
-    // Save file record to database
+    // Save file record to database with initial status
+    const fileData = {
+      filename: uniqueFilename,
+      originalFilename: originalName,
+      originalFormat: format,
+      fileSize: size,
+      filePath: filePath,
+      uploadMethod: 'DRAG_DROP',
+      mimeType: mimeType,
+      status: 'UPLOADED',
+      checksum: fileHash,
+      uploadDate: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+
     const uploadedFile = await prisma.uploadedFiles.create({
-      data: {
-        filename: uniqueFilename,
-        originalFilename: originalName,
-        originalFormat: format,
-        fileSize: size,
-        filePath: filePath,
-        uploadMethod: 'drag_drop',
-        status: 'uploaded',
-        checksum: fileHash,
-        uploadDate: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
+      data: fileData
     })
+
+    // Log file creation in audit trail
+    await AuditService.logFileUpload(
+      uploadedFile.id,
+      {
+        ...fileData,
+        id: uploadedFile.id
+      },
+      auditContext
+    )
 
     return {
       id: uploadedFile.id.toString(),
@@ -196,7 +213,7 @@ async function processUploadedFile(
       fileSize: size,
       duration: 0, // Would extract from metadata in real implementation
       mimeType: mimeType,
-      status: 'uploaded',
+      status: uploadedFile.status.toLowerCase() as any,
       uploadedAt: uploadedFile.uploadDate.toISOString()
     }
 

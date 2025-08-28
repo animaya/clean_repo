@@ -8,6 +8,8 @@ import { createErrorResponse, createSuccessResponse, withErrorHandler, Validatio
 import { createOrGetSession, updateSessionWithFiles } from '../../../../lib/session-management'
 import { generateUniqueFilename } from '../../../../lib/middleware/validation'
 import { UrlImportResponse, UrlImportInfo } from '../../../../types/api'
+import { transitionFileStatus } from '../../../../lib/services/state-machine'
+import { AuditService, extractAuditContext } from '../../../../lib/services/audit-service'
 import crypto from 'crypto'
 
 // Use global Prisma instance or create new one
@@ -33,6 +35,19 @@ interface UrlDownloadRequest {
  * Downloads audio files from remote URLs and imports them
  */
 export const POST = withErrorHandler(async (request: NextRequest) => {
+  // Parse request body to get session ID for user tracking
+  let requestBody: UrlDownloadRequest
+  try {
+    requestBody = await request.json()
+  } catch (error) {
+    throw new ValidationError('Invalid JSON in request body')
+  }
+
+  const { urls, sessionId, convertFormat = 'wav', outputQuality = 'medium' } = requestBody
+
+  // Extract audit context for logging with session-based user tracking
+  const auditContext = extractAuditContext(request, sessionId)
+
   // Rate limiting check
   const rateLimitResult = await validateRateLimit(request, 'upload')
   if (!rateLimitResult.allowed) {
@@ -43,16 +58,6 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
       rateLimitResult.remaining
     )
   }
-
-  // Parse request body
-  let requestBody: UrlDownloadRequest
-  try {
-    requestBody = await request.json()
-  } catch (error) {
-    throw new ValidationError('Invalid JSON in request body')
-  }
-
-  const { urls, sessionId, convertFormat = 'wav', outputQuality = 'medium' } = requestBody
 
   if (!urls || !Array.isArray(urls)) {
     throw new ValidationError('URLs must be provided as an array')
@@ -71,7 +76,7 @@ export const POST = withErrorHandler(async (request: NextRequest) => {
   await ensureUploadsDirectory()
 
   // Create or get upload session
-  const session = await createOrGetSession(sessionId)
+  const session = await createOrGetSession(sessionId, auditContext)
 
   const imports: UrlImportInfo[] = []
 
@@ -195,22 +200,35 @@ async function processUrlDownload(
     const fileExtension = path.extname(extractedFilename).toLowerCase().slice(1) || 'mp3'
     
     // Save file record to database
+    const fileData = {
+      filename: uniqueFilename,
+      originalFilename: extractedFilename,
+      originalFormat: fileExtension,
+      fileSize: buffer.byteLength,
+      filePath: filePath,
+      uploadMethod: 'URL_DOWNLOAD' as const,
+      sourceUrl: sanitizeUrlForLogging(url),
+      status: 'UPLOADED' as const,
+      checksum: fileHash,
+      uploadDate: new Date(),
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }
+
     const uploadedFile = await prisma.uploadedFiles.create({
-      data: {
-        filename: uniqueFilename,
-        originalFilename: extractedFilename,
-        originalFormat: fileExtension,
-        fileSize: buffer.byteLength,
-        filePath: filePath,
-        uploadMethod: 'url_download',
-        sourceUrl: sanitizeUrlForLogging(url),
-        status: 'uploaded',
-        checksum: fileHash,
-        uploadDate: new Date(),
-        createdAt: new Date(),
-        updatedAt: new Date()
-      }
+      data: fileData
     })
+
+    // Log URL upload in audit trail
+    await AuditService.logFileUpload(
+      uploadedFile.id,
+      {
+        ...fileData,
+        id: uploadedFile.id,
+        sourceUrl: url
+      },
+      auditContext
+    )
 
     // Update session
     await updateSessionWithFiles(sessionUuid, [uploadedFile.id], [buffer.byteLength])

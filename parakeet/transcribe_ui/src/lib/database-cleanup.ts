@@ -1,6 +1,7 @@
 import { PrismaClient } from '@prisma/client'
 import { promises as fs } from 'fs'
 import path from 'path'
+import { AuditService } from './services/audit-service'
 
 export type CleanupResult = {
   deletedRecords: number
@@ -73,6 +74,18 @@ export async function cleanupOrphanedFiles(
 
         // If no valid files exist, delete the database record
         if (!hasValidFile) {
+          // Log file deletion in audit trail
+          await AuditService.logFileDeletion(
+            file.id,
+            {
+              id: file.id,
+              filename: file.filename,
+              originalFilename: file.originalFilename,
+              reason: 'orphaned_file_cleanup',
+              cleanupTime: new Date()
+            }
+          )
+
           await prisma.uploadedFiles.delete({
             where: { id: file.id }
           })

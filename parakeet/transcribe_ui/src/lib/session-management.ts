@@ -1,5 +1,6 @@
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, SessionStatus } from '@prisma/client'
 import { v4 as uuidv4 } from 'uuid'
+import { AuditService, AuditContext } from './services/audit-service'
 
 // Use global Prisma instance or create new one
 const prisma = globalThis.__prisma || new PrismaClient()
@@ -21,7 +22,7 @@ export interface UploadSession {
   updatedAt: Date
 }
 
-export type SessionStatus = 'active' | 'completed' | 'failed' | 'cancelled'
+// Note: SessionStatus is imported from Prisma
 
 export interface SessionFile {
   sessionId: number
@@ -32,7 +33,7 @@ export interface SessionFile {
 /**
  * Creates a new upload session or retrieves existing one
  */
-export async function createOrGetSession(sessionId?: string): Promise<UploadSession> {
+export async function createOrGetSession(sessionId?: string, auditContext?: AuditContext): Promise<UploadSession> {
   if (sessionId) {
     // Try to get existing session
     const existing = await prisma.uploadSessions.findUnique({
@@ -46,17 +47,31 @@ export async function createOrGetSession(sessionId?: string): Promise<UploadSess
 
   // Create new session
   const newSessionId = sessionId || generateSessionId()
+  const sessionData = {
+    sessionUuid: newSessionId,
+    totalFiles: 0,
+    completedFiles: 0,
+    failedFiles: 0,
+    totalSizeBytes: 0,
+    processedSizeBytes: 0,
+    status: 'ACTIVE' as const
+  }
+
   const session = await prisma.uploadSessions.create({
-    data: {
-      sessionUuid: newSessionId,
-      totalFiles: 0,
-      completedFiles: 0,
-      failedFiles: 0,
-      totalSizeBytes: 0,
-      processedSizeBytes: 0,
-      status: 'active'
-    }
+    data: sessionData
   })
+
+  // Log session creation in audit trail
+  if (auditContext) {
+    await AuditService.logSessionCreation(
+      session.id,
+      {
+        ...sessionData,
+        id: session.id
+      },
+      auditContext
+    )
+  }
 
   return session as UploadSession
 }
@@ -128,7 +143,7 @@ export async function markFileCompleted(sessionUuid: string, fileId: number, fil
   })
 
   if (updatedSession && updatedSession.completedFiles + updatedSession.failedFiles >= updatedSession.totalFiles) {
-    const finalStatus = updatedSession.failedFiles > 0 ? 'failed' : 'completed'
+    const finalStatus = updatedSession.failedFiles > 0 ? 'FAILED' : 'COMPLETED'
     await prisma.uploadSessions.update({
       where: { sessionUuid },
       data: {
@@ -166,7 +181,7 @@ export async function markFileFailed(sessionUuid: string, fileId: number): Promi
   })
 
   if (updatedSession && updatedSession.completedFiles + updatedSession.failedFiles >= updatedSession.totalFiles) {
-    const finalStatus = updatedSession.failedFiles > 0 ? 'failed' : 'completed'
+    const finalStatus = updatedSession.failedFiles > 0 ? 'FAILED' : 'COMPLETED'
     await prisma.uploadSessions.update({
       where: { sessionUuid },
       data: {
@@ -264,7 +279,7 @@ export async function cleanupOldSessions(daysOld: number = 7): Promise<number> {
 
   const result = await prisma.uploadSessions.deleteMany({
     where: {
-      status: { in: ['completed', 'failed', 'cancelled'] },
+      status: { in: ['COMPLETED', 'FAILED', 'CANCELLED'] },
       completedAt: {
         lt: cutoffDate
       }
@@ -300,7 +315,7 @@ export function validateSessionId(sessionId: string): boolean {
 export async function getActiveSessions(limit: number = 50): Promise<UploadSession[]> {
   const sessions = await prisma.uploadSessions.findMany({
     where: {
-      status: 'active'
+      status: 'ACTIVE'
     },
     orderBy: {
       createdAt: 'desc'

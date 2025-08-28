@@ -7,71 +7,146 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// Enum definitions for better type safety and validation
+enum UploadMethod {
+  DRAG_DROP
+  URL_DOWNLOAD
+  API_UPLOAD
+}
+
+enum FileStatus {
+  UPLOADED
+  VALIDATING
+  CONVERTING
+  CONVERTED
+  CONVERSION_FAILED
+  READY_FOR_TRANSCRIPTION
+  PROCESSING
+  COMPLETED
+  FAILED
+  ARCHIVED
+}
+
+enum TranscriptionStatus {
+  QUEUED
+  PROCESSING
+  COMPLETED
+  FAILED
+  CANCELLED
+  RETRYING
+}
+
+enum SessionStatus {
+  ACTIVE
+  COMPLETED
+  FAILED
+  CANCELLED
+  TIMEOUT
+}
+
+enum OutputFormat {
+  SRT
+  TXT
+  VTT
+  JSON
+}
+
+enum NoiseLevel {
+  LOW
+  MEDIUM
+  HIGH
+  UNKNOWN
+}
+
+enum AuditAction {
+  CREATE
+  UPDATE
+  DELETE
+  UPLOAD
+  CONVERT
+  TRANSCRIBE
+  CLEANUP
+  ARCHIVE
+}
+
 model UploadedFiles {
-  id                     Int      @id @default(autoincrement())
+  id                     Int            @id @default(autoincrement())
   filename               String
   originalFilename       String
+  mimeType               String
   originalFormat         String
   convertedFormat        String?
   fileSize               Int
   convertedFileSize      Int?
   filePath               String
   convertedFilePath      String?
-  uploadMethod           String   // 'drag_drop' or 'url_download'
+  uploadMethod           UploadMethod   @default(DRAG_DROP)
   sourceUrl              String?
-  uploadDate             DateTime @default(now())
+  checksum               String?        @unique // Ensure unique checksums for deduplication
+  uploadDate             DateTime       @default(now())
   conversionStartedAt    DateTime?
   conversionCompletedAt  DateTime?
-  status                 String   @default("uploaded") // 'uploaded', 'converting', 'converted', 'conversion_failed', 'ready_for_transcription'
+  status                 FileStatus     @default(UPLOADED)
   errorMessage           String?
-  checksum               String?
-  createdAt              DateTime @default(now())
-  updatedAt              DateTime @updatedAt
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime       @updatedAt
 
   // Relationships
   transcriptionJobs      TranscriptionJobs[]
   fileMetadata           FileMetadata[]
   sessionFiles           SessionFiles[]
+  auditLogs              AuditLog[]     @relation("FileAuditLogs")
 
   @@index([status])
   @@index([uploadDate])
   @@index([filename])
+  @@index([checksum])
+  @@index([mimeType])
+  @@index([fileSize])
+  @@index([createdAt, status])  // Composite index for common queries
+  @@index([uploadMethod, status]) // For filtering by upload method and status
   @@map("uploaded_files")
 }
 
 model TranscriptionJobs {
-  id                     Int      @id @default(autoincrement())
+  id                     Int                 @id @default(autoincrement())
   fileId                 Int
-  jobUuid                String   @unique
-  modelName              String   @default("mlx-community/parakeet-tdt-0.6b-v3")
-  outputFormat           String   @default("srt") // 'srt', 'txt', 'vtt', 'json'
+  jobUuid                String              @unique
+  modelName              String              @default("mlx-community/parakeet-tdt-0.6b-v3")
+  outputFormat           OutputFormat        @default(SRT)
   outputFilePath         String?
-  status                 String   @default("queued") // 'queued', 'processing', 'completed', 'failed', 'cancelled'
-  progressPercentage     Int      @default(0)
-  estimatedDuration      Int?
-  actualDuration         Int?
+  status                 TranscriptionStatus @default(QUEUED)
+  progressPercentage     Int                 @default(0)
+  estimatedDuration      Int?                // in seconds
+  actualDuration         Int?                // in seconds
+  retryCount             Int                 @default(0)
+  maxRetries             Int                 @default(3)
   errorMessage           String?
   transcriptionText      String?
   wordCount              Int?
   confidenceScore        Float?
-  createdAt              DateTime @default(now())
+  priority               Int                 @default(0) // For job queue prioritization
+  createdAt              DateTime            @default(now())
   startedAt              DateTime?
   completedAt            DateTime?
-  updatedAt              DateTime @updatedAt
+  updatedAt              DateTime            @updatedAt
 
   // Relationships
-  uploadedFile           UploadedFiles @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  uploadedFile           UploadedFiles       @relation(fields: [fileId], references: [id], onDelete: Cascade)
+  auditLogs              AuditLog[]          @relation("JobAuditLogs")
 
   @@index([status])
   @@index([fileId])
   @@index([jobUuid])
   @@index([createdAt])
+  @@index([priority, status]) // For job queue processing
+  @@index([status, createdAt]) // For cleanup queries
   @@map("transcription_jobs")
 }
 
 model FileMetadata {
   id                     Int      @id @default(autoincrement())
-  fileId                 Int
+  fileId                 Int      @unique // One metadata record per file
   durationSeconds        Float?
   sampleRate             Int?
   channels               Int?
@@ -85,36 +160,44 @@ model FileMetadata {
   tagsGenre              String?
   languageDetected       String?
   audioQualityScore      Float?
-  noiseLevel             String? // 'low', 'medium', 'high'
+  noiseLevel             NoiseLevel? @default(UNKNOWN)
   extractedAt            DateTime @default(now())
+  updatedAt              DateTime @updatedAt
 
   // Relationships
   uploadedFile           UploadedFiles @relation(fields: [fileId], references: [id], onDelete: Cascade)
 
-  @@index([fileId])
-  @@index([durationSeconds])
   @@index([languageDetected])
+  @@index([durationSeconds])
+  @@index([noiseLevel])
+  @@index([audioQualityScore])
   @@map("file_metadata")
 }
 
 model UploadSessions {
-  id                     Int      @id @default(autoincrement())
-  sessionUuid            String   @unique
-  totalFiles             Int      @default(0)
-  completedFiles         Int      @default(0)
-  failedFiles            Int      @default(0)
-  totalSizeBytes         Int      @default(0)
-  processedSizeBytes     Int      @default(0)
-  status                 String   @default("active") // 'active', 'completed', 'failed', 'cancelled'
-  createdAt              DateTime @default(now())
+  id                     Int           @id @default(autoincrement())
+  sessionUuid            String        @unique
+  totalFiles             Int           @default(0)
+  completedFiles         Int           @default(0)
+  failedFiles            Int           @default(0)
+  totalSizeBytes         Int           @default(0)
+  processedSizeBytes     Int           @default(0)
+  status                 SessionStatus @default(ACTIVE)
+  timeoutAt              DateTime?     // For session timeout management
+  userAgent              String?       // Track client information
+  ipAddress              String?       // For rate limiting and security
+  createdAt              DateTime      @default(now())
   completedAt            DateTime?
-  updatedAt              DateTime @updatedAt
+  updatedAt              DateTime      @updatedAt
 
   // Relationships
   sessionFiles           SessionFiles[]
+  auditLogs              AuditLog[]    @relation("SessionAuditLogs")
 
   @@index([status])
   @@index([sessionUuid])
+  @@index([createdAt])
+  @@index([status, timeoutAt]) // For cleanup of timed-out sessions
   @@map("upload_sessions")
 }
 
@@ -130,7 +213,68 @@ model SessionFiles {
   uploadedFile           UploadedFiles  @relation(fields: [fileId], references: [id], onDelete: Cascade)
 
   @@unique([sessionId, fileId])
+  @@unique([sessionId, orderIndex]) // Ensure unique order within session
   @@index([sessionId])
   @@index([fileId])
   @@map("session_files")
+}
+
+// New model for audit trail
+model AuditLog {
+  id                     Int         @id @default(autoincrement())
+  action                 AuditAction
+  entityType             String      // 'UploadedFiles', 'TranscriptionJobs', etc.
+  entityId               Int?        // ID of the affected entity
+  oldValues              String?     // JSON string of old values
+  newValues              String?     // JSON string of new values
+  userId                 String?     // If user authentication is implemented
+  sessionId              String?     // Session identifier
+  ipAddress              String?
+  userAgent              String?
+  metadata               String?     // Additional context as JSON
+  createdAt              DateTime    @default(now())
+
+  // Relationships (optional foreign keys for better querying)
+  uploadedFile           UploadedFiles?     @relation("FileAuditLogs", fields: [uploadedFileId], references: [id], onDelete: SetNull)
+  uploadedFileId         Int?
+  transcriptionJob       TranscriptionJobs? @relation("JobAuditLogs", fields: [transcriptionJobId], references: [id], onDelete: SetNull)
+  transcriptionJobId     Int?
+  uploadSession          UploadSessions?    @relation("SessionAuditLogs", fields: [uploadSessionId], references: [id], onDelete: SetNull)
+  uploadSessionId        Int?
+
+  @@index([action])
+  @@index([entityType, entityId])
+  @@index([createdAt])
+  @@index([sessionId])
+  @@index([action, createdAt]) // For audit queries by action and time
+  @@map("audit_logs")
+}
+
+// New model for managing valid status transitions
+model FileStatusTransition {
+  id                     Int        @id @default(autoincrement())
+  fromStatus             FileStatus
+  toStatus               FileStatus
+  isValid                Boolean    @default(true)
+  description            String?
+  createdAt              DateTime   @default(now())
+
+  @@unique([fromStatus, toStatus])
+  @@index([fromStatus])
+  @@index([toStatus])
+  @@map("file_status_transitions")
+}
+
+model TranscriptionStatusTransition {
+  id                     Int                 @id @default(autoincrement())
+  fromStatus             TranscriptionStatus
+  toStatus               TranscriptionStatus
+  isValid                Boolean             @default(true)
+  description            String?
+  createdAt              DateTime            @default(now())
+
+  @@unique([fromStatus, toStatus])
+  @@index([fromStatus])
+  @@index([toStatus])
+  @@map("transcription_status_transitions")
 }
