@@ -11,11 +11,11 @@
 
 ### Must-Have Features
 
-- **File Upload Interface**
-  - Drag-and-drop audio/video file upload (IN PROGRESS)
-  - URL input for remote audio/video files
-  - Support for MP3, WAV formats
-  - File validation and error handling
+- [x] **File Upload Interface** (COMPLETED 2025-08-26)
+  - [x] Drag-and-drop audio/video file upload
+  - [x] URL input for remote audio/video files
+  - [x] Support for MP3, WAV formats
+  - [x] File validation and error handling
   - [x] Progress indicators during upload
 
   **Conversion for unsupported filetypes**
@@ -37,13 +37,13 @@
   - Download completed transcriptions
   - [x] Processing status indicators
 
-- [x] **Local Storage System**
+- [x] **Local Storage System** (COMPLETED 2025-08-26)
   - [x] SQLite integration for transcription history
   - [x] File metadata storage
   - [x] Transcription text storage
   - [x] Basic user preferences
 
-- [x] **Backend Infrastructure** (COMPLETED 2025-08-27)
+- [x] **Backend Infrastructure** (COMPLETED 2025-08-26)
   - [x] Database schema with Prisma ORM
   - [x] Upload API endpoints with validation
   - [x] FFmpeg conversion pipeline with queue management

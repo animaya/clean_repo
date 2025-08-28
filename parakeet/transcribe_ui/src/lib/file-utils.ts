@@ -59,7 +59,21 @@ export function isAudioUrl(url: string): boolean {
   try {
     const urlObj = new URL(url)
     const pathname = urlObj.pathname
-    return isAudioFile(pathname)
+    
+    // Check if the pathname ends with an audio extension
+    if (isAudioFile(pathname)) {
+      return true
+    }
+    
+    // Also check query parameters for audio filenames (e.g., recordUrl=file.wav)
+    const searchParams = urlObj.searchParams
+    for (const [key, value] of searchParams.entries()) {
+      if (value && isAudioFile(value)) {
+        return true
+      }
+    }
+    
+    return false
   } catch {
     return false
   }

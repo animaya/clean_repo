@@ -243,8 +243,17 @@ export function extractFilenameFromUrl(url: string): string {
  */
 export async function validateUrlAccessibility(url: string): Promise<{ accessible: boolean; error?: string }> {
   try {
+    // Create an AbortController for timeout
+    const controller = new AbortController()
+    const timeoutId = setTimeout(() => controller.abort(), 5000)
+    
     // Perform a HEAD request to check if URL is accessible
-    const response = await fetch(url, { method: 'HEAD', timeout: 5000 })
+    const response = await fetch(url, { 
+      method: 'HEAD', 
+      signal: controller.signal 
+    })
+    
+    clearTimeout(timeoutId)
     
     if (!response.ok) {
       return { accessible: false, error: `HTTP ${response.status}: ${response.statusText}` }

@@ -112,7 +112,7 @@ export class ErrorRecoveryService extends EventEmitter {
     this.addRecoveryStrategy({
       name: 'server-health-check',
       priority: 4,
-      canHandle: (error) => error.type === 'server' || (error.code && [500, 502, 503, 504].includes(Number(error.code))),
+      canHandle: (error) => error.type === 'server' || (typeof error.code !== 'undefined' && [500, 502, 503, 504].includes(Number(error.code))),
       execute: async (error) => {
         this.emit('recovery-attempt', { strategy: 'server-health-check', error })
         

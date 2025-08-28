@@ -77,8 +77,8 @@ export class ConversionProgressTracker implements ProgressTracker {
     // Ensure percentage is within bounds
     updatedProgress.percentage = Math.max(0, Math.min(100, updatedProgress.percentage))
 
-    // Update timestamp for rate calculations
-    updatedProgress.lastUpdateTime = Date.now()
+    // Update timestamp for rate calculations  
+    ;(updatedProgress as any).lastUpdateTime = Date.now()
 
     this.jobProgress.set(jobId, updatedProgress)
     this.notifyJobProgress(jobId, updatedProgress)
@@ -93,7 +93,7 @@ export class ConversionProgressTracker implements ProgressTracker {
    * Complete progress tracking for a job
    */
   completeJobProgress(jobId: string): void {
-    const finalProgress: ConversionProgress = {
+    const finalProgress: ConversionProgress & { lastUpdateTime: number } = {
       percentage: 100,
       currentStep: 'Completed',
       estimatedTimeRemaining: 0,
@@ -112,7 +112,7 @@ export class ConversionProgressTracker implements ProgressTracker {
    * Mark job progress as failed
    */
   failJobProgress(jobId: string, errorMessage: string): void {
-    const failedProgress: ConversionProgress = {
+    const failedProgress: ConversionProgress & { lastUpdateTime: number } = {
       percentage: 0,
       currentStep: `Failed: ${errorMessage}`,
       estimatedTimeRemaining: 0,
@@ -195,9 +195,11 @@ export class ConversionProgressTracker implements ProgressTracker {
     // This updates the overall queue progress
     this.queueProgress = {
       ...this.queueProgress,
-      ...progress,
-      lastUpdateTime: Date.now()
-    }
+      ...progress
+    } as any
+    
+    // Set lastUpdateTime separately to avoid type issues
+    ;(this.queueProgress as any).lastUpdateTime = Date.now()
 
     this.notifyGlobalProgress(this.queueProgress)
   }
@@ -361,9 +363,11 @@ export class ConversionProgressTracker implements ProgressTracker {
       currentStep: stats.activeJobs > 0 
         ? `Processing ${stats.activeJobs} job${stats.activeJobs > 1 ? 's' : ''}`
         : 'Ready',
-      estimatedTimeRemaining: stats.estimatedTimeRemaining,
-      lastUpdateTime: Date.now()
-    }
+      estimatedTimeRemaining: stats.estimatedTimeRemaining
+    } as any
+    
+    // Set lastUpdateTime separately to avoid type issues
+    ;(this.queueProgress as any).lastUpdateTime = Date.now()
 
     this.notifyGlobalProgress(this.queueProgress)
   }

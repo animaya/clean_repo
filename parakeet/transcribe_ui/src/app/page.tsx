@@ -15,6 +15,7 @@ interface TranscriptionResult {
   error?: string
   timestamp: string
   preview: string
+  jobId?: string // For tracking async jobs
 }
 
 export default function Home() {
@@ -124,50 +125,127 @@ export default function Home() {
       const data = await response.json()
       console.log('Transcription API response:', data)
       
-      // Estimate total duration for progress tracking
-      const totalFiles = uploadedFiles.length
-      const totalDurationEstimate = uploadedFiles.reduce((sum, file) => {
-        // Estimate duration based on file size (rough approximation)
-        // Assume 1MB ≈ 10 seconds of audio (this varies greatly)
-        const estimatedSeconds = (file.size || 0) / (1024 * 1024) * 10
-        return sum + Math.max(estimatedSeconds, 5) // Minimum 5 seconds per file
-      }, 0)
+      // Handle nested response structure - API returns { success, data: { success, jobIds, message } }
+      const responseData = data.data || data; // Handle both nested and flat response structures
       
-      // Set up realistic progress tracking
-      progressInterval = setupProgressTracking(totalFiles, totalDurationEstimate)
-      
-      // Handle nested response structure (similar to upload API)
-      const transcriptionData = data.data || data
-      
-      if (data.success && transcriptionData.results) {
-        // Clean up progress interval and set final progress to 100%
-        if (progressInterval) {
-          clearInterval(progressInterval)
-        }
-        setTranscriptionProgress(100)
-        setEstimatedTimeRemaining(0)
+      if (data.success && responseData.jobIds) {
+        console.log('Transcription jobs started:', responseData.jobIds)
         
-        // Transform the API results to match the expected format
-        const results = transcriptionData.results.map((result: any) => {
-          const transcript = result.transcript || ''
-          const preview = transcript.split(/[.!?]/).slice(0, 3).join('. ').trim()
-          return {
-            id: `${result.fileId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-            fileName: result.filename,
-            status: result.status,
-            transcript: transcript,
-            preview: preview || transcript.substring(0, 150) + '...',
-            duration: result.duration || 0,
-            confidence: result.confidence || 0,
-            error: result.error,
-            timestamp: new Date().toISOString()
+        // Estimate total duration for progress tracking
+        const totalFiles = uploadedFiles.length
+        const totalDurationEstimate = uploadedFiles.reduce((sum, file) => {
+          // Estimate duration based on file size (rough approximation)
+          const estimatedSeconds = (file.size || 0) / (1024 * 1024) * 10
+          return sum + Math.max(estimatedSeconds, 5) // Minimum 5 seconds per file
+        }, 0)
+        
+        // Set up realistic progress tracking
+        progressInterval = setupProgressTracking(totalFiles, totalDurationEstimate)
+        
+        // Store job IDs for polling
+        const jobIds = responseData.jobIds
+        const pollInterval = 2000 // Poll every 2 seconds
+        let completedJobs = 0
+        const totalJobs = jobIds.length
+        
+        // Create placeholder results for each job
+        const placeholderResults = uploadedFiles.map((file, index) => ({
+          id: `${file.id}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+          fileName: file.name || file.originalFilename || `File ${index + 1}`,
+          status: 'processing' as const,
+          transcript: '',
+          preview: '',
+          duration: 0,
+          confidence: 0,
+          timestamp: new Date().toISOString(),
+          jobId: jobIds[index] // Store job ID for tracking
+        }))
+        
+        setTranscriptionResults(prev => [...prev, ...placeholderResults])
+        
+        // Poll job status until all jobs are complete
+        const pollJobStatus = async () => {
+          const completedResults = [...placeholderResults]
+          let newCompletedJobs = 0
+          
+          for (let i = 0; i < jobIds.length; i++) {
+            const jobId = jobIds[i]
+            try {
+              const statusResponse = await fetch(`/api/transcribe?jobId=${jobId}`)
+              if (statusResponse.ok) {
+                const statusData = await statusResponse.json()
+                const job = statusData.data?.job || statusData.job // Handle nested structure
+                
+                if (job.status === 'completed' && job.result) {
+                  const result = job.result.result
+                  const transcript = result.transcript || ''
+                  const preview = transcript.split(/[.!?]/).slice(0, 3).join('. ').trim()
+                  
+                  completedResults[i] = {
+                    ...completedResults[i],
+                    status: 'completed' as const,
+                    transcript,
+                    preview: preview || transcript.substring(0, 150) + '...',
+                    duration: result.duration || 0,
+                    confidence: result.confidence || 0
+                  }
+                  newCompletedJobs++
+                } else if (job.status === 'failed') {
+                  completedResults[i] = {
+                    ...completedResults[i],
+                    status: 'failed' as const,
+                    error: job.error || 'Transcription failed'
+                  }
+                  newCompletedJobs++
+                }
+              }
+            } catch (pollError) {
+              console.warn(`Failed to poll status for job ${jobId}:`, pollError)
+            }
           }
-        })
+          
+          // Update completed jobs count
+          completedJobs = newCompletedJobs
+          
+          // Update progress based on completed jobs
+          const jobProgress = (completedJobs / totalJobs) * 100
+          setTranscriptionProgress(Math.max(jobProgress, 10)) // Minimum 10% to show progress
+          
+          // Update results
+          setTranscriptionResults(prev => {
+            const updated = [...prev]
+            const startIndex = prev.length - placeholderResults.length
+            completedResults.forEach((result, index) => {
+              updated[startIndex + index] = result
+            })
+            return updated
+          })
+          
+          // Continue polling if jobs are still processing
+          if (completedJobs < totalJobs) {
+            setTimeout(pollJobStatus, pollInterval)
+          } else {
+            // All jobs completed
+            if (progressInterval) {
+              clearInterval(progressInterval)
+            }
+            setTranscriptionProgress(100)
+            setEstimatedTimeRemaining(0)
+            setIsTranscribing(false)
+          }
+        }
         
-        setTranscriptionResults(prev => [...prev, ...results])
+        // Start polling
+        setTimeout(pollJobStatus, pollInterval)
+        
       } else {
-        console.error('Response validation failed:', { success: data.success, results: transcriptionData.results, data: data.data })
-        throw new Error('Invalid response from transcription service')
+        console.error('Response validation failed:', { 
+          success: data.success, 
+          jobIds: responseData?.jobIds, 
+          message: responseData?.message || data.message,
+          fullResponse: data 
+        })
+        throw new Error(responseData?.message || data.message || 'Failed to start transcription jobs')
       }
     } catch (error) {
       console.error('Transcription error:', error)

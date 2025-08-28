@@ -14,6 +14,8 @@ export type MaintenanceReport = {
   orphanedFiles: CleanupResult
   oldSessions: CleanupResult
   completedJobs: CleanupResult
+  completedUploads: CleanupResult
+  tempFiles: CleanupResult
   databaseSize: number
   storageSize: number
   recommendations: string[]
@@ -218,6 +220,78 @@ export async function cleanupCompletedJobs(
 }
 
 /**
+ * Cleans up uploaded files that have been successfully transcribed and are older than specified time
+ */
+export async function cleanupCompletedUploads(
+  prisma: PrismaClient,
+  uploadsDir: string = process.env.UPLOADS_DIR || '/tmp/uploads',
+  hoursOld: number = 24
+): Promise<CleanupResult> {
+  const result: CleanupResult = {
+    deletedRecords: 0,
+    orphanedFiles: [],
+    errors: [],
+    totalProcessed: 0
+  }
+
+  try {
+    const cutoffDate = new Date()
+    cutoffDate.setHours(cutoffDate.getHours() - hoursOld)
+
+    // Find files that have been successfully transcribed and are old enough
+    const completedFiles = await prisma.uploadedFiles.findMany({
+      where: {
+        status: 'completed',
+        updatedAt: {
+          lt: cutoffDate
+        }
+      },
+      select: {
+        id: true,
+        filePath: true,
+        convertedFilePath: true
+      }
+    })
+
+    result.totalProcessed = completedFiles.length
+
+    for (const file of completedFiles) {
+      try {
+        // Delete physical files
+        const filesToDelete = [file.filePath, file.convertedFilePath].filter(Boolean)
+        
+        for (const filePath of filesToDelete) {
+          try {
+            await fs.unlink(filePath)
+            console.log(`Cleaned up completed upload file: ${filePath}`)
+          } catch (unlinkError) {
+            // File might already be deleted, which is okay
+            result.orphanedFiles.push(filePath)
+          }
+        }
+
+        // Keep the database record but mark as cleaned up
+        await prisma.uploadedFiles.update({
+          where: { id: file.id },
+          data: { 
+            status: 'archived',
+            updatedAt: new Date()
+          }
+        })
+
+        result.deletedRecords++
+      } catch (error) {
+        result.errors.push(`Failed to cleanup completed file ${file.id}: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      }
+    }
+  } catch (error) {
+    result.errors.push(`Failed to cleanup completed uploads: ${error instanceof Error ? error.message : 'Unknown error'}`)
+  }
+
+  return result
+}
+
+/**
  * Cleans up temporary files in the system temp directory
  */
 export async function cleanupTempFiles(tempDir: string = '/tmp'): Promise<CleanupResult> {
@@ -235,7 +309,9 @@ export async function cleanupTempFiles(tempDir: string = '/tmp'): Promise<Cleanu
     const tempFiles = entries.filter(entry => 
       entry.startsWith('upload_') || 
       entry.startsWith('parakeet_') ||
-      entry.includes('transcribe')
+      entry.includes('transcribe') ||
+      entry.endsWith('_converted.wav') ||
+      (entry.includes('_') && (entry.endsWith('.txt') || entry.endsWith('.srt') || entry.endsWith('.vtt') || entry.endsWith('.json')))
     )
 
     result.totalProcessed = tempFiles.length
@@ -347,21 +423,25 @@ export async function performMaintenanceTask(
     cleanupOrphanedFiles?: boolean
     cleanupOldSessions?: boolean
     cleanupCompletedJobs?: boolean
+    cleanupCompletedUploads?: boolean
     cleanupTempFiles?: boolean
     vacuumDatabase?: boolean
     sessionCleanupDays?: number
     jobCleanupDays?: number
+    uploadCleanupHours?: number
     uploadsPath?: string
   } = {}
 ): Promise<MaintenanceReport> {
   const {
-    cleanupOrphanedFiles = true,
-    cleanupOldSessions = true,
-    cleanupCompletedJobs = true,
-    cleanupTempFiles = true,
-    vacuumDatabase = true,
+    cleanupOrphanedFiles: shouldCleanupOrphanedFiles = true,
+    cleanupOldSessions: shouldCleanupOldSessions = true,
+    cleanupCompletedJobs: shouldCleanupCompletedJobs = true,
+    cleanupCompletedUploads: shouldCleanupCompletedUploads = true,
+    cleanupTempFiles: shouldCleanupTempFiles = true,
+    vacuumDatabase: shouldVacuumDatabase = true,
     sessionCleanupDays = 30,
     jobCleanupDays = 7,
+    uploadCleanupHours = 24,
     uploadsPath = './uploads'
   } = options
 
@@ -370,6 +450,8 @@ export async function performMaintenanceTask(
     orphanedFiles: { deletedRecords: 0, orphanedFiles: [], errors: [], totalProcessed: 0 },
     oldSessions: { deletedRecords: 0, orphanedFiles: [], errors: [], totalProcessed: 0 },
     completedJobs: { deletedRecords: 0, orphanedFiles: [], errors: [], totalProcessed: 0 },
+    completedUploads: { deletedRecords: 0, orphanedFiles: [], errors: [], totalProcessed: 0 },
+    tempFiles: { deletedRecords: 0, orphanedFiles: [], errors: [], totalProcessed: 0 },
     databaseSize: 0,
     storageSize: 0,
     recommendations: []
@@ -377,27 +459,32 @@ export async function performMaintenanceTask(
 
   try {
     // Cleanup orphaned files
-    if (cleanupOrphanedFiles) {
+    if (shouldCleanupOrphanedFiles) {
       report.orphanedFiles = await cleanupOrphanedFiles(prisma, uploadsPath)
     }
 
     // Cleanup old sessions
-    if (cleanupOldSessions) {
+    if (shouldCleanupOldSessions) {
       report.oldSessions = await cleanupOldSessions(prisma, sessionCleanupDays)
     }
 
     // Cleanup completed jobs
-    if (cleanupCompletedJobs) {
+    if (shouldCleanupCompletedJobs) {
       report.completedJobs = await cleanupCompletedJobs(prisma, jobCleanupDays)
     }
 
+    // Cleanup completed uploads
+    if (shouldCleanupCompletedUploads) {
+      report.completedUploads = await cleanupCompletedUploads(prisma, uploadsPath, uploadCleanupHours)
+    }
+
     // Cleanup temp files
-    if (cleanupTempFiles) {
-      await cleanupTempFiles()
+    if (shouldCleanupTempFiles) {
+      report.tempFiles = await cleanupTempFiles()
     }
 
     // Vacuum database
-    if (vacuumDatabase) {
+    if (shouldVacuumDatabase) {
       await vacuumDatabase(prisma)
     }
 
@@ -408,7 +495,9 @@ export async function performMaintenanceTask(
     // Calculate total cleanup impact
     const totalDeleted = report.orphanedFiles.deletedRecords + 
                         report.oldSessions.deletedRecords + 
-                        report.completedJobs.deletedRecords
+                        report.completedJobs.deletedRecords +
+                        report.completedUploads.deletedRecords +
+                        report.tempFiles.deletedRecords
 
     if (totalDeleted > 0) {
       report.recommendations.push(`Successfully cleaned up ${totalDeleted} database records`)
@@ -482,12 +571,21 @@ export async function validateDatabaseIntegrity(prisma: PrismaClient): Promise<{
       result.warnings.push(`${filesWithoutMetadata.length} files are missing metadata`)
     }
 
-    // Check for jobs without files
-    const jobsWithoutFiles = await prisma.transcriptionJobs.findMany({
-      where: {
-        uploadedFile: null
+    // Check for jobs without files (where referenced file doesn't exist)
+    const allJobs = await prisma.transcriptionJobs.findMany({
+      select: {
+        id: true,
+        fileId: true
       }
     })
+
+    const existingFileIds = await prisma.uploadedFiles.findMany({
+      select: {
+        id: true
+      }
+    }).then(files => new Set(files.map(f => f.id)))
+
+    const jobsWithoutFiles = allJobs.filter(job => !existingFileIds.has(job.fileId))
 
     if (jobsWithoutFiles.length > 0) {
       result.issues.push(`${jobsWithoutFiles.length} transcription jobs reference non-existent files`)

@@ -125,10 +125,10 @@ export class WebSocketServer {
 
   private validateProgressEvent(event: ProgressEvent): boolean {
     return (
-      event.type && 
+      !!event.type && 
       ['upload_progress', 'conversion_progress', 'transcription_progress'].includes(event.type) &&
-      event.sessionId &&
-      event.fileId &&
+      !!event.sessionId &&
+      !!event.fileId &&
       typeof event.progress === 'number' &&
       event.progress >= 0 &&
       event.progress <= 100

@@ -2,7 +2,8 @@ import React from 'react'
 
 interface ProgressBarProps {
   progress: number
-  status: 'uploading' | 'converting' | 'completed' | 'error'
+  estimatedTimeRemaining?: number | null
+  status?: 'uploading' | 'converting' | 'completed' | 'error'
   label?: string
   size?: 'sm' | 'md' | 'lg'
   showPercentage?: boolean
@@ -12,13 +13,22 @@ interface ProgressBarProps {
 
 const ProgressBar: React.FC<ProgressBarProps> = ({
   progress,
-  status,
+  estimatedTimeRemaining,
+  status = 'uploading',
   label,
   size = 'md',
   showPercentage = true,
   animated = true,
   className = '',
 }) => {
+  const formatTime = (seconds: number) => {
+    if (seconds < 60) {
+      return `${Math.round(seconds)}s`
+    }
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = Math.round(seconds % 60)
+    return `${minutes}m ${remainingSeconds}s`
+  }
   const getBarColor = () => {
     switch (status) {
       case 'uploading':
@@ -60,16 +70,23 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
 
   return (
     <div className={`w-full ${className}`}>
-      {(label || showPercentage) && (
+      {(label || showPercentage || estimatedTimeRemaining !== undefined) && (
         <div className={`flex items-center justify-between ${getTextSize()} mb-1`}>
-          {label && (
-            <span className="text-gray-600 font-medium">
-              {label}
-            </span>
-          )}
-          {showPercentage && (
-            <span className="font-medium text-gray-900">
-              {Math.round(clampedProgress)}%
+          <div className="flex items-center space-x-2">
+            {label && (
+              <span className="text-gray-600 font-medium">
+                {label}
+              </span>
+            )}
+            {showPercentage && (
+              <span className="font-medium text-gray-900">
+                {Math.round(clampedProgress)}%
+              </span>
+            )}
+          </div>
+          {estimatedTimeRemaining !== null && estimatedTimeRemaining !== undefined && (
+            <span className="text-gray-600">
+              ⏱️ {estimatedTimeRemaining > 0 ? formatTime(estimatedTimeRemaining) : 'Almost done'} remaining
             </span>
           )}
         </div>
@@ -84,22 +101,26 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
         aria-label={label || `Progress: ${Math.round(clampedProgress)}%`}
       >
         <div
-          className={`${getSize()} ${getBarColor()} rounded-full transition-all duration-300 ${
+          className={`${getSize()} ${getBarColor()} rounded-full transition-all duration-500 ${
             animated ? 'ease-out' : ''
-          }`}
+          } relative overflow-hidden`}
           style={{ width: `${clampedProgress}%` }}
         >
-          {animated && status === 'uploading' && (
-            <div
-              className="h-full w-full bg-gradient-to-r from-transparent via-white/30 to-transparent animate-pulse"
-              style={{
-                backgroundSize: '200% 100%',
-                animation: 'shimmer 1.5s infinite',
-              }}
-            />
+          {animated && (
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -skew-x-12 animate-pulse" />
           )}
         </div>
       </div>
+      
+      {/* Transcription status message */}
+      {!label && (
+        <div className="text-xs text-gray-600 text-center mt-2">
+          {clampedProgress < 30 ? '🎵 Analyzing audio...' : 
+           clampedProgress < 70 ? '🧠 Running AI transcription...' : 
+           clampedProgress < 95 ? '📝 Finalizing text...' : 
+           '✨ Almost ready!'}
+        </div>
+      )}
       
       {status === 'error' && (
         <div className="mt-1 text-xs text-red-600">
@@ -113,17 +134,6 @@ const ProgressBar: React.FC<ProgressBarProps> = ({
           Complete
         </div>
       )}
-      
-      <style jsx>{`
-        @keyframes shimmer {
-          0% {
-            background-position: -200% 0;
-          }
-          100% {
-            background-position: 200% 0;
-          }
-        }
-      `}</style>
     </div>
   )
 }

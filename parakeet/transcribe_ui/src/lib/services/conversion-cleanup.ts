@@ -303,7 +303,7 @@ export class ConversionCleanupService {
   /**
    * Private: Perform periodic cleanup of old resources
    */
-  private async performPeriodicCleanup(): void {
+  private async performPeriodicCleanup(): Promise<void> {
     const status = this.getCleanupStatus()
     
     // Clean up if we have too many temp files or high memory usage
