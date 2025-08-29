@@ -4,6 +4,8 @@ import React, { useState, useEffect, useRef } from 'react'
 import UploadInterface, { UploadInterfaceRef } from '@/components/UploadInterface'
 import TranscriptionModal from '@/components/TranscriptionModal'
 import ProgressBar from '@/components/ProgressBar'
+import { FileWithStatus } from '@/types/file-interfaces'
+import { UnifiedProgressData, ProgressSummary, calculateOverallProgress, formatTimeRemaining } from '@/types/progress'
 
 interface TranscriptionResult {
   id: string
@@ -21,13 +23,18 @@ interface TranscriptionResult {
 }
 
 export default function Home() {
-  const [uploadedFiles, setUploadedFiles] = useState<any[]>([])
+  const [uploadedFiles, setUploadedFiles] = useState<FileWithStatus[]>([])
   const [transcriptionResults, setTranscriptionResults] = useState<TranscriptionResult[]>([])
   const [isTranscribing, setIsTranscribing] = useState(false)
   const [transcriptionProgress, setTranscriptionProgress] = useState(0)
   const [estimatedTimeRemaining, setEstimatedTimeRemaining] = useState<number | null>(null)
   const [selectedTranscription, setSelectedTranscription] = useState<TranscriptionResult | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
+  
+  // Real-time progress tracking state
+  const [activeJobs, setActiveJobs] = useState<string[]>([])
+  const [jobProgressMap, setJobProgressMap] = useState<Map<string, UnifiedProgressData>>(new Map())
+  const [progressSummary, setProgressSummary] = useState<ProgressSummary | null>(null)
   
   // Ref to access UploadInterface methods
   const uploadInterfaceRef = useRef<UploadInterfaceRef>(null)
@@ -64,7 +71,16 @@ export default function Home() {
         originalFilename: file.originalFilename
       })
     })
-    setUploadedFiles(files)
+    
+    // Merge new files with existing ones (avoid duplicates by ID)
+    setUploadedFiles(prev => {
+      const newFiles = files.filter(newFile => 
+        !prev.some(existingFile => existingFile.id === newFile.id)
+      )
+      const combined = [...prev, ...newFiles]
+      console.log('Combined files:', combined)
+      return combined
+    })
     // Don't start transcription automatically anymore
   }
 
@@ -74,6 +90,54 @@ export default function Home() {
     console.log('Starting transcription, clearing uploaded files...')
     console.log('Files before clearing:', uploadedFiles)
     
+    // Filter out any files that might not have proper IDs
+    const validFiles = uploadedFiles.filter(file => file.id && file.id !== '' && file.status === 'completed')
+    console.log('Valid files for transcription:', validFiles)
+    
+    if (validFiles.length === 0) {
+      console.log('No valid files for transcription')
+      return
+    }
+
+    // Validate that files still exist in database before starting transcription
+    const fileIds = validFiles.map(file => file.id)
+    try {
+      const validationResponse = await fetch('/api/upload/files/validate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ fileIds })
+      })
+      
+      if (validationResponse.ok) {
+        const validationData = await validationResponse.json()
+        if (validationData.missingFiles && validationData.missingFiles.length > 0) {
+          console.warn('Some files no longer exist:', validationData.missingFiles)
+          // Remove missing files from state
+          const existingFiles = validFiles.filter(file => !validationData.missingFiles.includes(file.id))
+          setUploadedFiles(existingFiles)
+          
+          if (existingFiles.length === 0) {
+            console.log('No files available for transcription after validation')
+            alert('The files you selected for transcription are no longer available. Please upload new files.')
+            return
+          }
+          
+          // Show warning about missing files
+          if (validationData.missingFiles.length < validFiles.length) {
+            console.log(`${validationData.missingFiles.length} files were removed and won't be transcribed. Proceeding with ${existingFiles.length} remaining files.`)
+          }
+          
+          // Update validFiles to only include existing files
+          validFiles.splice(0, validFiles.length, ...existingFiles)
+        }
+      }
+    } catch (error) {
+      console.warn('Failed to validate files, proceeding with transcription:', error)
+      // Continue with transcription even if validation fails
+    }
+    
     setIsTranscribing(true)
     setTranscriptionProgress(0)
     setEstimatedTimeRemaining(null)
@@ -81,51 +145,160 @@ export default function Home() {
     // Clear uploaded files from the queue when transcription starts
     setUploadedFiles([])
     
-    // Also trigger clearing of the UploadInterface component immediately
-    uploadInterfaceRef.current?.clearFiles()
-    
     console.log('Files cleared from upload queue')
     
-    const startTime = Date.now()
-    let progressInterval: NodeJS.Timeout | null = null
-    
-    // Set up realistic progress tracking based on file processing time
-    const setupProgressTracking = (totalFiles: number, totalDurationEstimate: number) => {
-      // Estimate progress based on file count and typical processing time
-      const baseTimePerFile = 10000 // 10 seconds base time per file
-      const durationMultiplier = 1000 // 1 second processing per 1 second of audio
-      const estimatedTotalTime = Math.max(
-        totalFiles * baseTimePerFile,
-        totalDurationEstimate * durationMultiplier
-      )
+    // Real-time job progress monitoring
+    const monitorJobProgress = (jobIds: string[]) => {
+      setActiveJobs(jobIds)
       
-      let currentProgress = 0
-      const updateInterval = 1000 // Update every second
-      const progressIncrement = (100 / (estimatedTotalTime / updateInterval)) * 0.7 // Conservative estimate
-      
-      const progressInterval = setInterval(() => {
-        currentProgress = Math.min(currentProgress + progressIncrement, 85) // Cap at 85% until complete
-        setTranscriptionProgress(currentProgress)
-        
-        // Calculate estimated time remaining
-        const elapsed = (Date.now() - startTime) / 1000
-        const remaining = estimatedTotalTime - elapsed * 1000
-        setEstimatedTimeRemaining(Math.max(remaining / 1000, 0))
-        
-        // Stop the interval if we've reached our max simulated progress
-        if (currentProgress >= 85) {
-          clearInterval(progressInterval)
+      // Poll job status every second
+      const pollInterval = setInterval(async () => {
+        try {
+          const progressUpdates = new Map<string, UnifiedProgressData>()
+          let completedJobs = 0
+          let failedJobs = 0
+          let totalProgress = 0
+          
+          for (const jobId of jobIds) {
+            const response = await fetch(`/api/transcribe?jobId=${jobId}`)
+            const data = await response.json()
+            
+            // Handle nested response structure
+            const responseData = data.data || data
+            if (data.success && responseData.job) {
+              const job = responseData.job
+              const progress: UnifiedProgressData = {
+                fileId: jobId,
+                progress: job.progress?.progress || 0,
+                stage: job.progress?.stage || (job.status === 'completed' ? 'completed' : 
+                       job.status === 'failed' ? 'error' : 'preparing'),
+                message: job.progress?.message || `Job ${job.status}`,
+                estimatedTimeRemaining: job.progress?.estimatedTimeRemaining
+              }
+              
+              progressUpdates.set(jobId, progress)
+              totalProgress += progress.progress
+              
+              if (job.status === 'completed') {
+                completedJobs++
+              } else if (job.status === 'failed') {
+                failedJobs++
+              }
+            }
+          }
+          
+          // Update progress state
+          setJobProgressMap(progressUpdates)
+          const overallProgress = totalProgress / jobIds.length
+          setTranscriptionProgress(overallProgress)
+          
+          // Calculate overall estimated time remaining from active jobs
+          const activeProgresses = Array.from(progressUpdates.values())
+            .filter(p => p.stage !== 'completed' && p.stage !== 'error' && p.estimatedTimeRemaining)
+          
+          if (activeProgresses.length > 0) {
+            const totalEstimatedTime = activeProgresses.reduce((sum, p) => 
+              sum + (p.estimatedTimeRemaining || 0), 0)
+            const avgEstimatedTime = totalEstimatedTime / activeProgresses.length
+            setEstimatedTimeRemaining(avgEstimatedTime)
+          } else {
+            setEstimatedTimeRemaining(null)
+          }
+          
+          // Update summary
+          const summary: ProgressSummary = {
+            totalFiles: jobIds.length,
+            completedFiles: completedJobs,
+            failedFiles: failedJobs,
+            overallProgress,
+            currentlyProcessing: Array.from(progressUpdates.values())
+              .filter(p => p.stage !== 'completed' && p.stage !== 'error')
+              .map((_, index) => `File ${index + 1}`)
+          }
+          setProgressSummary(summary)
+          
+          // Stop polling when all jobs are complete
+          if (completedJobs + failedJobs === jobIds.length) {
+            clearInterval(pollInterval)
+            setIsTranscribing(false)
+            
+            // Fetch final transcription results
+            await fetchCompletedResults(jobIds)
+            
+            // Clean up uploaded files from server after transcription is complete
+            uploadInterfaceRef.current?.clearFiles()
+            console.log('Transcription completed, files cleaned up')
+          }
+          
+        } catch (error) {
+          console.error('Error polling job progress:', error)
         }
-      }, updateInterval)
+      }, 1000)
       
-      // Store interval reference for cleanup
-      return progressInterval
+      return pollInterval
+    }
+
+    // Fetch completed transcription results
+    const fetchCompletedResults = async (jobIds: string[]) => {
+      for (let i = 0; i < jobIds.length; i++) {
+        const jobId = jobIds[i]
+        try {
+          const response = await fetch(`/api/transcribe?jobId=${jobId}`)
+          if (response.ok) {
+            const data = await response.json()
+            const job = data.data?.job || data.job
+            
+            if (job.status === 'completed' && job.result) {
+              const result = job.result.result
+              const transcript = result.transcript || ''
+              const preview = transcript.split(/[.!?]/).slice(0, 3).join('. ').trim()
+              const originalFile = validFiles[i]
+              
+              const transcriptionResult: TranscriptionResult = {
+                id: `${jobId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                fileName: originalFile?.name || originalFile?.originalFilename || `Audio File ${i + 1}`,
+                status: 'completed',
+                transcript,
+                preview: preview || transcript.substring(0, 150) + '...',
+                duration: result.duration || 0,
+                confidence: result.confidence || 0,
+                timestamp: new Date().toISOString(),
+                jobId,
+                fileSize: originalFile?.size || 0,
+                originalFile
+              }
+              
+              setTranscriptionResults(prev => [...prev, transcriptionResult])
+            } else if (job.status === 'failed') {
+              const originalFile = validFiles[i]
+              const errorResult: TranscriptionResult = {
+                id: `${jobId}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+                fileName: originalFile?.name || originalFile?.originalFilename || `Audio File ${i + 1}`,
+                status: 'failed',
+                transcript: '',
+                preview: '',
+                duration: 0,
+                confidence: 0,
+                error: job.error || 'Transcription failed',
+                timestamp: new Date().toISOString(),
+                jobId,
+                fileSize: originalFile?.size || 0,
+                originalFile
+              }
+              
+              setTranscriptionResults(prev => [...prev, errorResult])
+            }
+          }
+        } catch (error) {
+          console.error(`Failed to fetch result for job ${jobId}:`, error)
+        }
+      }
     }
     
     try {
-      // Extract file IDs from the uploaded files
-      const fileIds = uploadedFiles.map(file => file.id)
-      console.log('Files received in handleStartTranscription:', uploadedFiles)
+      // Extract file IDs from the valid files
+      const fileIds = validFiles.map(file => file.id)
+      console.log('Files received in handleStartTranscription:', validFiles)
       console.log('Extracted file IDs:', fileIds)
       
       // Call the transcription API
@@ -157,114 +330,8 @@ export default function Home() {
       if (data.success && responseData.jobIds) {
         console.log('Transcription jobs started:', responseData.jobIds)
         
-        // Estimate total duration for progress tracking
-        const totalFiles = uploadedFiles.length
-        const totalDurationEstimate = uploadedFiles.reduce((sum, file) => {
-          // Estimate duration based on file size (rough approximation)
-          const estimatedSeconds = (file.size || 0) / (1024 * 1024) * 10
-          return sum + Math.max(estimatedSeconds, 5) // Minimum 5 seconds per file
-        }, 0)
-        
-        // Set up realistic progress tracking
-        progressInterval = setupProgressTracking(totalFiles, totalDurationEstimate)
-        
-        // Store job IDs for polling
-        const jobIds = responseData.jobIds
-        const pollInterval = 2000 // Poll every 2 seconds
-        let completedJobs = 0
-        const totalJobs = jobIds.length
-        
-        // Create placeholder results for each job
-        const placeholderResults = uploadedFiles.map((file, index) => ({
-          id: `${file.id}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-          fileName: file.name || file.originalFilename || `Audio File ${index + 1}`,
-          status: 'processing' as const,
-          transcript: '',
-          preview: '',
-          duration: 0,
-          confidence: 0,
-          timestamp: new Date().toISOString(),
-          jobId: jobIds[index], // Store job ID for tracking
-          fileSize: file.size || 0, // Store original file size for display
-          originalFile: file // Store reference to original file data
-        }))
-        
-        setTranscriptionResults(prev => [...prev, ...placeholderResults])
-        
-        // Poll job status until all jobs are complete
-        const pollJobStatus = async () => {
-          const completedResults = [...placeholderResults]
-          let newCompletedJobs = 0
-          
-          for (let i = 0; i < jobIds.length; i++) {
-            const jobId = jobIds[i]
-            try {
-              const statusResponse = await fetch(`/api/transcribe?jobId=${jobId}`)
-              if (statusResponse.ok) {
-                const statusData = await statusResponse.json()
-                const job = statusData.data?.job || statusData.job // Handle nested structure
-                
-                if (job.status === 'completed' && job.result) {
-                  const result = job.result.result
-                  const transcript = result.transcript || ''
-                  const preview = transcript.split(/[.!?]/).slice(0, 3).join('. ').trim()
-                  
-                  completedResults[i] = {
-                    ...completedResults[i],
-                    status: 'completed' as const,
-                    transcript,
-                    preview: preview || transcript.substring(0, 150) + '...',
-                    duration: result.duration || 0,
-                    confidence: result.confidence || 0
-                  }
-                  newCompletedJobs++
-                } else if (job.status === 'failed') {
-                  completedResults[i] = {
-                    ...completedResults[i],
-                    status: 'failed' as const,
-                    error: job.error || 'Transcription failed'
-                  }
-                  newCompletedJobs++
-                }
-              }
-            } catch (pollError) {
-              console.warn(`Failed to poll status for job ${jobId}:`, pollError)
-            }
-          }
-          
-          // Update completed jobs count
-          completedJobs = newCompletedJobs
-          
-          // Update progress based on completed jobs
-          const jobProgress = (completedJobs / totalJobs) * 100
-          setTranscriptionProgress(Math.max(jobProgress, 10)) // Minimum 10% to show progress
-          
-          // Update results
-          setTranscriptionResults(prev => {
-            const updated = [...prev]
-            const startIndex = prev.length - placeholderResults.length
-            completedResults.forEach((result, index) => {
-              updated[startIndex + index] = result
-            })
-            return updated
-          })
-          
-          // Continue polling if jobs are still processing
-          if (completedJobs < totalJobs) {
-            setTimeout(pollJobStatus, pollInterval)
-          } else {
-            // All jobs completed
-            if (progressInterval) {
-              clearInterval(progressInterval)
-            }
-            setTranscriptionProgress(100)
-            setEstimatedTimeRemaining(0)
-            setIsTranscribing(false)
-          }
-        }
-        
-        // Start polling
-        setTimeout(pollJobStatus, pollInterval)
+        // Start real-time progress monitoring
+        monitorJobProgress(responseData.jobIds)
         
       } else {
         console.error('Response validation failed:', { 
@@ -279,7 +346,7 @@ export default function Home() {
       console.error('Transcription error:', error)
       
       // Show error state to user
-      const errorResults = uploadedFiles.map((file, index) => ({
+      const errorResults = validFiles.map((file, index) => ({
         id: `${file.id}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         fileName: file.name || file.originalFilename || `Audio File ${index + 1}`,
         status: 'failed' as const,
@@ -294,14 +361,13 @@ export default function Home() {
       }))
       
       setTranscriptionResults(prev => [...prev, ...errorResults])
-    } finally {
-      // Clean up progress interval
-      if (progressInterval) {
-        clearInterval(progressInterval)
-      }
       setIsTranscribing(false)
       setTranscriptionProgress(0)
       setEstimatedTimeRemaining(null)
+      
+      // Clean up uploaded files from server after transcription fails
+      uploadInterfaceRef.current?.clearFiles()
+      console.log('Transcription failed, files cleaned up')
     }
   }
   
@@ -309,10 +375,28 @@ export default function Home() {
     setIsTranscribing(false)
     setTranscriptionProgress(0)
     setEstimatedTimeRemaining(null)
+    
+    // Clean up uploaded files from server when transcription is cancelled
+    uploadInterfaceRef.current?.clearFiles()
+    console.log('Transcription cancelled, files cleaned up')
     // Note: EventSource cleanup happens in the finally block of handleStartTranscription
   }
   
-  const handleRemoveFile = (fileId: string) => {
+  const handleRemoveFile = async (fileId: string) => {
+    // Remove from database
+    try {
+      const response = await fetch(`/api/upload/files?fileId=${fileId}`, {
+        method: 'DELETE'
+      })
+      
+      if (!response.ok) {
+        console.warn('Failed to remove file from server:', response.statusText)
+      }
+    } catch (error) {
+      console.warn('Error removing file from server:', error)
+    }
+    
+    // Remove from local state
     setUploadedFiles(prev => prev.filter(f => f.id !== fileId))
   }
   
@@ -363,6 +447,7 @@ export default function Home() {
               ref={uploadInterfaceRef}
               onUploadComplete={handleUploadComplete}
               onError={handleError}
+              onFileRemove={handleRemoveFile}
               maxFiles={10}
               maxSize={300 * 1024 * 1024} // 300MB
             />
@@ -383,7 +468,23 @@ export default function Home() {
                     </button>
                   )}
                   <button
-                    onClick={() => setUploadedFiles([])}
+                    onClick={async () => {
+                      // Clear files from database
+                      try {
+                        const response = await fetch('/api/upload/files?clearAll=true', {
+                          method: 'DELETE'
+                        })
+                        
+                        if (!response.ok) {
+                          console.warn('Failed to clear files from server:', response.statusText)
+                        }
+                      } catch (error) {
+                        console.warn('Error clearing files from server:', error)
+                      }
+                      
+                      // Clear local state
+                      setUploadedFiles([])
+                    }}
                     className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                   >
                     🗑️ Clear All
@@ -424,7 +525,12 @@ export default function Home() {
                   <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600"></div>
                   <div>
                     <h3 className="text-lg font-medium text-blue-900">Transcribing Audio...</h3>
-                    <p className="text-sm text-blue-700">Processing your files with Parakeet ASR</p>
+                    <p className="text-sm text-blue-700">
+                      {progressSummary 
+                        ? `Processing ${progressSummary.totalFiles} files - ${progressSummary.completedFiles} completed, ${progressSummary.failedFiles} failed`
+                        : 'Processing your files with Parakeet ASR'
+                      }
+                    </p>
                   </div>
                 </div>
                 <button
@@ -439,6 +545,29 @@ export default function Home() {
                 progress={transcriptionProgress}
                 estimatedTimeRemaining={estimatedTimeRemaining}
               />
+              
+              {/* Show detailed progress for each job */}
+              {progressSummary && progressSummary.currentlyProcessing.length > 0 && (
+                <div className="mt-4 space-y-2">
+                  <p className="text-sm font-medium text-blue-900">Currently Processing:</p>
+                  {Array.from(jobProgressMap.values()).map((progress, index) => (
+                    progress.stage !== 'completed' && progress.stage !== 'error' && (
+                      <div key={progress.fileId} className="flex items-center justify-between text-sm">
+                        <span className="text-blue-700">File {index + 1}</span>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-blue-600 capitalize">{progress.stage}</span>
+                          <span className="text-blue-800 font-medium">{progress.progress}%</span>
+                          {progress.estimatedTimeRemaining && (
+                            <span className="text-blue-600">
+                              ({formatTimeRemaining(progress.estimatedTimeRemaining)} remaining)
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    )
+                  ))}
+                </div>
+              )}
             </div>
           )}
 
