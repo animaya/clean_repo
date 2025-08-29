@@ -12,8 +12,10 @@ import { validateRateLimit } from '../../../lib/middleware/rate-limiting'
 import { createErrorResponse, createSuccessResponse, withErrorHandler, ValidationError, RateLimitError, StorageError } from '../../../lib/error-handling'
 import { createOrGetSession, updateSessionWithFiles, markFileCompleted, markFileFailed } from '../../../lib/session-management'
 import { UploadedFileInfo, UploadResponse } from '../../../types/api'
+import { FileStatus } from '../../../types/status'
 import { transitionFileStatus } from '../../../lib/services/state-machine'
 import { AuditService, extractAuditContext } from '../../../lib/services/audit-service'
+import { normalizePathForDatabase, buildFilePath, validateFilePath } from '../../../lib/utils/path-utils'
 
 // Use global Prisma instance or create new one
 const prisma = globalThis.__prisma || new PrismaClient()
@@ -137,7 +139,7 @@ async function processUploadedFile(
   outputQuality: string,
   auditContext: ReturnType<typeof extractAuditContext>
 ): Promise<UploadedFileInfo> {
-  const { file, filename, originalName, size, format, mimeType } = validFile
+  const { file, filename, originalFilename, size, format, mimeType } = validFile
 
   // Validate file content against MIME type
   const contentValidation = await validateFileContent(file)
@@ -147,7 +149,13 @@ async function processUploadedFile(
 
   // Generate unique filename to prevent conflicts
   const uniqueFilename = generateUniqueFilename(filename)
-  const filePath = path.join(UPLOADS_DIR, uniqueFilename)
+  const filePath = buildFilePath('upload', uniqueFilename)
+  
+  // Validate path security
+  const pathValidation = validateFilePath(filePath)
+  if (!pathValidation.isValid) {
+    throw new StorageError(`Invalid file path: ${pathValidation.error}`, 'path-validation', filePath)
+  }
 
   // Generate file hash for deduplication
   const fileHash = await generateFileHash(file)
@@ -160,15 +168,31 @@ async function processUploadedFile(
   if (existingFile) {
     // File already exists, return existing file info
     return {
-      id: existingFile.id.toString(),
+      id: existingFile.id, // Return as number, not string
       filename: existingFile.filename,
-      originalName: existingFile.originalFilename,
+      originalFilename: existingFile.originalFilename, // Match database field name
       fileSize: existingFile.fileSize,
       duration: 0, // Would need to extract from metadata
       mimeType: `audio/${existingFile.originalFormat}`,
-      status: existingFile.status.toLowerCase() as any,
-      uploadedAt: existingFile.uploadDate.toISOString()
+      status: existingFile.status as FileStatus, // Use proper enum type
+      uploadDate: existingFile.uploadDate.toISOString() // Match database field name
     }
+  }
+
+  // Prepare file data outside try block to ensure it's accessible in error handler
+  const fileData = {
+    filename: uniqueFilename,
+    originalFilename: originalFilename,
+    originalFormat: format,
+    fileSize: size,
+    filePath: normalizePathForDatabase(filePath),
+    uploadMethod: 'DRAG_DROP' as const,
+    mimeType: mimeType,
+    status: 'UPLOADED' as const,
+    checksum: fileHash,
+    uploadDate: new Date(),
+    createdAt: new Date(),
+    updatedAt: new Date()
   }
 
   try {
@@ -176,25 +200,15 @@ async function processUploadedFile(
     const buffer = await file.arrayBuffer()
     await fs.writeFile(filePath, new Uint8Array(buffer))
 
-    // Save file record to database with initial status
-    const fileData = {
-      filename: uniqueFilename,
-      originalFilename: originalName,
-      originalFormat: format,
-      fileSize: size,
-      filePath: filePath,
-      uploadMethod: 'DRAG_DROP',
-      mimeType: mimeType,
-      status: 'UPLOADED',
-      checksum: fileHash,
-      uploadDate: new Date(),
-      createdAt: new Date(),
-      updatedAt: new Date()
-    }
+    // Log file data before database operation
+    console.log('About to save file data to database:', fileData)
 
+    // Save file record to database with initial status
     const uploadedFile = await prisma.uploadedFiles.create({
       data: fileData
     })
+    
+    console.log('Successfully created file record:', uploadedFile.id)
 
     // Log file creation in audit trail
     await AuditService.logFileUpload(
@@ -207,17 +221,25 @@ async function processUploadedFile(
     )
 
     return {
-      id: uploadedFile.id.toString(),
+      id: uploadedFile.id, // Return as number, not string
       filename: uniqueFilename,
-      originalName: originalName,
+      originalFilename: originalFilename, // Match database field name
       fileSize: size,
       duration: 0, // Would extract from metadata in real implementation
       mimeType: mimeType,
-      status: uploadedFile.status.toLowerCase() as any,
-      uploadedAt: uploadedFile.uploadDate.toISOString()
+      status: uploadedFile.status as FileStatus, // Use proper enum type
+      uploadDate: uploadedFile.uploadDate.toISOString() // Match database field name
     }
 
   } catch (error) {
+    // Enhanced error logging for debugging
+    console.error('Error in processUploadedFile:', error)
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack')
+    console.error('Error name:', error instanceof Error ? error.name : 'Unknown')
+    console.error('Error message:', error instanceof Error ? error.message : 'Unknown message')
+    console.error('File data being saved:', JSON.stringify(fileData, null, 2))
+    console.error('Prisma client status:', !!prisma)
+    
     // Clean up file if database operation fails
     try {
       await fs.unlink(filePath)
@@ -227,6 +249,11 @@ async function processUploadedFile(
 
     if (error instanceof Error && error.message.includes('ENOSPC')) {
       throw new StorageError('Insufficient disk space', 'write', filePath)
+    }
+
+    // More specific error handling for Prisma errors
+    if (error instanceof Error && error.message.includes('Invalid `prisma')) {
+      throw new StorageError(`Database validation error: ${error.message}`, 'database', filePath)
     }
 
     throw new StorageError(`Failed to store file: ${error instanceof Error ? error.message : 'Unknown error'}`, 'write', filePath)

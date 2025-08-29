@@ -1,33 +1,21 @@
 import { fileTypeFromBuffer } from 'file-type'
 import path from 'path'
 import crypto from 'crypto'
-
-export type SupportedAudioFormat = 'mp3' | 'wav' | 'm4a' | 'flac' | 'ogg' | 'wma'
-export type SupportedVideoFormat = 'mp4' | 'avi' | 'mov' | 'mkv' | 'webm'
-
-export interface FileValidationResult {
-  isValid: boolean
-  errors: string[]
-  warnings: string[]
-  validFiles: ValidatedFile[]
-  invalidFiles: InvalidFile[]
-  sanitizedFiles?: SanitizedFile[]
-}
-
-export interface ValidatedFile {
-  file: File
-  filename: string
-  originalName: string
-  size: number
-  format: string
-  mimeType: string
-}
-
-export interface InvalidFile {
-  filename: string
-  reason: string
-  size?: number
-}
+import { 
+  FILE_SIZE_LIMITS, 
+  FILENAME_CONSTRAINTS,
+  SUPPORTED_EXTENSIONS, 
+  SUPPORTED_MIME_TYPES, 
+  SUPPORTED_AUDIO_FORMATS, 
+  SUPPORTED_VIDEO_FORMATS,
+  SECURITY_PATTERNS,
+  FileValidationResult,
+  ValidatedFile,
+  InvalidFile,
+  isExtensionSupported,
+  isMimeTypeSupported,
+  getExtensionFromFilename
+} from '../../types/validation-config'
 
 export interface SanitizedFile {
   filename: string
@@ -35,28 +23,10 @@ export interface SanitizedFile {
   safePath: string
 }
 
-const SUPPORTED_AUDIO_FORMATS: SupportedAudioFormat[] = ['mp3', 'wav', 'm4a', 'flac', 'ogg', 'wma']
-const SUPPORTED_VIDEO_FORMATS: SupportedVideoFormat[] = ['mp4', 'avi', 'mov', 'mkv', 'webm']
-const SUPPORTED_FORMATS = [...SUPPORTED_AUDIO_FORMATS, ...SUPPORTED_VIDEO_FORMATS]
-const SUPPORTED_MIME_TYPES = [
-  // Audio formats
-  'audio/mp3', 'audio/mpeg', 'audio/mp3',
-  'audio/wav', 'audio/wave', 'audio/x-wav',
-  'audio/m4a', 'audio/mp4', 'audio/aac',
-  'audio/flac', 'audio/x-flac',
-  'audio/ogg', 'audio/vorbis',
-  'audio/x-ms-wma', 'audio/wma',
-  // Video formats (for audio extraction)
-  'video/mp4', 'video/x-msvideo', 'video/avi',
-  'video/quicktime', 'video/x-ms-wmv',
-  'video/x-matroska', 'video/mkv',
-  'video/webm',
-  // Fallback for files detected as generic binary when extension is supported
-  'application/octet-stream'
-]
-const MAX_FILE_SIZE = 300 * 1024 * 1024 // 300MB
-const MAX_FILES_PER_REQUEST = 10
-const SUSPICIOUS_EXTENSIONS = ['.exe', '.bat', '.sh', '.cmd', '.scr', '.com', '.pif', '.js', '.vbs']
+// Re-export types for backwards compatibility
+export type { FileValidationResult, ValidatedFile, InvalidFile }
+export type SupportedAudioFormat = typeof SUPPORTED_AUDIO_FORMATS[number]
+export type SupportedVideoFormat = typeof SUPPORTED_VIDEO_FORMATS[number]
 
 /**
  * Validates uploaded files for audio upload API
@@ -76,8 +46,8 @@ export function validateUploadRequest(files: File[]): FileValidationResult {
     return result
   }
 
-  if (files.length > MAX_FILES_PER_REQUEST) {
-    result.errors.push(`Too many files (${files.length}). Maximum ${MAX_FILES_PER_REQUEST} files allowed per request`)
+  if (files.length > FILE_SIZE_LIMITS.MAX_FILES_PER_REQUEST) {
+    result.errors.push(`Too many files (${files.length}). Maximum ${FILE_SIZE_LIMITS.MAX_FILES_PER_REQUEST} files allowed per request`)
     result.isValid = false
     return result
   }
@@ -89,7 +59,7 @@ export function validateUploadRequest(files: File[]): FileValidationResult {
       result.validFiles.push({
         file,
         filename: sanitizeFilename(file.name),
-        originalName: file.name,
+        originalFilename: file.name, // Use consistent field name
         size: file.size,
         format: getFileExtension(file.name),
         mimeType: file.type
@@ -122,46 +92,60 @@ function validateSingleFile(file: File): { isValid: boolean; errors: string[]; w
     errors.push('Invalid filename: filename cannot be empty')
   }
 
+  // Check filename length
+  if (file.name.length > FILENAME_CONSTRAINTS.MAX_FILENAME_LENGTH) {
+    errors.push(`Filename too long: ${file.name} (${file.name.length} > ${FILENAME_CONSTRAINTS.MAX_FILENAME_LENGTH} characters)`)
+  }
+
   // Check for path traversal attempts
-  if (file.name.includes('../') || file.name.includes('..\\')) {
-    warnings.push(`Potentially dangerous filename: ${file.name}`)
+  for (const pattern of SECURITY_PATTERNS.PATH_TRAVERSAL_PATTERNS) {
+    if (pattern.test(file.name)) {
+      warnings.push(`Potentially dangerous filename: ${file.name}`)
+      break
+    }
   }
 
-  // Check for special characters
-  if (/[<>:|?*]/.test(file.name)) {
-    warnings.push(`Filename contains special characters: ${file.name}`)
+  // Check for forbidden characters
+  if (SECURITY_PATTERNS.FORBIDDEN_FILENAME_CHARS.test(file.name)) {
+    warnings.push(`Filename contains forbidden characters: ${file.name}`)
   }
 
-  // Check for suspicious extensions
-  const hasSuspiciousExtension = SUSPICIOUS_EXTENSIONS.some(ext => 
+  // Check for Windows reserved names
+  const nameWithoutExt = path.parse(file.name).name
+  if (SECURITY_PATTERNS.WINDOWS_RESERVED_NAMES.test(nameWithoutExt)) {
+    warnings.push(`Filename uses Windows reserved name: ${file.name}`)
+  }
+
+  // Check for dangerous extensions
+  const hasDangerousExtension = SECURITY_PATTERNS.DANGEROUS_EXTENSIONS.some(ext => 
     file.name.toLowerCase().includes(ext.toLowerCase())
   )
-  if (hasSuspiciousExtension) {
-    warnings.push(`Potentially suspicious filename pattern: ${file.name}`)
+  if (hasDangerousExtension) {
+    errors.push(`Dangerous file extension detected: ${file.name}`)
   }
 
   // Check file size
   if (file.size === 0) {
     errors.push(`File is empty: ${file.name}`)
-  } else if (file.size > MAX_FILE_SIZE) {
-    errors.push(`File too large: ${file.name} (${file.size} bytes > ${MAX_FILE_SIZE} bytes)`)
+  } else if (file.size > FILE_SIZE_LIMITS.MAX_FILE_SIZE) {
+    errors.push(`File too large: ${file.name} (${file.size} bytes > ${FILE_SIZE_LIMITS.MAX_FILE_SIZE} bytes)`)
   }
 
   // Check file format by extension
-  const extension = getFileExtension(file.name)
-  if (extension && !SUPPORTED_FORMATS.includes(extension as any)) {
-    errors.push(`Unsupported file format: ${file.name}. Supported formats: ${SUPPORTED_FORMATS.join(', ')}`)
+  const extension = getExtensionFromFilename(file.name)
+  if (extension && !isExtensionSupported(extension)) {
+    errors.push(`Unsupported file format: ${file.name}. Supported formats: ${SUPPORTED_EXTENSIONS.join(', ')}`)
   } else if (!extension) {
     warnings.push(`File has no extension: ${file.name}`)
   }
 
   // Check MIME type
-  if (!SUPPORTED_MIME_TYPES.includes(file.type)) {
+  if (!isMimeTypeSupported(file.type)) {
     if (file.type === '') {
       warnings.push(`No MIME type provided for: ${file.name}`)
     } else if (file.type === 'application/octet-stream') {
       // Allow octet-stream only if extension is supported
-      if (extension && SUPPORTED_FORMATS.includes(extension as any)) {
+      if (extension && isExtensionSupported(extension)) {
         warnings.push(`Generic MIME type detected but extension is supported: ${file.name}`)
       } else {
         errors.push(`Unsupported file: ${file.name} (generic binary with unsupported extension)`)

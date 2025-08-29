@@ -1,26 +1,16 @@
 import React, { useState, useCallback } from 'react'
 import { FileRejection } from 'react-dropzone'
 import DropZone from './DropZone'
-import FilePreview, { FileStatus } from './FilePreview'
+import FilePreview from './FilePreview'
+import { UIFileStatus } from '@/types/status'
+import { FileWithStatus, FileUploadProps } from '@/types/file-interfaces'
 
-interface FileWithStatus extends File {
-  id: string
-  serverId?: string | number // Store server ID separately to avoid key conflicts
-  status: FileStatus['status']
-  progress?: number
-  error?: string
-  duration?: number
-  uploadSpeed?: number
-  estimatedTimeRemaining?: number
-}
-
-interface AudioUploaderProps {
+interface AudioUploaderProps extends FileUploadProps {
   onUploadStart: (files: File[]) => void
   onUploadProgress: (fileId: string, progress: number) => void
   onUploadComplete: (files: FileWithStatus[]) => void
   onError: (error: FileRejection[] | Error) => void
-  maxFiles?: number
-  maxSize?: number
+  onFileRemove?: (fileId: string) => void
 }
 
 const AudioUploader: React.FC<AudioUploaderProps> = ({
@@ -28,6 +18,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
   onUploadProgress,
   onUploadComplete,
   onError,
+  onFileRemove,
   maxFiles = 10,
   maxSize = 300 * 1024 * 1024, // 300MB
 }) => {
@@ -136,7 +127,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
             ? { 
                 ...f, 
                 serverId: uploadResult.id, // Store database ID separately
-                name: uploadResult.originalName || uploadResult.filename || f.name, // Use original name from server
+                name: uploadResult.originalFilename || uploadResult.filename || f.name, // Use original filename from server
                 size: uploadResult.fileSize || f.size, // Use size from server
                 status: 'completed' as const, 
                 progress: 100,
@@ -155,7 +146,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
             // Map files to use serverId for transcription while keeping original id for React keys
             const filesForCallback = updatedFiles.map(f => ({
               ...f,
-              id: f.serverId ? String(f.serverId) : f.id // Use serverId for the callback
+              id: f.serverId ? f.serverId.toString() : f.id // Use serverId for the callback, convert to string
             }))
             onUploadComplete(filesForCallback)
           }, 0)
@@ -191,7 +182,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
             // Map files to use serverId for transcription while keeping original id for React keys
             const filesForCallback = prevFiles.map(f => ({
               ...f,
-              id: f.serverId ? String(f.serverId) : f.id // Use serverId for the callback
+              id: f.serverId ? f.serverId.toString() : f.id // Use serverId for the callback, convert to string
             }))
             onUploadComplete(filesForCallback)
           }, 0)
@@ -204,11 +195,32 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
 
 
   // Handle file removal
-  const handleFileRemove = useCallback((fileToRemove: File) => {
+  const handleFileRemove = useCallback(async (fileToRemove: File) => {
+    const fileWithStatus = fileToRemove as FileWithStatus
+    
+    // If file has been uploaded to server (has serverId), remove from database
+    if (fileWithStatus.serverId) {
+      try {
+        const response = await fetch(`/api/upload/files?fileId=${fileWithStatus.serverId}`, {
+          method: 'DELETE'
+        })
+        
+        if (!response.ok) {
+          console.warn('Failed to remove file from server:', response.statusText)
+        }
+      } catch (error) {
+        console.warn('Error removing file from server:', error)
+      }
+      
+      // Notify parent component about file removal
+      onFileRemove?.(fileWithStatus.serverId.toString())
+    }
+    
+    // Remove from local state
     setFiles(prevFiles => 
-      prevFiles.filter(f => f.id !== (fileToRemove as FileWithStatus).id)
+      prevFiles.filter(f => f.id !== fileWithStatus.id)
     )
-  }, [])
+  }, [onFileRemove])
 
   // Handle file retry
   const handleFileRetry = useCallback((fileToRetry: File) => {
@@ -226,6 +238,36 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
       uploadFile(fileWithId)
     }, 500)
   }, [uploadFile])
+
+  // Handle clearing all files
+  const handleClearAll = useCallback(async () => {
+    // Get files that have been uploaded to server
+    const uploadedFiles = files.filter(f => f.serverId)
+    
+    if (uploadedFiles.length > 0) {
+      try {
+        const response = await fetch('/api/upload/files?clearAll=true', {
+          method: 'DELETE'
+        })
+        
+        if (!response.ok) {
+          console.warn('Failed to clear files from server:', response.statusText)
+        }
+      } catch (error) {
+        console.warn('Error clearing files from server:', error)
+      }
+      
+      // Notify parent component about all file removals
+      uploadedFiles.forEach(file => {
+        if (file.serverId) {
+          onFileRemove?.(file.serverId.toString())
+        }
+      })
+    }
+    
+    // Clear local state
+    setFiles([])
+  }, [files, onFileRemove])
 
   const hasFiles = files.length > 0
   const canAddMore = files.length < maxFiles
@@ -279,7 +321,7 @@ const AudioUploader: React.FC<AudioUploaderProps> = ({
             </h3>
             {files.length > 0 && (
               <button
-                onClick={() => setFiles([])}
+                onClick={handleClearAll}
                 className="text-sm text-red-600 hover:text-red-700 font-medium"
               >
                 Clear All

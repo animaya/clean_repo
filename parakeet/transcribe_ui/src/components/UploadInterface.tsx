@@ -4,22 +4,12 @@ import AudioUploader from './AudioUploader'
 import UrlUpload from './UrlUpload'
 import UploadStatus from './UploadStatus'
 import { useKeyboardShortcuts, createUploadShortcuts } from '@/hooks/useKeyboardShortcuts'
-
-interface FileWithStatus {
-  id: string
-  name: string
-  size: number
-  status: 'pending' | 'uploading' | 'converting' | 'completed' | 'error'
-  progress?: number
-  error?: string
-  duration?: number
-  uploadSpeed?: number
-  estimatedTimeRemaining?: number
-}
+import { FileWithStatus } from '@/types/file-interfaces'
 
 interface UploadInterfaceProps {
   onUploadComplete?: (files: FileWithStatus[]) => void
   onError?: (error: Error | FileRejection[]) => void
+  onFileRemove?: (fileId: string) => void
   maxFiles?: number
   maxSize?: number
   className?: string
@@ -32,6 +22,7 @@ export interface UploadInterfaceRef {
 const UploadInterface = forwardRef<UploadInterfaceRef, UploadInterfaceProps>(({
   onUploadComplete,
   onError,
+  onFileRemove,
   maxFiles = 10,
   maxSize = 300 * 1024 * 1024, // 300MB
   className = '',
@@ -50,10 +41,27 @@ const UploadInterface = forwardRef<UploadInterfaceRef, UploadInterfaceProps>(({
   }, [])
 
   // Clear files function
-  const clearAllFiles = useCallback(() => {
+  const clearAllFiles = useCallback(async () => {
+    // Get files that have been completed (uploaded to server)
+    const completedFiles = files.filter(f => f.status === 'completed')
+    
+    if (completedFiles.length > 0) {
+      try {
+        const response = await fetch('/api/upload/files?clearAll=true', {
+          method: 'DELETE'
+        })
+        
+        if (!response.ok) {
+          console.warn('Failed to clear files from server:', response.statusText)
+        }
+      } catch (error) {
+        console.warn('Error clearing files from server:', error)
+      }
+    }
+    
     setFiles([])
     announce('All files cleared')
-  }, [announce])
+  }, [files, announce])
 
   // Expose clearFiles function via ref
   useImperativeHandle(ref, () => ({
@@ -166,7 +174,7 @@ const UploadInterface = forwardRef<UploadInterfaceRef, UploadInterfaceProps>(({
       // Update file with completed status and real server file ID
       const completedFile: FileWithStatus = {
         id: importResult.fileId, // Use the real server file ID
-        name: importResult.originalName || importResult.filename || fileName,
+        name: importResult.originalFilename || importResult.filename || fileName,
         size: importResult.fileSize || 0, // Use actual file size from server
         status: 'completed',
         progress: 100
@@ -333,6 +341,7 @@ const UploadInterface = forwardRef<UploadInterfaceRef, UploadInterfaceProps>(({
             onUploadProgress={handleUploadProgress}
             onUploadComplete={handleUploadComplete}
             onError={handleError}
+            onFileRemove={onFileRemove}
             maxFiles={maxFiles}
             maxSize={maxSize}
           />

@@ -2,6 +2,7 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import { promisify } from 'util'
 import { exec } from 'child_process'
+import { CONFIG } from './config'
 
 const execAsync = promisify(exec)
 
@@ -25,7 +26,7 @@ export type FileStorageResult = {
 }
 
 const DEFAULT_CONFIG: StorageConfig = {
-  uploadsDir: process.env.UPLOAD_DIR || './uploads',
+  uploadsDir: CONFIG.UPLOADS_DIR,
   maxStorageSize: 10 * 1024 * 1024 * 1024, // 10GB default
   organizationStrategy: 'date-based'
 }

@@ -1,8 +1,16 @@
 export type SupportedAudioFormat = 'mp3' | 'wav' | 'm4a' | 'flac' | 'ogg' | 'wma';
 
-export type UploadStatus = 'uploaded' | 'converting' | 'converted' | 'conversion_failed' | 'ready_for_transcription';
+// Import standardized status types
+import { FileStatus, TranscriptionStatus, SessionStatus, OutputFormat } from './status';
 
-export type ErrorCode = 'VALIDATION_ERROR' | 'FILE_TOO_LARGE' | 'UNSUPPORTED_FORMAT' | 'CONVERSION_FAILED' | 'STORAGE_ERROR' | 'RATE_LIMITED' | 'INTERNAL_ERROR';
+// Legacy alias for backward compatibility - will be removed
+export type UploadStatus = FileStatus;
+
+// Import standard error codes
+import { ErrorCode as StandardErrorCode } from '../lib/error-handling';
+
+// Re-export standard error codes for backwards compatibility
+export type ErrorCode = StandardErrorCode;
 
 export interface ApiResponse<T = any> {
   success: boolean;
@@ -15,14 +23,14 @@ export interface ApiResponse<T = any> {
 }
 
 export interface UploadedFileInfo {
-  id: string;
+  id: number; // Database primary key is always number
   filename: string;
-  originalName: string;
+  originalFilename: string; // Match database field name
   fileSize: number;
   duration: number;
   mimeType: string;
-  status: UploadStatus;
-  uploadedAt: string;
+  status: FileStatus;
+  uploadDate: string; // Match database field name - ISO string format
 }
 
 export interface UploadResponse extends ApiResponse {
@@ -33,7 +41,7 @@ export interface UploadResponse extends ApiResponse {
 export interface UrlImportInfo {
   url: string;
   status: 'downloading' | 'completed' | 'failed';
-  fileId?: string;
+  fileId?: number; // Database ID is always number
   filename?: string;
   error?: string;
 }
@@ -56,7 +64,7 @@ export interface ValidationErrorResponse extends ApiResponse {
 
 export interface UploadProgressEvent {
   type: 'upload_progress';
-  fileId: string;
+  fileId: number; // Database ID is always number
   filename: string;
   progress: number;
   bytesUploaded: number;
@@ -67,7 +75,7 @@ export interface UploadProgressEvent {
 
 export interface UploadCompleteEvent {
   type: 'upload_complete';
-  fileId: string;
+  fileId: number; // Database ID is always number
   filename: string;
   fileSize: number;
   duration: number;
@@ -75,7 +83,7 @@ export interface UploadCompleteEvent {
 
 export interface ErrorEvent {
   type: 'error';
-  fileId: string;
+  fileId: number; // Database ID is always number
   filename: string;
   error: string;
 }

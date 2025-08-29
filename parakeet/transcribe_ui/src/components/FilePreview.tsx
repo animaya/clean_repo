@@ -1,20 +1,6 @@
 import React from 'react'
 import { formatFileSize, formatDuration } from '@/lib/file-utils'
-
-export interface FileStatus {
-  status: 'pending' | 'uploading' | 'converting' | 'completed' | 'error'
-  progress?: number
-  error?: string
-  duration?: number
-  uploadSpeed?: number
-  estimatedTimeRemaining?: number
-}
-
-interface FilePreviewProps extends FileStatus {
-  file: File
-  onRemove: (file: File) => void
-  onRetry?: (file: File) => void
-}
+import { FilePreviewProps } from '@/types/file-interfaces'
 
 const FilePreview: React.FC<FilePreviewProps> = ({
   file,
@@ -33,8 +19,16 @@ const FilePreview: React.FC<FilePreviewProps> = ({
         return '⏳'
       case 'uploading':
         return '⬆️'
+      case 'validating':
+        return '🔍'
       case 'converting':
         return '🔄'
+      case 'converted':
+        return '✅'
+      case 'ready':
+        return '✅'
+      case 'processing':
+        return '⚙️'
       case 'completed':
         return '✅'
       case 'error':
@@ -50,8 +44,16 @@ const FilePreview: React.FC<FilePreviewProps> = ({
         return 'Pending'
       case 'uploading':
         return 'Uploading'
+      case 'validating':
+        return 'Validating'
       case 'converting':
         return 'Converting'
+      case 'converted':
+        return 'Converted'
+      case 'ready':
+        return 'Ready'
+      case 'processing':
+        return 'Processing'
       case 'completed':
         return 'Completed'
       case 'error':
@@ -67,8 +69,16 @@ const FilePreview: React.FC<FilePreviewProps> = ({
         return 'text-gray-600'
       case 'uploading':
         return 'text-blue-600'
+      case 'validating':
+        return 'text-purple-600'
       case 'converting':
         return 'text-yellow-600'
+      case 'converted':
+        return 'text-green-600'
+      case 'ready':
+        return 'text-green-600'
+      case 'processing':
+        return 'text-blue-600'
       case 'completed':
         return 'text-green-600'
       case 'error':
@@ -78,7 +88,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({
     }
   }
 
-  const showProgress = status === 'uploading' || status === 'converting'
+  const showProgress = status === 'uploading' || status === 'validating' || status === 'converting' || status === 'processing'
 
   return (
     <div
@@ -145,7 +155,15 @@ const FilePreview: React.FC<FilePreviewProps> = ({
           >
             <div
               className={`h-2 rounded-full transition-all duration-300 ${
-                status === 'uploading' ? 'bg-blue-500' : 'bg-yellow-500'
+                status === 'uploading' 
+                  ? 'bg-blue-500' 
+                  : status === 'validating'
+                  ? 'bg-purple-500'
+                  : status === 'converting' 
+                  ? 'bg-yellow-500'
+                  : status === 'processing'
+                  ? 'bg-blue-500'
+                  : 'bg-gray-500'
               }`}
               style={{ width: `${progress}%` }}
             />
