@@ -405,7 +405,48 @@ export default function Home() {
     localStorage.removeItem('parakeet-transcriptions')
   }
 
-  const handleDeleteTranscription = (idToDelete: string) => {
+  const handleDeleteTranscription = async (idToDelete: string) => {
+    // Find the transcription to get the jobId
+    const transcriptionToDelete = transcriptionResults.find(result => result.id === idToDelete)
+    
+    // Check if this transcription has a valid database jobId (UUID format or Bull queue ID format)
+    // Only attempt database deletion for valid jobIds that aren't client-generated
+    const isValidDatabaseJobId = (jobId: string | undefined) => {
+      if (!jobId) return false
+      
+      // Skip client-generated IDs that start with "transcribe-" followed by just a number
+      if (/^transcribe-\d+$/.test(jobId)) return false
+      
+      // Accept UUID format or Bull queue numeric IDs
+      const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+      const bullIdRegex = /^\d+$/
+      
+      return uuidRegex.test(jobId) || bullIdRegex.test(jobId)
+    }
+    
+    // If this transcription has a valid database jobId, try to delete from database first
+    if (transcriptionToDelete?.jobId && isValidDatabaseJobId(transcriptionToDelete.jobId)) {
+      try {
+        const response = await fetch(`/api/transcribe?jobId=${transcriptionToDelete.jobId}`, {
+          method: 'DELETE'
+        })
+        
+        if (!response.ok) {
+          const errorData = await response.json()
+          console.warn('Failed to delete transcription from database:', errorData.error || response.statusText)
+          // Still proceed with UI removal even if API call fails
+        } else {
+          console.log('Successfully deleted transcription from database')
+        }
+      } catch (error) {
+        console.warn('Error deleting transcription from database:', error)
+        // Still proceed with UI removal even if API call fails
+      }
+    } else if (transcriptionToDelete?.jobId) {
+      console.log('Skipping database deletion for client-generated jobId:', transcriptionToDelete.jobId)
+    }
+    
+    // Remove from UI and localStorage
     setTranscriptionResults(prev => {
       const updated = prev.filter(result => result.id !== idToDelete)
       // Update localStorage with the filtered results
