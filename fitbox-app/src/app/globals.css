@@ -1,0 +1,46 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 222.2 84% 4.9%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+  }
+}
+
+@layer components {
+  /* Drag and Drop Utility Classes */
+  .drag-handle {
+    @apply cursor-grab active:cursor-grabbing;
+  }
+
+  .drag-item {
+    @apply transition-drag duration-200 ease-in-out;
+  }
+
+  .drag-item.dragging {
+    @apply rotate-1 shadow-drag z-50 cursor-grabbing;
+  }
+
+  .drop-zone {
+    @apply transition-all duration-200 ease-in-out;
+  }
+
+  .drop-zone.drag-over {
+    @apply shadow-drop-zone animate-drag-over;
+  }
+
+  .kanban-column {
+    @apply bg-gray-50 rounded-lg p-4 min-h-96;
+  }
+
+  .task-card {
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-3 mb-3 hover:shadow-md transition-shadow duration-200;
+  }
+}
