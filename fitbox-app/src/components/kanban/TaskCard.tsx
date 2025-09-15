@@ -1,29 +1,29 @@
 'use client';
 
-import { useSortable } from '@dnd-kit/sortable';
+import { useDraggable } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { Task } from '@/store/kanban';
 
 interface TaskCardProps {
   task: Task;
   onClick: () => void;
+  onEdit?: () => void;
+  onDelete?: () => void;
   isOptimistic?: boolean;
   isDragging?: boolean;
 }
 
-export function TaskCard({ task, onClick, isOptimistic = false, isDragging = false }: TaskCardProps) {
+export function TaskCard({ task, onClick, onEdit, onDelete, isOptimistic = false, isDragging = false }: TaskCardProps) {
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
-    transition,
-    isDragging: sortableIsDragging,
-  } = useSortable({ id: task.id });
+    isDragging: draggableIsDragging,
+  } = useDraggable({ id: task.id });
 
   const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
+    transform: CSS.Translate.toString(transform),
   };
 
   const getPriorityColor = (priority: string) => {
@@ -46,6 +46,21 @@ export function TaskCard({ task, onClick, isOptimistic = false, isDragging = fal
       case 'MEDIUM':
         return 'bg-yellow-100 text-yellow-800';
       case 'LOW':
+        return 'bg-green-100 text-green-800';
+      default:
+        return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getStatusBadgeColor = (status: string) => {
+    switch (status) {
+      case 'TODO':
+        return 'bg-gray-100 text-gray-800';
+      case 'IN_PROGRESS':
+        return 'bg-blue-100 text-blue-800';
+      case 'IN_REVIEW':
+        return 'bg-yellow-100 text-yellow-800';
+      case 'DONE':
         return 'bg-green-100 text-green-800';
       default:
         return 'bg-gray-100 text-gray-800';
@@ -75,7 +90,7 @@ export function TaskCard({ task, onClick, isOptimistic = false, isDragging = fal
     transition-all duration-200 cursor-pointer border-l-4 p-4
     ${getPriorityColor(task.priority)}
     ${isOptimistic ? 'opacity-50' : ''}
-    ${sortableIsDragging || isDragging ? 'shadow-lg scale-105 rotate-3' : ''}
+    ${draggableIsDragging || isDragging ? 'shadow-lg scale-105 rotate-3' : ''}
     ${isDragging ? 'z-50' : ''}
   `;
 
@@ -83,6 +98,7 @@ export function TaskCard({ task, onClick, isOptimistic = false, isDragging = fal
     <div
       ref={setNodeRef}
       style={style}
+      data-testid="task-card"
       className={cardClass}
       onClick={onClick}
       {...attributes}
@@ -94,10 +110,51 @@ export function TaskCard({ task, onClick, isOptimistic = false, isDragging = fal
           {task.title}
         </h4>
 
-        {/* Priority Badge */}
-        <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPriorityBadgeColor(task.priority)}`}>
-          {task.priority}
-        </span>
+        <div className="flex items-center space-x-1">
+          {/* Delete Button - Only show for TODO tasks */}
+          {onDelete && task.status === 'TODO' && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                if (confirm('Are you sure you want to delete this task? This action cannot be undone.')) {
+                  onDelete();
+                }
+              }}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-red-600 opacity-0 group-hover:opacity-100 transition-opacity"
+              title="Delete task"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              </svg>
+            </button>
+          )}
+
+          {/* Edit Button */}
+          {onEdit && (
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit();
+              }}
+              className="w-5 h-5 flex items-center justify-center text-gray-400 hover:text-blue-600 opacity-0 group-hover:opacity-100 transition-opacity"
+              title="Edit task"
+            >
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              </svg>
+            </button>
+          )}
+
+          {/* Status Badge */}
+          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getStatusBadgeColor(task.status)} mr-1`}>
+            {task.status}
+          </span>
+
+          {/* Priority Badge */}
+          <span className={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${getPriorityBadgeColor(task.priority)}`}>
+            {task.priority}
+          </span>
+        </div>
       </div>
 
       {/* Task Description */}

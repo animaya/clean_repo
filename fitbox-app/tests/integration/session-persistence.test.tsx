@@ -1,3 +1,4 @@
+import React from 'react';
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { PrismaClient } from '@prisma/client';

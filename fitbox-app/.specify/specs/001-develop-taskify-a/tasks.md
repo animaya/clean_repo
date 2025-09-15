@@ -105,12 +105,12 @@ Using **Single Next.js Project** structure from plan.md:
 
 ## Phase 3.6: Integration & Polish
 
-- [ ] T049 Implement optimistic updates for drag-and-drop operations using React Query patterns
-- [ ] T050 Add error boundaries and loading states throughout the application
-- [ ] T051 [P] Create E2E tests in `tests/e2e/user-journey.spec.ts` using Playwright
-- [ ] T052 [P] Performance validation: ensure <200ms task updates and 60fps drag-and-drop
-- [ ] T053 [P] Accessibility testing for drag-and-drop with screen readers
-- [ ] T054 Run complete quickstart validation from `quickstart.md` lines 62-120
+- [x] T049 Implement optimistic updates for drag-and-drop operations using React Query patterns
+- [x] T050 Add error boundaries and loading states throughout the application
+- [x] T051 [P] Create E2E tests in `tests/e2e/user-journey.spec.ts` using Playwright
+- [x] T052 [P] Performance validation: ensure <200ms task updates and 60fps drag-and-drop
+- [x] T053 [P] Accessibility testing for drag-and-drop with screen readers
+- [x] T054 Run complete quickstart validation from `quickstart.md` lines 62-120
 
 ## Dependencies
 

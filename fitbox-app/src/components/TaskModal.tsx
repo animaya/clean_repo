@@ -129,11 +129,12 @@ export function TaskModal() {
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
       onClick={handleBackdropClick}
     >
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
+      <div data-testid="task-modal" className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-semibold text-gray-900">Task Details</h2>
           <button
+            data-testid="close-modal"
             onClick={closeTaskModal}
             className="text-gray-400 hover:text-gray-600 transition-colors"
           >
@@ -158,7 +159,7 @@ export function TaskModal() {
             <div className="p-6 space-y-6">
               {/* Task Info */}
               <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-3">{task.title}</h3>
+                <h3 data-testid="task-title" className="text-lg font-medium text-gray-900 mb-3">{task.title}</h3>
 
                 <div className="flex flex-wrap gap-2 mb-4">
                   <span className={`inline-flex px-3 py-1 text-sm font-medium rounded-full ${getStatusColor(task.status)}`}>
@@ -172,7 +173,7 @@ export function TaskModal() {
                 {task.description && (
                   <div className="bg-gray-50 rounded-lg p-4 mb-4">
                     <h4 className="text-sm font-medium text-gray-700 mb-2">Description</h4>
-                    <p className="text-gray-600 whitespace-pre-wrap">{task.description}</p>
+                    <p data-testid="task-description" className="text-gray-600 whitespace-pre-wrap">{task.description}</p>
                   </div>
                 )}
 
@@ -220,6 +221,7 @@ export function TaskModal() {
                       <textarea
                         ref={textareaRef}
                         id="comment"
+                        data-testid="comment-input"
                         rows={3}
                         value={newComment}
                         onChange={(e) => setNewComment(e.target.value)}
@@ -231,6 +233,7 @@ export function TaskModal() {
                     <div className="flex justify-end">
                       <button
                         type="submit"
+                        data-testid="comment-submit"
                         disabled={!newComment.trim() || isSubmitting}
                         className="px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
                       >

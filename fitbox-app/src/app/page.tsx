@@ -83,6 +83,7 @@ export default function UserSelectionPage() {
             {Array.isArray(users) && users.length > 0 ? users.map((user) => (
               <button
                 key={user.id}
+                data-testid="user-card"
                 onClick={() => handleUserSelect(user.id)}
                 disabled={selectUserMutation.isLoading || selectedUserId === user.id}
                 className={`w-full p-4 text-left rounded-lg border-2 transition-all duration-200 ${

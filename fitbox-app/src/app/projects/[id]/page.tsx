@@ -8,7 +8,11 @@ import { useAuthStore } from '@/store/auth';
 import { useKanbanStore } from '@/store/kanban';
 import { KanbanBoard } from '@/components/kanban/KanbanBoard';
 import { TaskModal } from '@/components/TaskModal';
+import { NewTaskModal } from '@/components/NewTaskModal';
+import { EditTaskModal } from '@/components/EditTaskModal';
 import { useUIStore } from '@/store/ui';
+import { ErrorBoundary } from '@/components/ErrorBoundary';
+import { LoadingSpinner, LoadingPage } from '@/components/LoadingSpinner';
 
 interface PageProps {
   params: {
@@ -20,7 +24,7 @@ export default function ProjectKanbanPage({ params }: PageProps) {
   const router = useRouter();
   const { user, isAuthenticated, logout } = useAuthStore();
   const { setTasks, setLoading, setError } = useKanbanStore();
-  const { isTaskModalOpen } = useUIStore();
+  const { isTaskModalOpen, isNewTaskModalOpen, isEditTaskModalOpen, openNewTaskModal, showMyTasksOnly, toggleMyTasksFilter } = useUIStore();
 
   const { data: project, isLoading: projectLoading, error: projectError } = trpc.projects.getById.useQuery({
     id: params.id,
@@ -30,8 +34,85 @@ export default function ProjectKanbanPage({ params }: PageProps) {
     projectId: params.id,
   });
 
+  const utils = trpc.useUtils();
   const logoutMutation = trpc.auth.logout.useMutation();
-  const updateTaskPositionMutation = trpc.tasks.updatePosition.useMutation();
+  const updateTaskPositionMutation = trpc.tasks.updatePosition.useMutation({
+    onMutate: async (variables) => {
+      console.log(`🔄 onMutate: Optimistically updating task ${variables.taskId} to status ${variables.newStatus}`);
+
+      // Cancel any outgoing refetches
+      await utils.tasks.getByProject.cancel({ projectId: params.id });
+
+      // Snapshot the previous value
+      const previousTasks = utils.tasks.getByProject.getData({ projectId: params.id });
+
+      // Optimistically update to the new value with both status and position
+      if (previousTasks) {
+        const optimisticTasks = previousTasks.map(task =>
+          task.id === variables.taskId
+            ? { ...task, status: variables.newStatus, position: variables.newPosition, updatedAt: new Date() }
+            : task
+        );
+        utils.tasks.getByProject.setData({ projectId: params.id }, optimisticTasks);
+        console.log(`✨ Optimistic update applied for task ${variables.taskId}`);
+      }
+
+      return { previousTasks };
+    },
+    onSuccess: (data, variables) => {
+      console.log(`✅ onSuccess: Task ${variables.taskId} successfully updated to ${data.status}`);
+      // Update with server response to ensure consistency and force status update
+      const currentTasks = utils.tasks.getByProject.getData({ projectId: params.id });
+      if (currentTasks) {
+        const updatedTasks = currentTasks.map(task =>
+          task.id === data.id
+            ? {
+                ...task,
+                status: data.status as 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE',
+                position: data.position,
+                updatedAt: new Date(data.updatedAt)
+              }
+            : task
+        );
+        utils.tasks.getByProject.setData({ projectId: params.id }, updatedTasks);
+
+        // Force immediate state sync to Kanban store
+        const transformedTasks = updatedTasks.map(task => ({
+          id: task.id,
+          title: task.title,
+          description: task.description || undefined,
+          status: task.status as 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE',
+          position: task.position,
+          projectId: task.projectId,
+          assigneeId: task.assignedUserId || undefined,
+          priority: task.priority as 'LOW' | 'MEDIUM' | 'HIGH',
+          createdAt: new Date(task.createdAt),
+          updatedAt: new Date(task.updatedAt),
+          assignee: task.assignedUser ? {
+            id: task.assignedUser.id,
+            name: task.assignedUser.name,
+            email: task.assignedUser.email,
+            avatar: task.assignedUser.avatar || undefined,
+          } : undefined,
+        }));
+        setTasks(transformedTasks);
+      }
+    },
+    onError: (err, variables, context) => {
+      console.error('❌ Task position update failed:', err, variables);
+
+      // If the mutation fails, use the context returned from onMutate to roll back
+      if (context?.previousTasks) {
+        utils.tasks.getByProject.setData({ projectId: params.id }, context.previousTasks);
+      }
+      setError('Failed to update task position. Changes have been reverted.');
+    },
+    onSettled: () => {
+      console.log(`🔄 onSettled: Invalidating and refetching tasks for project ${params.id}`);
+      // Always refetch after error or success to ensure consistency
+      utils.tasks.getByProject.invalidate({ projectId: params.id });
+    },
+  });
 
   useEffect(() => {
     if (!isAuthenticated || !user) {
@@ -41,6 +122,8 @@ export default function ProjectKanbanPage({ params }: PageProps) {
 
   useEffect(() => {
     if (tasks) {
+      console.log(`📊 Transforming ${tasks.length} tasks from tRPC data:`, tasks.map(t => ({ id: t.id, title: t.title, status: t.status, updatedAt: t.updatedAt })));
+
       // Transform the tasks to match the kanban store format
       const transformedTasks = tasks.map(task => ({
         id: task.id,
@@ -60,6 +143,8 @@ export default function ProjectKanbanPage({ params }: PageProps) {
           avatar: task.assignedUser.avatar || undefined,
         } : undefined,
       }));
+
+      console.log(`🎯 Setting transformed tasks in Kanban store`);
       setTasks(transformedTasks);
     }
   }, [tasks, setTasks]);
@@ -89,29 +174,16 @@ export default function ProjectKanbanPage({ params }: PageProps) {
   };
 
   const handleTaskPositionUpdate = async (taskId: string, newStatus: string, newPosition: number) => {
-    try {
-      await updateTaskPositionMutation.mutateAsync({
-        taskId,
-        newStatus: newStatus as 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE',
-        newPosition,
-      });
-      // Refetch tasks to ensure consistency
-      refetchTasks();
-    } catch (error) {
-      console.error('Failed to update task position:', error);
-      setError('Failed to update task position');
-      // Refetch to revert optimistic update
-      refetchTasks();
-    }
+    console.log(`🚀 handleTaskPositionUpdate called with:`, { taskId, newStatus, newPosition });
+    updateTaskPositionMutation.mutate({
+      taskId,
+      newStatus: newStatus as 'TODO' | 'IN_PROGRESS' | 'IN_REVIEW' | 'DONE',
+      newPosition,
+    });
   };
 
   if (!isAuthenticated || !user) {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        <p className="mt-4 text-gray-600">Checking authentication...</p>
-      </main>
-    );
+    return <LoadingPage text="Checking authentication..." />;
   }
 
   if (projectLoading || tasksLoading) {
@@ -142,9 +214,8 @@ export default function ProjectKanbanPage({ params }: PageProps) {
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          <p className="ml-4 text-gray-600">Loading project...</p>
+        <div className="py-20">
+          <LoadingSpinner size="lg" text="Loading project..." className="h-32" />
         </div>
       </main>
     );
@@ -212,6 +283,36 @@ export default function ProjectKanbanPage({ params }: PageProps) {
               </div>
             </div>
             <div className="flex items-center space-x-4">
+              <button
+                onClick={openNewTaskModal}
+                className="px-3 py-1.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors flex items-center"
+              >
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                </svg>
+                Add Task
+              </button>
+
+              {/* My Tasks Filter Toggle */}
+              <div className="flex items-center space-x-2">
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={showMyTasksOnly}
+                    onChange={toggleMyTasksFilter}
+                    className="sr-only"
+                  />
+                  <div className={`relative inline-flex h-5 w-9 items-center rounded-full transition-colors ${
+                    showMyTasksOnly ? 'bg-blue-600' : 'bg-gray-300'
+                  }`}>
+                    <span className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${
+                      showMyTasksOnly ? 'translate-x-4' : 'translate-x-0.5'
+                    }`} />
+                  </div>
+                  <span className="ml-2 text-sm text-gray-600">My Tasks</span>
+                </label>
+              </div>
+
               <span className="text-sm text-gray-600">Welcome, {user.name}</span>
               <button
                 onClick={handleLogout}
@@ -227,14 +328,35 @@ export default function ProjectKanbanPage({ params }: PageProps) {
 
       {/* Kanban Board */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <KanbanBoard
-          projectId={params.id}
-          onTaskPositionUpdate={handleTaskPositionUpdate}
-        />
+        <ErrorBoundary>
+          <KanbanBoard
+            projectId={params.id}
+            currentUserId={user.id}
+            onTaskPositionUpdate={handleTaskPositionUpdate}
+          />
+        </ErrorBoundary>
       </div>
 
       {/* Task Modal */}
-      {isTaskModalOpen && <TaskModal />}
+      {isTaskModalOpen && (
+        <ErrorBoundary>
+          <TaskModal />
+        </ErrorBoundary>
+      )}
+
+      {/* New Task Modal */}
+      {isNewTaskModalOpen && (
+        <ErrorBoundary>
+          <NewTaskModal projectId={params.id} />
+        </ErrorBoundary>
+      )}
+
+      {/* Edit Task Modal */}
+      {isEditTaskModalOpen && (
+        <ErrorBoundary>
+          <EditTaskModal />
+        </ErrorBoundary>
+      )}
     </main>
   );
 }

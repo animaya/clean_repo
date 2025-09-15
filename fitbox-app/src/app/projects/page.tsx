@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { trpc } from '../_trpc/client';
 import { useAuthStore } from '@/store/auth';
+import { LoadingPage } from '@/components/LoadingSpinner';
 
 export default function ProjectsPage() {
   const router = useRouter();
@@ -32,12 +33,7 @@ export default function ProjectsPage() {
   };
 
   if (!isAuthenticated || !user) {
-    return (
-      <main className="flex min-h-screen flex-col items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-        <p className="mt-4 text-gray-600">Checking authentication...</p>
-      </main>
-    );
+    return <LoadingPage text="Checking authentication..." />;
   }
 
   if (isLoading) {
@@ -131,7 +127,7 @@ export default function ProjectsPage() {
               href={`/projects/${project.id}`}
               className="group block"
             >
-              <div className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6 border border-gray-200 group-hover:border-blue-300">
+              <div data-testid="project-card" className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6 border border-gray-200 group-hover:border-blue-300">
                 <div className="flex items-start justify-between mb-4">
                   <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
                     {project.name}

@@ -14,6 +14,8 @@ interface UIState {
   selectedTaskId: string | null;
   isUserSelectorOpen: boolean;
   isCreateTaskModalOpen: boolean;
+  isNewTaskModalOpen: boolean;
+  isEditTaskModalOpen: boolean;
 
   // Loading states
   isGlobalLoading: boolean;
@@ -25,6 +27,9 @@ interface UIState {
   // UI preferences
   sidebarCollapsed: boolean;
   theme: 'light' | 'dark' | 'system';
+
+  // Filters
+  showMyTasksOnly: boolean;
 }
 
 interface UIActions {
@@ -36,6 +41,10 @@ interface UIActions {
   closeUserSelector: () => void;
   openCreateTaskModal: () => void;
   closeCreateTaskModal: () => void;
+  openNewTaskModal: () => void;
+  closeNewTaskModal: () => void;
+  openEditTaskModal: (taskId?: string) => void;
+  closeEditTaskModal: () => void;
 
   // Loading actions
   setGlobalLoading: (loading: boolean) => void;
@@ -51,6 +60,10 @@ interface UIActions {
   toggleSidebar: () => void;
   setSidebarCollapsed: (collapsed: boolean) => void;
   setTheme: (theme: 'light' | 'dark' | 'system') => void;
+
+  // Filter actions
+  toggleMyTasksFilter: () => void;
+  setShowMyTasksOnly: (show: boolean) => void;
 }
 
 export const useUIStore = create<UIState & UIActions>((set, get) => ({
@@ -59,11 +72,14 @@ export const useUIStore = create<UIState & UIActions>((set, get) => ({
   selectedTaskId: null,
   isUserSelectorOpen: false,
   isCreateTaskModalOpen: false,
+  isNewTaskModalOpen: false,
+  isEditTaskModalOpen: false,
   isGlobalLoading: false,
   loadingTasks: new Set(),
   toasts: [],
   sidebarCollapsed: false,
   theme: 'system',
+  showMyTasksOnly: false,
 
   // Modal actions
   openTaskModal: (taskId) =>
@@ -87,6 +103,18 @@ export const useUIStore = create<UIState & UIActions>((set, get) => ({
   openCreateTaskModal: () => set({ isCreateTaskModalOpen: true }),
 
   closeCreateTaskModal: () => set({ isCreateTaskModalOpen: false }),
+
+  openNewTaskModal: () => set({ isNewTaskModalOpen: true }),
+
+  closeNewTaskModal: () => set({ isNewTaskModalOpen: false }),
+
+  openEditTaskModal: (taskId) =>
+    set({
+      isEditTaskModalOpen: true,
+      selectedTaskId: taskId || null,
+    }),
+
+  closeEditTaskModal: () => set({ isEditTaskModalOpen: false }),
 
   // Loading actions
   setGlobalLoading: (isGlobalLoading) => set({ isGlobalLoading }),
@@ -138,4 +166,10 @@ export const useUIStore = create<UIState & UIActions>((set, get) => ({
   setSidebarCollapsed: (sidebarCollapsed) => set({ sidebarCollapsed }),
 
   setTheme: (theme) => set({ theme }),
+
+  // Filter actions
+  toggleMyTasksFilter: () =>
+    set((state) => ({ showMyTasksOnly: !state.showMyTasksOnly })),
+
+  setShowMyTasksOnly: (showMyTasksOnly) => set({ showMyTasksOnly }),
 }));

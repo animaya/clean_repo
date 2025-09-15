@@ -124,7 +124,12 @@ export const useKanbanStore = create<KanbanState & KanbanActions>((set, get) => 
       ...column,
       tasks: column.tasks.filter(task => {
         if (task.id === taskId) {
-          movedTask = { ...task, status, position };
+          movedTask = {
+            ...task,
+            status,
+            position,
+            updatedAt: new Date() // Add updatedAt to trigger re-renders
+          };
           return false;
         }
         return true;
