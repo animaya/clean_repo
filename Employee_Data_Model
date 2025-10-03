@@ -245,9 +245,7 @@ UI динамически фильтрует `employees` по условию `pr
              
             }
           ],
-          "supported_integrations": [ //с какими внешними сервисами работает
-            "OnlinePBX", "Mango", "Zadarma", "Amo CRM" // какие системы знает
-          ]
+         
         },
 
         // Категоризация для UI (мягкая привязка) для отображения и фильтрации
@@ -511,8 +509,11 @@ UI динамически фильтрует `employees` по условию `pr
         "id": "tmpl_transcribe",
         "name": "Транскрипция звонков",
         "description": "Преобразование записей звонков в текст",
-        "category": "sales",
-
+       ***********
+      ************
+       "supported_integrations": [ //с какими внешними сервисами работает
+            "OnlinePBX", "Mango", "Zadarma", "Amo CRM" // какие системы знает
+          ]
         // Что требуется для выполнения
         "requirements": {
           "required_skills": ["call_transcription"]
